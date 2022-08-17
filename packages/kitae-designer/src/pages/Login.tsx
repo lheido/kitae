@@ -16,12 +16,12 @@ export const Login = () => (
     <div className="absolute">
       <DecoLineTopLeft />
     </div> */}
-    <div className="relative flex flex-col justify-center items-center gap-11 bg-neutral-900 w-[339px] h-[399px] rounded-2xl">
-      <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col justify-center items-center gap-11 bg-neutral-900 w-[339px] h-[399px] rounded-2xl">
+      <div className="relative flex flex-col items-center gap-2">
         <h1 className="text-4xl font-extralight">Log in to Kitae</h1>
         <p>いらっしゃいませ</p>
       </div>
-      <ul className="flex flex-col gap-3">
+      <ul className="relative flex flex-col gap-3">
         <li>
           <LoginButton icon={<GitlabIcon />} label="Continue with Gitlab" />
         </li>

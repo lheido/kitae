@@ -1,0 +1,14 @@
+tasks:
+  - name: install
+    init: npm install && gp sync-done install
+  - name: kitae-designer
+    init: gp sync-await install
+    command: npm run designer:dev
+
+vscode:
+  extensions:
+    - astro-build.astro-vscode
+    - esbenp.prettier-vscode
+    - dbaeumer.vscode-eslint
+    - bradlc.vscode-tailwindcss
+    - csstools.postcss

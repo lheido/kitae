@@ -5,6 +5,8 @@ import { KitaeBox } from "../components/KitaeBox";
 import { DecoLeft } from "../assets/DecoLeft";
 import { DecoRight } from "../assets/DecoRight";
 
+console.log(import.meta.env.KITAE_SUPABASE_ANON_KEY);
+
 export const Login = () => (
   <>
     <div className="absolute top-[25%] left-[50%] translate-x-[-100%] -z-[0]">

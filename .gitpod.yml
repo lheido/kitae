@@ -2,7 +2,7 @@ tasks:
   - name: install
     init: npm install && gp sync-done install
   - name: kitae-designer
-    init: gp sync-await install
+    init: gp sync-await install && gp env > ./packages/kitae-designer/.env
     command: npm run designer:dev
 
 vscode:

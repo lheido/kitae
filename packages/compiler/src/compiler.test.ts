@@ -21,13 +21,13 @@ const ast = {
                 },
                 {
                   type: "button",
-                  className: 'flex p-2 bg-teal-500',
+                  className: "flex p-2 bg-teal-500",
                   children: [
                     {
                       type: "text",
                       content: "Button amet",
                     },
-                  ]
+                  ],
                 },
                 {
                   type: "container",
@@ -44,8 +44,8 @@ const ast = {
           ],
         },
       ],
-    }
-  }
+    },
+  },
 };
 
 describe("compiler", () => {

@@ -1,0 +1,15 @@
+template: |
+  <<%= it.props.semantic %>>
+    <%= it.props.children %>
+  </<%= it.props.semantic %>>
+props:
+  semantic:
+    default: "div"
+    options:
+      - value: "div"
+      - value: "section"
+      - value: "aside"
+      - value: "main"
+      - value: "header"
+      - value: "footer"
+      - value: "nav"

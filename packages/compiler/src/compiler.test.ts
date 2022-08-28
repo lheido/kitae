@@ -14,7 +14,6 @@ const ast: KitaeAST = {
           children: [
             {
               type: "paragraph",
-              semantic: "p",
               children: [
                 {
                   type: "text",
@@ -50,10 +49,23 @@ const ast: KitaeAST = {
 };
 
 describe("compiler", () => {
+  let result: any;
+
+  beforeEach(() => {
+    result = compile(ast);
+  });
+
   it("should compile the ast to a set of files", async () => {
-    const result = compile(ast);
     expect(result.length).toEqual(1);
   });
 
-  describe("Page number 1", () => {});
+  describe(ast.refs.page_1.label, () => {
+    it("shouls have a react component ready filename", () => {
+      expect(result[0].filename).toEqual("PageNumber1.tsx");
+    });
+
+    it("should have a nice compiled file content", () => {
+      console.log(result[0].content);
+    });
+  });
 });

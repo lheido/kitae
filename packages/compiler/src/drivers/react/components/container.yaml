@@ -1,5 +1,6 @@
+label: Container
 template: |
-  <<%= it.props.semantic %>>
+  <<%= it.props.semantic %><% if (it.props.className) { %> className="<%= it.props.className %>"<% } %>>
     <%= it.props.children %>
   </<%= it.props.semantic %>>
 props:
@@ -13,3 +14,5 @@ props:
       - value: "header"
       - value: "footer"
       - value: "nav"
+      - value: "p"
+      - value: "span"

@@ -1,0 +1,6 @@
+template: |
+  <button>
+    <%= it.props.children %>
+  </button>
+props:
+  content: string

@@ -1,4 +1,5 @@
-template: |
-  <p>
-    <%= it.props.children %>
-  </p>>
+label: Paragraph
+extend: "container"
+props:
+  semantic:
+    default: "p"

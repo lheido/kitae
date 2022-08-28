@@ -5,7 +5,7 @@ export function compile(ast: KitaeAST): any {
   return ast.pages
     .map(({ id }) => {
       const driver = drivers.get(ast.refs[id].driver);
-      return driver.compile(ast);
+      return driver.compile(ast.refs[id]);
     })
     .flat();
 }

@@ -1,7 +1,24 @@
-import { Driver } from "../driver.model";
+import { render } from "eta";
 
-export class ReactDriver implements Driver {
-  typeMatch(type: string): boolean {
-    throw new Error("Method not implemented.");
-  }
+export const template = `
+const <%= it.componentName %> = (props) => {
+  return (
+    <%= it.renderedContent  %>
+  )
+}
+
+export default <%= it.componentName %>;
+`;
+
+export function compile(ast: any): any {
+  // react driver use jsx instead of template property if possible.
+  return [
+    {
+      filename: "LoremIpsum.tsx",
+      content: render(template, {
+        componentName: ast.label,
+        renderedContent: "",
+      }),
+    },
+  ];
 }

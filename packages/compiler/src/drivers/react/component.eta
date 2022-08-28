@@ -1,8 +1,0 @@
-const <%= it.componentName %> = (props) => {
-  return (
-    <%= it.renderedContent  %>
-  )
-}
-
-export default <%= it.componentName %>;
-`

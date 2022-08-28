@@ -1,6 +1,3 @@
-import { ReactDriver } from "./react/react.driver";
+import * as react from "./react/react.driver";
 
-/**
- * The react driver is also the fallback driver and should be the last driver in the list below.
- */
-export const drivers = [ReactDriver];
+export const drivers = new Map([["react", react]]);

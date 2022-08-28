@@ -1,10 +1,11 @@
 import { compile } from "./compiler";
+import { KitaeAST } from "./model";
 
-const ast = {
-  pages: [{ label: "Page number 1", id: "page_1" }],
+const ast: KitaeAST = {
+  pages: [{ id: "page_1" }],
   refs: {
     page_1: {
-      type: "component",
+      label: "Page number 1",
       driver: "react",
       template: [
         {
@@ -50,7 +51,9 @@ const ast = {
 
 describe("compiler", () => {
   it("should compile the ast to a set of files", async () => {
-    const result = compile(ast.refs.page_1);
-    expect(result.files.length).toEqual(1);
+    const result = compile(ast);
+    expect(result.length).toEqual(1);
   });
+
+  describe("Page number 1", () => {});
 });

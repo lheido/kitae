@@ -48,11 +48,29 @@ const ast: KitaeAST = {
   },
 };
 
+const USE_PRETTIER = true;
+
+const expectedPage1ContentPrettier = `const PageNumber1 = (props) => {
+  return (
+    <div className="flex gap-1">
+      <p>
+        Lorem ipsum<button className="flex p-2 bg-teal-500">Button amet</button>
+        <span>Lorem ipsum</span>
+      </p>
+    </div>
+  );
+};
+
+export default PageNumber1;
+`;
+
 describe("compiler", () => {
   let result: any;
 
   beforeEach(() => {
-    result = compile(ast);
+    console.time("compile time");
+    result = compile(ast, USE_PRETTIER);
+    console.timeEnd("compile time");
   });
 
   it("should compile the ast to a set of files", async () => {
@@ -64,8 +82,8 @@ describe("compiler", () => {
       expect(result[0].filename).toEqual("PageNumber1.tsx");
     });
 
-    it("should have a nice compiled file content", () => {
-      console.log(result[0].content);
+    it("should have a nice compiled file content using prettier", () => {
+      expect(result[0].content).toBe(expectedPage1ContentPrettier);
     });
   });
 });

@@ -1,6 +1,6 @@
 label: Container
 template: |
-  <<%= it.props.semantic %><% if (it.props.className) { %> className="<%= it.props.className %>"<% } %>>
+  <<%= it.props.semantic %><%~ include('className', it.props) %>>
     <%= it.props.children %>
   </<%= it.props.semantic %>>
 props:

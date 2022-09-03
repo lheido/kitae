@@ -1,9 +1,9 @@
 tasks:
   - name: install
     init: npm install && gp sync-done install
-  - name: kitae-designer
-    init: gp sync-await install && gp env > ./packages/designer/front/.env
-    command: npm run designer:front:dev
+  - name: kitae
+    init: gp sync-await install && gp env > ./apps/kitae/.env
+    command: npm run kitae:dev
 
 vscode:
   extensions:

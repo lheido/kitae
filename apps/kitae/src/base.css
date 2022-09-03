@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #2b2b2b;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+html {
+  height: 100%;
+  display: flex;
+}
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(117.72deg, #2b2b2b 10.23%, #151515 88.95%);
+}
+
+@layer utilities {
+  .kitae-gradient {
+    @apply relative overflow-hidden;
+    @apply before:opacity-0 hover:before:opacity-100;
+    @apply before:transition-all before:duration-500;
+    @apply before:block before:absolute;
+    /* linear-gradient(150.56deg, kitae-start 6.39%, kitae-end 91.72%); */
+    @apply before:bg-gradient-to-r before:from-kitae-start before:to-kitae-end before:inset-0;
+  }
+}

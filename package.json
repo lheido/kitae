@@ -1,9 +1,10 @@
 {
   "name": "kitae-workspace",
   "scripts": {
-    "designer:front:dev": "npm run dev --workspace=packages/designer/front"
+    "kitae:dev": "npm run dev --workspace=apps/kitae"
   },
   "workspaces": [
+    "apps/kitae",
     "packages/designer/front",
     "packages/designer/server",
     "packages/compiler"

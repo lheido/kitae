@@ -1,0 +1,14 @@
+---
+import { supabase } from "../features/supabase";
+import Layout from "../layouts/Layout.astro";
+console.log(Astro.request.headers.get("cookie")?.split(";"));
+// const user = supabase.auth.api.getUs(Astro.request);
+// console.log(user);
+// if (!user) {
+//   return Astro.redirect("/login");
+// }
+---
+
+<Layout title="Kitae | Home">
+  <main>Home</main>
+</Layout>

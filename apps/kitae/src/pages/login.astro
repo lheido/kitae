@@ -1,0 +1,39 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { DecoLeft } from "../components/DecoLeft";
+import { DecoRight } from "../components/DecoRight";
+import { GitlabIcon } from "../components/GitlabIcon";
+---
+
+<Layout title="Kitae | Login">
+  <div class="absolute top-[25%] left-[50%] translate-x-[-100%] -z-[0]">
+    <DecoLeft client:only="react" />
+  </div>
+  <div class="absolute top-[42%] right-[50%] translate-x-[100%] -z-[0]">
+    <DecoRight client:only="react" />
+  </div>
+  <main>
+    <div
+      class="relative p-1 bg-gradient-to-r from-kitae-start to-kitae-end rounded-2xl w-[339px] h-[399px] flex"
+    >
+      <div
+        class="flex flex-col justify-center items-center gap-11 bg-neutral-900 rounded-2xl flex-1"
+      >
+        <div class="flex flex-col items-center gap-2">
+          <h1 class="text-4xl font-extralight">Log in to Kitae</h1>
+          <p>いらっしゃいませ</p>
+        </div>
+        <ul class="flex flex-col gap-3">
+          <li>
+            <button
+              class="relative flex flex-start gap-2 p-2 w-full rounded bg-neutral-700 kitae-gradient"
+            >
+              <span class="relative"><GitlabIcon /></span>
+              <span class="relative">Continue with Gitlab</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</Layout>

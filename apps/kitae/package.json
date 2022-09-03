@@ -1,0 +1,25 @@
+{
+  "name": "@example/basics",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "node": "astro build && node server.mjs"
+  },
+  "dependencies": {
+    "@astrojs/node": "^1.0.1",
+    "@supabase/supabase-js": "^1.35.6",
+    "astro": "^1.1.5",
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "@astrojs/react": "^1.1.1",
+    "@astrojs/tailwind": "^1.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}

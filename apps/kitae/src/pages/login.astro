@@ -26,6 +26,7 @@ import { GitlabIcon } from "../components/GitlabIcon";
         <ul class="flex flex-col gap-3">
           <li>
             <button
+              id="gitlab-login-btn"
               class="relative flex flex-start gap-2 p-2 w-full rounded bg-neutral-700 kitae-gradient"
             >
               <span class="relative"><GitlabIcon /></span>
@@ -37,3 +38,25 @@ import { GitlabIcon } from "../components/GitlabIcon";
     </div>
   </main>
 </Layout>
+
+<script>
+  import { supabase } from "../features/supabase";
+  console.log("init");
+  const gitlabLoginBtn = document.querySelector("#gitlab-login-btn");
+  if (gitlabLoginBtn) {
+    gitlabLoginBtn.addEventListener("click", async (e) => {
+      try {
+        console.log("login", `${window.location.origin}/api/auth`);
+        const { error } = await supabase.auth.signIn(
+          {
+            provider: "gitlab",
+          },
+          { redirectTo: `${window.location.origin}/api/auth-redirect` }
+        );
+        if (error) throw error;
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  }
+</script>

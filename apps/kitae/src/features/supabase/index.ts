@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 export const supabase = createClient(
-  import.meta.env.KITAE_SUPABASE_URL,
-  import.meta.env.KITAE_SUPABASE_ANON_KEY
+  import.meta.env.PUBLIC_KITAE_SUPABASE_URL,
+  import.meta.env.PUBLIC_KITAE_SUPABASE_ANON_KEY,
+  { persistSession: false }
 );

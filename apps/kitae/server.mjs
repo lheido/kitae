@@ -1,8 +1,11 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import { handler as ssrHandler } from "./dist/server/entry.mjs";
 
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
 app.use(express.static("dist/client/"));
 app.use(ssrHandler);
 
-app.listen(8080);
+app.listen(3000);

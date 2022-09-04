@@ -1,22 +1,4 @@
 ---
-// import { supabase } from "../../features/supabase";
-
-// Astro.redirect("/login");
-
-// supabase.auth.api.setAuthCookie(Astro.request);
-
-// export async function post(args: any): Promise<Response> {
-//   const response = new Response(null, {
-//     status: 302,
-//     headers: { Location: "/login" },
-//   });
-//   console.log(
-//     args.request,
-//     supabase.auth.api.getAuthCookieString(args.request, response)
-//   );
-//   supabase.auth.api.setAuthCookie(args.request, response);
-//   return response;
-// }
 ---
 
 <p>Lorem</p>
@@ -24,12 +6,14 @@
 <script>
   import { supabase } from "../../features/supabase";
   const session = await supabase.auth.getSessionFromUrl();
-  console.log(session);
   await fetch("/api/auth", {
     method: "POST",
     headers: {
       "Content-type": "application/json; charset=UTF-8",
     },
     body: JSON.stringify({ event: "SIGNED_IN", session }),
+    credentials: "same-origin",
   });
+  console.log("redirect to home");
+  location.replace("/");
 </script>

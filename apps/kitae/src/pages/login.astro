@@ -41,12 +41,10 @@ import { GitlabIcon } from "../components/GitlabIcon";
 
 <script>
   import { supabase } from "../features/supabase";
-  console.log("init");
   const gitlabLoginBtn = document.querySelector("#gitlab-login-btn");
   if (gitlabLoginBtn) {
     gitlabLoginBtn.addEventListener("click", async (e) => {
       try {
-        console.log("login", `${window.location.origin}/api/auth`);
         const { error } = await supabase.auth.signIn(
           {
             provider: "gitlab",

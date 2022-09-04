@@ -10,5 +10,9 @@ console.log(Astro.request.headers.get("cookie")?.split(";"));
 ---
 
 <Layout title="Kitae | Home">
-  <main>Home</main>
+  <main>
+    <a href="/login" class="relative p-2 rounded bg-neutral-700 kitae-gradient">
+      <span class="relative">Login</span>
+    </a>
+  </main>
 </Layout>

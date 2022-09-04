@@ -43,7 +43,7 @@ import { GitlabIcon } from "../components/GitlabIcon";
   import { supabase } from "../features/supabase";
   const gitlabLoginBtn = document.querySelector("#gitlab-login-btn");
   if (gitlabLoginBtn) {
-    gitlabLoginBtn.addEventListener("click", async (e) => {
+    gitlabLoginBtn.addEventListener("click", async () => {
       try {
         const { error } = await supabase.auth.signIn(
           {

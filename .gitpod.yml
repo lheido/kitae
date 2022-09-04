@@ -12,3 +12,7 @@ vscode:
     - dbaeumer.vscode-eslint
     - bradlc.vscode-tailwindcss
     - csstools.postcss
+
+ports:
+  - port: 3000
+    onOpen: ignore

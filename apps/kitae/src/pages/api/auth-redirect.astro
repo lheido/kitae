@@ -5,15 +5,16 @@
 
 <script>
   import { supabase } from "../../features/supabase";
+  console.log("lorem ipsum");
   const session = await supabase.auth.getSessionFromUrl();
   await fetch("/api/auth", {
     method: "POST",
     headers: {
       "Content-type": "application/json; charset=UTF-8",
     },
-    body: JSON.stringify({ event: "SIGNED_IN", session }),
+    body: JSON.stringify({ session }),
     credentials: "same-origin",
   });
-  console.log("redirect to home");
-  location.replace("/");
+  // console.log("redirect to home");
+  // location.replace("/");
 </script>

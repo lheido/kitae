@@ -25,7 +25,7 @@ import Layout from "../../layouts/Layout.astro";
     headers: {
       "Content-type": "application/json; charset=UTF-8",
     },
-    body: JSON.stringify({ session }),
+    body: JSON.stringify({ event: "SIGNED_IN", session }),
     credentials: "same-origin",
   });
   // console.log("redirect to home");

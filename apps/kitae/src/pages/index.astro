@@ -1,9 +1,23 @@
 ---
 import { supabase } from "../features/supabase";
+import cookie from "cookie";
 import Layout from "../layouts/Layout.astro";
-console.log(Astro.request.headers.get("cookie")?.split(";"));
-// const user = supabase.auth.api.getUs(Astro.request);
-// console.log(user);
+
+const parseCookies = (headers: Headers) => {
+  const cookies = headers.get("cookie");
+  return cookie.parse(cookies);
+};
+
+const session = await supabase.auth.api.getUserByCookie({
+  ...Astro.request,
+  cookies: parseCookies(Astro.request.headers),
+});
+let username;
+if (!session.error && session.user) {
+  username = session.user.user_metadata.name;
+} else {
+  console.error(session.error);
+}
 // if (!user) {
 //   return Astro.redirect("/login");
 // }
@@ -11,8 +25,17 @@ console.log(Astro.request.headers.get("cookie")?.split(";"));
 
 <Layout title="Kitae | Home">
   <main>
-    <a href="/login" class="relative p-2 rounded bg-neutral-700 kitae-gradient">
-      <span class="relative">Login</span>
-    </a>
+    {
+      session && username ? (
+        <p>Hello {username}</p>
+      ) : (
+        <a
+          href="/login"
+          class="relative p-2 rounded bg-neutral-700 kitae-gradient"
+        >
+          <span class="relative">Login</span>
+        </a>
+      )
+    }
   </main>
 </Layout>

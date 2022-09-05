@@ -18,8 +18,7 @@ import Layout from "../../layouts/Layout.astro";
 
 <script>
   import { supabase } from "../../features/supabase";
-  console.log("lorem ipsum");
-  const session = await supabase.auth.getSessionFromUrl();
+  const { data: session } = await supabase.auth.getSessionFromUrl();
   await fetch("/api/auth", {
     method: "POST",
     headers: {
@@ -28,6 +27,5 @@ import Layout from "../../layouts/Layout.astro";
     body: JSON.stringify({ event: "SIGNED_IN", session }),
     credentials: "same-origin",
   });
-  // console.log("redirect to home");
-  // location.replace("/");
+  location.replace("/");
 </script>

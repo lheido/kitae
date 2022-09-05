@@ -3,11 +3,6 @@ import { supabase } from "../../features/supabase";
 export class ResponseProxy {
   constructor(public res: Response) {}
 
-  get headers() {
-    console.log(JSON.parse(this.res.headers.toString()));
-    return JSON.parse(this.res.headers.toString());
-  }
-
   setHeader(name: string, value: string) {
     this.res.headers.set(name, value);
     return this;
@@ -40,9 +35,12 @@ export async function post({ request }: { request: Request }) {
     },
   });
   const proxy = new ResponseProxy(res);
-  supabase.auth.api.setAuthCookie(
-    { ...request, body: await request.json() },
-    proxy
-  );
+  const headers: any = {};
+  request.headers.forEach((value, key) => {
+    headers[key] = value;
+  });
+  const req = { ...request, body: await request.json(), headers };
+  supabase.auth.api.setAuthCookie(req, proxy);
+  console.log(req.body);
   return proxy.res;
 }

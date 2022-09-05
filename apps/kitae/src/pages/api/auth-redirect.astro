@@ -1,7 +1,20 @@
 ---
+import Layout from "../../layouts/Layout.astro";
 ---
 
-<p>Lorem</p>
+<Layout title="Kitae | Home">
+  <main>
+    <div
+      class="relative p-1 bg-gradient-to-r from-kitae-start to-kitae-end rounded-full w-[200px] h-[200px] flex"
+    >
+      <div
+        class="flex flex-col justify-center items-center gap-11 bg-neutral-900 rounded-full flex-1"
+      >
+        <p>Connecting</p>
+      </div>
+    </div>
+  </main>
+</Layout>
 
 <script>
   import { supabase } from "../../features/supabase";

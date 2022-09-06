@@ -5,12 +5,13 @@ import Layout from "../layouts/Layout.astro";
 
 const parseCookies = (headers: Headers) => {
   const cookies = headers.get("cookie");
-  return cookie.parse(cookies);
+  return cookies ? cookie.parse(cookies) : {};
 };
-
+const cookies = parseCookies(Astro.request.headers);
+console.log(Object.keys(cookies));
 const session = await supabase.auth.api.getUserByCookie({
   ...Astro.request,
-  cookies: parseCookies(Astro.request.headers),
+  cookies,
 });
 let username;
 if (!session.error && session.user) {

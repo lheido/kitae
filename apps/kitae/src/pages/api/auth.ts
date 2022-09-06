@@ -41,6 +41,5 @@ export async function post({ request }: { request: Request }) {
   });
   const req = { ...request, body: await request.json(), headers };
   supabase.auth.api.setAuthCookie(req, proxy);
-  console.log(req.body);
   return proxy.res;
 }

@@ -1,3 +1,4 @@
+import { serialize } from "cookie";
 import { supabase } from "../../features/supabase";
 
 export class ResponseProxy {
@@ -39,7 +40,17 @@ export async function post({ request }: { request: Request }) {
   request.headers.forEach((value, key) => {
     headers[key] = value;
   });
-  const req = { ...request, body: await request.json(), headers };
+  const body = await request.json();
+  const req = { ...request, body, headers };
   supabase.auth.api.setAuthCookie(req, proxy);
+  // proxy.res.headers.append(
+  //   "Set-Cookie",
+  //   serialize("kitae-refresh-token", body.session.refresh_token, {
+  //     domain: ".gitpod.io",
+  //     httpOnly: true,
+  //     sameSite: "lax",
+  //     maxAge: 360000,
+  //   })
+  // );
   return proxy.res;
 }

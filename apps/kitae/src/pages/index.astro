@@ -1,42 +1,19 @@
 ---
-import { supabase } from "../features/supabase";
-import cookie from "cookie";
+import { getUserByCookie } from "../features/supabase";
 import Layout from "../layouts/Layout.astro";
 
-const parseCookies = (headers: Headers) => {
-  const cookies = headers.get("cookie");
-  return cookies ? cookie.parse(cookies) : {};
-};
-const cookies = parseCookies(Astro.request.headers);
-console.log(Object.keys(cookies));
-const session = await supabase.auth.api.getUserByCookie({
-  ...Astro.request,
-  cookies,
-});
-let username;
-if (!session.error && session.user) {
-  username = session.user.user_metadata.name;
-} else {
-  console.error(session.error);
+// How to get a user object example:
+let user;
+try {
+  user = await getUserByCookie(Astro.request, Astro.response);
+} catch (e) {
+  console.error(e);
+  return Astro.redirect("/login");
 }
-// if (!user) {
-//   return Astro.redirect("/login");
-// }
 ---
 
 <Layout title="Kitae | Home">
   <main>
-    {
-      session && username ? (
-        <p>Hello {username}</p>
-      ) : (
-        <a
-          href="/login"
-          class="relative p-2 rounded bg-neutral-700 kitae-gradient"
-        >
-          <span class="relative">Login</span>
-        </a>
-      )
-    }
+    <p>Hello {user.user_metadata.name}</p>
   </main>
 </Layout>

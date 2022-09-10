@@ -49,7 +49,10 @@ import { GitlabIcon } from "../components/GitlabIcon";
           {
             provider: "gitlab",
           },
-          { redirectTo: `${window.location.origin}/api/auth-redirect` }
+          {
+            redirectTo: `${window.location.origin}/api/auth-redirect`,
+            scopes: "api",
+          }
         );
         if (error) throw error;
       } catch (error) {

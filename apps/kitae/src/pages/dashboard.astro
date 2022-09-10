@@ -1,14 +1,23 @@
 ---
-import { getUserByCookie } from "../features/supabase";
+import { getSessionByCookie } from "../features/supabase";
 import Layout from "../layouts/Layout.astro";
 import { Debug } from "astro/components";
+import { createAPi } from "../features/gitlab";
 
-let user;
+let session;
 try {
-  user = await getUserByCookie(Astro.request, Astro.response);
+  session = await getSessionByCookie(Astro.request, Astro.response);
 } catch (e) {
   console.error(e);
   return Astro.redirect("/login");
+}
+
+const api = createAPi(session.provider_token as string);
+let result = {};
+try {
+  result = await api.projects(session.user!.user_metadata.sub);
+} catch (error) {
+  result = { error };
 }
 ---
 
@@ -19,10 +28,10 @@ try {
         <div class="flex gap-2">
           <img
             class="w-6 h-6"
-            src={user.user_metadata.avatar_url}
+            src={session.user!.user_metadata.avatar_url}
             alt="User avatar"
           />
-          <span>{user.user_metadata.name}</span>
+          <span>{session.user!.user_metadata.name}</span>
         </div>
       </div>
     </div>
@@ -36,7 +45,18 @@ try {
         tempora adipisci, porro quidem minus facere quis nobis voluptates, sit
         ipsa molestiae autem maxime unde sequi corrupti rem quod quisquam!
       </p>
-      <Debug {user} />
+      {
+        Array.isArray(result) ? (
+          <ul class="">
+            {result.map((project) => (
+              <li>{project.name}</li>
+            ))}
+          </ul>
+        ) : (
+          <Debug {result} />
+        )
+      }
+      <!-- <Debug {session} /> -->
     </div>
   </main>
 </Layout>

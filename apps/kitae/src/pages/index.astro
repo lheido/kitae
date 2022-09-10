@@ -1,11 +1,9 @@
 ---
-import { getUserByCookie } from "../features/supabase";
+import { getSessionByCookie } from "../features/supabase";
 import Layout from "../layouts/Layout.astro";
 
-// How to get a user object example:
-let user;
 try {
-  user = await getUserByCookie(Astro.request, Astro.response);
+  await getSessionByCookie(Astro.request, Astro.response);
   return Astro.redirect("/dashboard");
 } catch (e) {
   // @TODO: add logs.

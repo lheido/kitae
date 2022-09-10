@@ -22,6 +22,7 @@ export const cookieOptions: CookieOptions = {
 
 export const ACCESS_TOKEN_NAME = `${cookieOptions.name}-access-token`;
 export const REFRESH_TOKEN_NAME = `${cookieOptions.name}-refresh-token`;
+export const PROVIDER_TOKEN_NAME = `${cookieOptions.name}-provider-token`;
 
 export const supabase = createClient(
   import.meta.env.PUBLIC_KITAE_SUPABASE_URL,
@@ -47,7 +48,7 @@ export function setAuthCookie(body: AuthRequestBody, res: ResponseInit): void {
       "Wrong session object: missing access_token or refresh_token properties"
     );
   }
-  [
+  const cookies = [
     {
       name: ACCESS_TOKEN_NAME,
       value: body.session.access_token,
@@ -70,7 +71,21 @@ export function setAuthCookie(body: AuthRequestBody, res: ResponseInit): void {
         maxAge: cookieOptions.lifetime,
       },
     },
-  ]
+  ];
+  if (body.session.provider_token) {
+    cookies.push({
+      name: PROVIDER_TOKEN_NAME,
+      value: body.session.provider_token,
+      options: {
+        domain: cookieOptions.domain,
+        sameSite: cookieOptions.sameSite,
+        path: cookieOptions.path,
+        httpOnly: true,
+        maxAge: cookieOptions.lifetime,
+      },
+    });
+  }
+  cookies
     .map((c) => serialize(c.name, c.value, c.options as any))
     .forEach((cookie) => (res.headers as Headers).append("Set-Cookie", cookie));
 }
@@ -95,13 +110,14 @@ export async function refreshAccessToken(
   }
 }
 
-export async function getUserByCookie(
+export async function getSessionByCookie(
   req: Request,
   res: ResponseInit
-): Promise<User> {
+): Promise<Session> {
   const cookies = parse(req.headers.get("cookie") ?? "");
   const access_token = cookies[ACCESS_TOKEN_NAME];
   const refresh_token = cookies[REFRESH_TOKEN_NAME];
+  const provider_token = cookies[PROVIDER_TOKEN_NAME];
   if (!access_token) {
     throw new Error("No access_token cookie found.");
   }
@@ -111,7 +127,13 @@ export async function getUserByCookie(
   if (getUserError) {
     if (!refresh_token) throw new Error("No refresh_token cookie found.");
     const { data } = await refreshAccessToken(req, res);
-    return data.user as User;
+    return data;
   }
-  return user as User;
+  return {
+    access_token,
+    user,
+    refresh_token,
+    provider_token,
+    token_type: "bearer",
+  };
 }

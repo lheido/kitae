@@ -6,14 +6,19 @@ import Layout from "../layouts/Layout.astro";
 let user;
 try {
   user = await getUserByCookie(Astro.request, Astro.response);
+  return Astro.redirect("/dashboard");
 } catch (e) {
-  console.error(e);
+  // @TODO: add logs.
   return Astro.redirect("/login");
 }
 ---
 
 <Layout title="Kitae | Home">
   <main>
-    <p>Hello {user.user_metadata.name}</p>
+    <p>
+      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Fuga sit
+      accusantium iure sed neque. Odit iste esse quas at quis harum, quisquam
+      earum dolorem cupiditate? Consequatur esse quasi quis at?
+    </p>
   </main>
 </Layout>

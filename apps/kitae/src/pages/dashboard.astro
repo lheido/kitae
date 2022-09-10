@@ -1,0 +1,31 @@
+---
+import { getUserByCookie } from "../features/supabase";
+import Layout from "../layouts/Layout.astro";
+import { Debug } from "astro/components";
+
+let user;
+try {
+  user = await getUserByCookie(Astro.request, Astro.response);
+} catch (e) {
+  console.error(e);
+  return Astro.redirect("/login");
+}
+---
+
+<Layout title="Dashboard">
+  <header class="p-4">
+    <div class="flex gap-2">
+      <img
+        class="w-6 h-6"
+        src={user.user_metadata.avatar_url}
+        alt="User avatar"
+      />
+      <span>{user.user_metadata.name}</span>
+    </div>
+  </header>
+  <main>
+    <div class="w-10/12 m-auto">
+      <Debug {user} />
+    </div>
+  </main>
+</Layout>

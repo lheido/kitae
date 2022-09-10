@@ -13,18 +13,29 @@ try {
 ---
 
 <Layout title="Dashboard">
-  <header class="p-4">
-    <div class="flex gap-2">
-      <img
-        class="w-6 h-6"
-        src={user.user_metadata.avatar_url}
-        alt="User avatar"
-      />
-      <span>{user.user_metadata.name}</span>
+  <header class="pb-1 bg-gradient-to-r from-kitae-start to-kitae-end">
+    <div class="p-4 h-80 bg-kitae-container">
+      <div class="flex justify-end">
+        <div class="flex gap-2">
+          <img
+            class="w-6 h-6"
+            src={user.user_metadata.avatar_url}
+            alt="User avatar"
+          />
+          <span>{user.user_metadata.name}</span>
+        </div>
+      </div>
     </div>
   </header>
-  <main>
-    <div class="w-10/12 m-auto">
+  <main
+    class="w-10/12 m-auto -mt-24 rounded-lg p-1 bg-gradient-to-r from-kitae-start to-kitae-end"
+  >
+    <div class="bg-kitae-container rounded-lg p-4">
+      <p>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Pariatur, in
+        tempora adipisci, porro quidem minus facere quis nobis voluptates, sit
+        ipsa molestiae autem maxime unde sequi corrupti rem quod quisquam!
+      </p>
       <Debug {user} />
     </div>
   </main>

@@ -2,7 +2,7 @@
 import { getSessionByCookie } from "../features/supabase";
 import Layout from "../layouts/Layout.astro";
 import { Debug } from "astro/components";
-import { createAPi } from "../features/gitlab";
+import { getUserProjects } from "../features/gitlab";
 
 let session;
 try {
@@ -12,10 +12,9 @@ try {
   return Astro.redirect("/login");
 }
 
-const api = createAPi(session.provider_token as string);
 let result = {};
 try {
-  result = await api.projects(session.user!.user_metadata.sub);
+  result = await getUserProjects(session);
 } catch (error) {
   result = { error };
 }
@@ -47,16 +46,22 @@ try {
       </p>
       {
         Array.isArray(result) ? (
-          <ul class="">
+          <ul class="flex flex-col gap-2">
             {result.map((project) => (
-              <li>{project.name}</li>
+              <li class="bg-kitae-panel-bg flex flex-col gap-1 p-2 rounded-lg">
+                <span>
+                  <span class="opacity-50">{project.namespace.name} /</span>
+                  <span>{project.name}</span>
+                </span>
+                <span class="opacity-50">{project.web_url}</span>
+              </li>
             ))}
           </ul>
         ) : (
           <Debug {result} />
         )
       }
-      <!-- <Debug {session} /> -->
+      <!-- <Debug {result} /> -->
     </div>
   </main>
 </Layout>

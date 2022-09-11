@@ -12,5 +12,9 @@ export async function getUserProjects(
 ) {
   if (!session.provider_token) throw new Error("Provider token not found.");
   const api = createApi(session.provider_token);
-  return api.all({ membership: true, ...options });
+  return api.all({
+    membership: true,
+    order_by: "last_activity_at",
+    ...options,
+  });
 }

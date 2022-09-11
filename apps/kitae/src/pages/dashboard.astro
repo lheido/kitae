@@ -16,6 +16,7 @@ let result = {};
 try {
   result = await getUserProjects(session);
 } catch (error) {
+  // @TODO: try refreshToken if the provider_token was expired.
   result = { error };
 }
 ---

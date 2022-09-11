@@ -45,6 +45,12 @@ try {
         tempora adipisci, porro quidem minus facere quis nobis voluptates, sit
         ipsa molestiae autem maxime unde sequi corrupti rem quod quisquam!
       </p>
+      <button
+        id="start-container-btn"
+        class="relative flex flex-start gap-2 p-2 w-full rounded bg-neutral-700 kitae-gradient mb-9 mt-9"
+      >
+        <span class="relative">Test create and start container</span>
+      </button>
       {
         Array.isArray(result) ? (
           <ul class="flex flex-col gap-2">
@@ -66,3 +72,15 @@ try {
     </div>
   </main>
 </Layout>
+
+<script>
+  const btn = document.getElementById("start-container-btn");
+  if (btn) {
+    btn.addEventListener("click", async () => {
+      const result = await fetch("/api/create-instance", {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log(result);
+    });
+  }
+</script>

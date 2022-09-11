@@ -15,4 +15,17 @@ export default defineConfig({
   ],
   output: "server",
   adapter: node(),
+  vite: {
+    // Fix dev build issue after installing dockerode
+    build: {
+      target: "esnext",
+    },
+    optimizeDeps: {
+      exclude: ["cpu-features", "ssh2"],
+      esbuildOptions: {
+        target: "esnext",
+        supported: { bigint: true },
+      },
+    },
+  },
 });

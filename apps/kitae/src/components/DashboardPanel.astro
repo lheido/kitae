@@ -1,0 +1,15 @@
+---
+const { title } = Astro.props;
+---
+
+<section class="bg-kitae-panel-bg rounded-lg">
+  <div class="flex items-center gap-2 p-2">
+    <span class="text-kitae-icon">
+      <slot name="icon" />
+    </span>
+    <h1 class="text-kitae-text">{title}</h1>
+  </div>
+  <div class="text-kitae-text">
+    <slot />
+  </div>
+</section>

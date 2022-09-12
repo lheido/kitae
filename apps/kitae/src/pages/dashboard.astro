@@ -1,8 +1,11 @@
 ---
 import { getSessionByCookie } from "../features/supabase";
-import Layout from "../layouts/Layout.astro";
 import { Debug } from "astro/components";
 import { getUserProjects } from "../features/gitlab";
+import Layout from "../layouts/Layout.astro";
+import DashboardPanel from "../components/DashboardPanel.astro";
+import { CreateProject } from "../components/icons/CreateProject";
+import { Button } from "../components/Button";
 
 let session;
 try {
@@ -12,13 +15,13 @@ try {
   return Astro.redirect("/login");
 }
 
-let result = {};
-try {
-  result = await getUserProjects(session);
-} catch (error) {
-  // @TODO: try refreshToken if the provider_token was expired.
-  result = { error };
-}
+// let result = {};
+// try {
+//   result = await getUserProjects(session);
+// } catch (error) {
+//   // @TODO: try refreshToken if the provider_token was expired.
+//   result = { error };
+// }
 ---
 
 <Layout title="Dashboard">
@@ -39,19 +42,22 @@ try {
   <main
     class="w-10/12 m-auto -mt-24 rounded-lg p-1 bg-gradient-to-r from-kitae-start to-kitae-end"
   >
-    <div class="bg-kitae-container rounded-lg p-4">
-      <p>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Pariatur, in
-        tempora adipisci, porro quidem minus facere quis nobis voluptates, sit
-        ipsa molestiae autem maxime unde sequi corrupti rem quod quisquam!
-      </p>
-      <button
+    <div class="bg-kitae-container rounded-lg p-2">
+      <DashboardPanel title="Create new project">
+        <CreateProject slot="icon" />
+        <ul class="flex flex-wrap p-2 gap-2">
+          <li>
+            <Button data-new-project="blank">Blank project</Button>
+          </li>
+        </ul>
+      </DashboardPanel>
+      <!-- <button
         id="start-container-btn"
         class="relative flex flex-start gap-2 p-2 w-full rounded bg-neutral-700 kitae-gradient mb-9 mt-9"
       >
         <span class="relative">Test create and start container</span>
-      </button>
-      {
+      </button> -->
+      <!-- {
         Array.isArray(result) ? (
           <ul class="flex flex-col gap-2">
             {result.map((project) => (
@@ -67,20 +73,26 @@ try {
         ) : (
           <Debug {result} />
         )
-      }
+      } -->
       <!-- <Debug {result} /> -->
     </div>
   </main>
 </Layout>
 
 <script>
-  const btn = document.getElementById("start-container-btn");
-  if (btn) {
-    btn.addEventListener("click", async () => {
-      const result = await fetch("/api/create-instance", {
-        headers: { "Content-Type": "application/json" },
-      });
-      console.log(result);
+  const createNewProjectBtns = document.querySelectorAll("[data-new-project]");
+  createNewProjectBtns.forEach((button) => {
+    button.addEventListener("click", () => {
+      console.log(button.getAttribute("data-new-project"));
     });
-  }
+  });
+  // const btn = document.getElementById("start-container-btn");
+  // if (btn) {
+  //   btn.addEventListener("click", async () => {
+  //     const result = await fetch("/api/create-instance", {
+  //       headers: { "Content-Type": "application/json" },
+  //     });
+  //     console.log(result);
+  //   });
+  // }
 </script>

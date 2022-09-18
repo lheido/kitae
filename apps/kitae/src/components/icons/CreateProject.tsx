@@ -1,11 +1,14 @@
 export const CreateProject = () => (
   <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
-    className="fill-current"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className="w-6 h-6"
   >
-    <path d="M20 6H12L10 4H4C2.89 4 2.01 4.89 2.01 6L2 18C2 19.11 2.89 20 4 20H20C21.11 20 22 19.11 22 18V8C22 6.89 21.11 6 20 6ZM19 14H16V17H14V14H11V12H14V9H16V12H19V14Z" />
+    <path
+      fillRule="evenodd"
+      d="M19.5 21a3 3 0 003-3V9a3 3 0 00-3-3h-5.379a.75.75 0 01-.53-.22L11.47 3.66A2.25 2.25 0 009.879 3H4.5a3 3 0 00-3 3v12a3 3 0 003 3h15zm-6.75-10.5a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V10.5z"
+      clipRule="evenodd"
+    />
   </svg>
 );

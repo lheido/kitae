@@ -1,8 +1,5 @@
 ---
-import { Button } from "../components/Button";
-import DashboardPanel from "../components/DashboardPanel";
-import { CreateProject } from "../components/icons/CreateProject";
-import { Project } from "../components/icons/Project";
+import Dashboard from "../components/dashboard/Dashboard";
 import { getSessionByCookie } from "../features/supabase";
 import Layout from "../layouts/Layout.astro";
 
@@ -42,70 +39,7 @@ try {
     class="w-10/12 m-auto -mt-24 rounded-lg p-1 bg-gradient-to-r from-kitae-start to-kitae-end"
   >
     <div class="bg-kitae-container rounded-lg p-2 grid grid-cols-2 gap-2">
-      <DashboardPanel
-        client:load
-        title="Projects"
-        height={54}
-        expandedHeight={200}
-        className="h-[400px]"
-      >
-        <Project slot="icon" />
-        <ul class="flex flex-col p-2 gap-2 pb-4 pt-8">
-          <li>No projects for now.</li>
-        </ul>
-      </DashboardPanel>
-      <DashboardPanel
-        client:load
-        title="Create new project"
-        height={54}
-        expandedHeight={200}
-        className="h-[400px] flex-1"
-      >
-        <CreateProject slot="icon" />
-        <ul class="flex flex-col p-2 gap-2 pb-4 pt-8">
-          <li>
-            <p class="pb-2 pt-4 pl-1">Design system</p>
-            <ul class="flex flex-wrap gap-2">
-              <li>
-                <Button data-new-project="design-system--blank">
-                  Blank project
-                </Button>
-              </li>
-              <li>
-                <Button data-new-project="design-system--from-gitlab">
-                  From an existing Gitlab project
-                </Button>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p class="pb-2 pt-4 pl-1">Web Site</p>
-            <ul class="flex flex-wrap gap-2">
-              <li>
-                <Button data-new-project="web-site--blank">
-                  Blank project
-                </Button>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p class="pb-2 pt-4 pl-1">Web App</p>
-            <ul class="flex flex-wrap gap-2">
-              <li>
-                <Button data-new-project="web-app--blank">Blank project</Button>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p class="pb-2 pt-4 pl-1">Flutter</p>
-            <ul class="flex flex-wrap gap-2">
-              <li>
-                <Button data-new-project="flutter--blank">Blank project</Button>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </DashboardPanel>
+      <Dashboard client:load />
       <!-- <button
         id="start-container-btn"
         class="relative flex flex-start gap-2 p-2 w-full rounded bg-neutral-700 kitae-gradient mb-9 mt-9"
@@ -135,12 +69,6 @@ try {
 </Layout>
 
 <script>
-  const createNewProjectBtns = document.querySelectorAll("[data-new-project]");
-  createNewProjectBtns.forEach((button) => {
-    button.addEventListener("click", () => {
-      console.log(button.getAttribute("data-new-project"));
-    });
-  });
   // const btn = document.getElementById("start-container-btn");
   // if (btn) {
   //   btn.addEventListener("click", async () => {

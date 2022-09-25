@@ -1,5 +1,5 @@
 import { Context, useEffect, useState } from "react";
-import { interpolate } from "../features/utils/animation";
+import { interpolate } from "./utils/animation";
 
 export interface FlexibleHeaderPanelProps {
   height: number;

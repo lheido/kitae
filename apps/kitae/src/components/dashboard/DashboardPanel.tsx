@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import FlexibleHeaderPanel from "./FlexibleHeaderPanel";
+import FlexibleHeaderPanel from "../FlexibleHeaderPanel";
 
 export interface DashboardPanelProps {
   title: string;

@@ -27,7 +27,10 @@ export class ResponseProxy {
   }
 }
 
-export function buildJsonResponse(body = { ok: true }, status = 200): Response {
+export function buildJsonResponse(
+  body: any = { ok: true },
+  status = 200
+): Response {
   return new Response(JSON.stringify(body), {
     status,
     headers: {

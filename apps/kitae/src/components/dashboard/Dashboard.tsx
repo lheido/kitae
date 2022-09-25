@@ -1,9 +1,26 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { createProject, useProjects } from "../../features/projects";
 import { Button } from "../Button";
 import { CreateProject } from "../icons/CreateProject";
 import { Project } from "../icons/Project";
 import DashboardPanel from "./DashboardPanel";
 
-export default function Dashboard() {
+export const queryClient = new QueryClient({
+  logger: console,
+});
+
+export default function _Dashboard() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Dashboard />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  );
+}
+
+export function Dashboard() {
+  const { isLoading, error, data } = useProjects();
   return (
     <>
       <DashboardPanel
@@ -14,7 +31,13 @@ export default function Dashboard() {
         icon={<Project />}
       >
         <ul className="flex flex-col p-2 gap-2 pb-4 pt-8">
-          <li>No projects for now.</li>
+          <li>
+            {isLoading
+              ? "Loading projects..."
+              : data && data.data.length === 0
+              ? "No projects found."
+              : "An error occured. Try to refresh the page later."}
+          </li>
         </ul>
       </DashboardPanel>
       <DashboardPanel
@@ -29,12 +52,14 @@ export default function Dashboard() {
             <p className="pb-2 pt-4 pl-1">Design system</p>
             <ul className="flex flex-wrap gap-2">
               <li>
-                <Button data-new-project="design-system--blank">
+                <Button onClick={() => createProject("design-system--blank")}>
                   Blank project
                 </Button>
               </li>
               <li>
-                <Button data-new-project="design-system--from-gitlab">
+                <Button
+                  onClick={() => createProject("design-system--from-gitlab")}
+                >
                   From an existing Gitlab project
                 </Button>
               </li>
@@ -44,7 +69,7 @@ export default function Dashboard() {
             <p className="pb-2 pt-4 pl-1">Web Site</p>
             <ul className="flex flex-wrap gap-2">
               <li>
-                <Button data-new-project="web-site--blank">
+                <Button onClick={() => createProject("web-site--blank")}>
                   Blank project
                 </Button>
               </li>
@@ -54,7 +79,9 @@ export default function Dashboard() {
             <p className="pb-2 pt-4 pl-1">Web App</p>
             <ul className="flex flex-wrap gap-2">
               <li>
-                <Button data-new-project="web-app--blank">Blank project</Button>
+                <Button onClick={() => createProject("web-app--blank")}>
+                  Blank project
+                </Button>
               </li>
             </ul>
           </li>
@@ -62,7 +89,9 @@ export default function Dashboard() {
             <p className="pb-2 pt-4 pl-1">Flutter</p>
             <ul className="flex flex-wrap gap-2">
               <li>
-                <Button data-new-project="flutter--blank">Blank project</Button>
+                <Button onClick={() => createProject("flutter--blank")}>
+                  Blank project
+                </Button>
               </li>
             </ul>
           </li>

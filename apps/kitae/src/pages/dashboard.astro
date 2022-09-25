@@ -1,11 +1,10 @@
 ---
-import { getSessionByCookie } from "../features/supabase";
-import { Debug } from "astro/components";
-import { getUserProjects } from "../features/gitlab";
-import Layout from "../layouts/Layout.astro";
+import { Button } from "../components/Button";
 import DashboardPanel from "../components/DashboardPanel";
 import { CreateProject } from "../components/icons/CreateProject";
-import { Button } from "../components/Button";
+import { Project } from "../components/icons/Project";
+import { getSessionByCookie } from "../features/supabase";
+import Layout from "../layouts/Layout.astro";
 
 let session;
 try {
@@ -42,13 +41,25 @@ try {
   <main
     class="w-10/12 m-auto -mt-24 rounded-lg p-1 bg-gradient-to-r from-kitae-start to-kitae-end"
   >
-    <div class="bg-kitae-container rounded-lg p-2">
+    <div class="bg-kitae-container rounded-lg p-2 grid grid-cols-2 gap-2">
       <DashboardPanel
-        client:visible
+        client:load
+        title="Projects"
+        height={54}
+        expandedHeight={200}
+        className="h-[400px]"
+      >
+        <Project slot="icon" />
+        <ul class="flex flex-col p-2 gap-2 pb-4 pt-8">
+          <li>No projects for now.</li>
+        </ul>
+      </DashboardPanel>
+      <DashboardPanel
+        client:load
         title="Create new project"
         height={54}
         expandedHeight={200}
-        className="h-[400px] w-1/2"
+        className="h-[400px] flex-1"
       >
         <CreateProject slot="icon" />
         <ul class="flex flex-col p-2 gap-2 pb-4 pt-8">

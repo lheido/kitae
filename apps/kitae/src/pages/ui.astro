@@ -1,0 +1,38 @@
+---
+import { Button } from "../components/Button";
+import { GitlabIcon } from "../components/icons/GitlabIcon";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Kitae | UI Demo page">
+  <main>
+    <section class="flex flex-col gap-4 p-10">
+      <p>Buttons</p>
+      <div class="flex flex-wrap gap-4">
+        <Button.default>Default</Button.default>
+        <Button.primary>Primary</Button.primary>
+        <Button.secondary>Secondary</Button.secondary>
+      </div>
+      <div class="flex flex-wrap gap-4">
+        <Button.default>
+          <GitlabIcon />
+          <span>Default</span>
+        </Button.default>
+        <Button.primary>
+          <GitlabIcon />
+          <span>Primary</span>
+        </Button.primary>
+        <Button.secondary>
+          <GitlabIcon />
+          <span>Secondary</span>
+        </Button.secondary>
+      </div>
+      <p>Link as button</p>
+      <div class="flex flex-wrap gap-4">
+        <Button.link.default href="#">Default</Button.link.default>
+        <Button.link.primary href="#">Primary</Button.link.primary>
+        <Button.link.secondary href="#">Secondary</Button.link.secondary>
+      </div>
+    </section>
+  </main>
+</Layout>

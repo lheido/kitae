@@ -5,8 +5,8 @@ export const DecoLeft = () => {
     <svg width={width} height="206" viewBox={`0 0 ${width} 206`}>
       <defs>
         <linearGradient id="DecoLeftGradient" gradientUnits="userSpaceOnUse">
-          <stop offset="5%" stopColor="#1D8660" />
-          <stop offset="95%" stopColor="#1D6686" />
+          <stop offset="5%" className="stop-color-primary-500" />
+          <stop offset="95%" className="stop-color-secondary-500" />
         </linearGradient>
       </defs>
       <path

@@ -1,8 +1,9 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { Button } from "../components/Button";
 import { DecoLeft } from "../components/DecoLeft";
 import { DecoRight } from "../components/DecoRight";
 import { GitlabIcon } from "../components/icons/GitlabIcon";
+import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Kitae | Login">
@@ -14,10 +15,10 @@ import { GitlabIcon } from "../components/icons/GitlabIcon";
   </div>
   <main class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
     <div
-      class="relative p-1 bg-gradient-to-r from-kitae-start to-kitae-end rounded-2xl w-[339px] h-[399px] flex"
+      class="relative p-1 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl w-[339px] h-[399px] flex"
     >
       <div
-        class="flex flex-col justify-center items-center gap-11 bg-neutral-900 rounded-2xl flex-1"
+        class="flex flex-col justify-center items-center gap-11 bg-dp-1 rounded-2xl flex-1"
       >
         <div class="flex flex-col items-center gap-2">
           <h1 class="text-4xl font-extralight">Log in to Kitae</h1>
@@ -25,13 +26,10 @@ import { GitlabIcon } from "../components/icons/GitlabIcon";
         </div>
         <ul class="flex flex-col gap-3">
           <li>
-            <button
-              id="gitlab-login-btn"
-              class="relative flex flex-start gap-2 p-2 w-full rounded bg-neutral-700 kitae-gradient"
-            >
+            <Button.primary id="gitlab-login-btn">
               <span class="relative"><GitlabIcon /></span>
               <span class="relative">Continue with Gitlab</span>
-            </button>
+            </Button.primary>
           </li>
         </ul>
       </div>

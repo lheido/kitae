@@ -42,7 +42,7 @@ export const ButtonToggleGroup = ({
       role="group"
       ref={groupRef}
       aria-label={label ?? name}
-      className="flex relative bg-dp-0 p-1 rounded-lg"
+      className="flex relative bg-dp-0 p-1 gap-2 rounded-lg"
     >
       <div
         ref={inkRef}
@@ -81,7 +81,7 @@ export const ButtonToggle = ({
   return (
     <button
       type="button"
-      className="px-4 py-2"
+      className="px-4 py-2 focus-visible:outline rounded-md outline-2 focus-visible:outline-secondary-300"
       aria-pressed={pressed}
       name={name}
       onClick={clickHandler}

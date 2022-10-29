@@ -28,13 +28,13 @@ body {
   @apply bg-dp-0 text-white;
 }
 
-/* @layer utilities { */
-/* .kitae-gradient { */
-/* @apply relative overflow-hidden; */
-/* @apply before:opacity-0 hover:before:opacity-100; */
-/* @apply before:transition-all before:duration-500; */
-/* @apply before:block before:absolute; */
-/* linear-gradient(150.56deg, kitae-start 6.39%, kitae-end 91.72%); */
-/* @apply before:bg-gradient-to-r before:from-kitae-start before:to-kitae-end before:inset-0; */
-/* } */
-/* } */
+@layer utilities {
+  .kitae-gradient {
+    @apply relative overflow-hidden;
+    @apply before:opacity-0 hover:before:opacity-100;
+    @apply before:transition-all before:duration-500;
+    @apply before:block before:absolute;
+    /*linear-gradient(150.56deg, kitae-start 6.39%, kitae-end 91.72%); */
+    @apply before:bg-gradient-to-r before:from-primary-500 before:to-secondary-500 before:inset-0;
+  }
+}

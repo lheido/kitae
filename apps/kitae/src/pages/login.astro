@@ -1,5 +1,7 @@
 ---
 import { Button } from "../components/Button";
+import { Cloud1 } from "../components/deco/Cloud1";
+import { Cloud2 } from "../components/deco/Cloud2";
 import { DecoLeft } from "../components/DecoLeft";
 import { DecoRight } from "../components/DecoRight";
 import { GitlabIcon } from "../components/icons/GitlabIcon";
@@ -18,18 +20,22 @@ import Layout from "../layouts/Layout.astro";
       class="relative p-1 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl w-[339px] h-[399px] flex"
     >
       <div
-        class="flex flex-col justify-center items-center gap-11 bg-dp-1 rounded-2xl flex-1"
+        class="flex flex-col justify-center items-center gap-11 bg-dp-1 rounded-2xl flex-1 overflow-hidden relative"
       >
+        <div aria-hidden="true">
+          <Cloud1 className="w-[200px] h-auto absolute bottom-5 -left-8" />
+          <Cloud2 className="w-[110px] h-auto absolute top-1/4 -right-4" />
+        </div>
         <div class="flex flex-col items-center gap-2">
           <h1 class="text-4xl font-extralight">Log in to Kitae</h1>
           <p>いらっしゃいませ</p>
         </div>
         <ul class="flex flex-col gap-3">
           <li>
-            <Button.primary id="gitlab-login-btn">
-              <span class="relative"><GitlabIcon /></span>
-              <span class="relative">Continue with Gitlab</span>
-            </Button.primary>
+            <Button.kitae id="gitlab-login-btn">
+              <GitlabIcon />
+              <span>Continue with Gitlab</span>
+            </Button.kitae>
           </li>
         </ul>
       </div>

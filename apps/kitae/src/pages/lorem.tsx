@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Button } from "../components/Button";
 import { ButtonToggleGroup } from "../components/ButtonToggle";
+import { Cloud1 } from "../components/deco/Cloud1";
+import { Cloud2 } from "../components/deco/Cloud2";
+import { Cloud3 } from "../components/deco/Cloud3";
 import { IconButton } from "../components/IconButton";
 import { CreateProject } from "../components/icons/CreateProject";
 import { GitlabIcon } from "../components/icons/GitlabIcon";
@@ -77,6 +80,14 @@ export default function Lorem() {
             onChange={buttonToggleOnChange}
             states={buttonToggleState}
           />
+        </div>
+      </section>
+      <section className="flex flex-col gap-4 p-10">
+        <p>Decoartions</p>
+        <div className="flex flex-wrap gap-4 p-4">
+          <Cloud1 className="w-48 h-auto" />
+          <Cloud2 className="w-48 h-auto" />
+          <Cloud3 className="w-48 h-auto" />
         </div>
       </section>
     </div>

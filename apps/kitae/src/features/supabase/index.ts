@@ -15,7 +15,7 @@ import { parse, serialize } from "cookie";
 export const cookieOptions: CookieOptions = {
   name: "kitae",
   sameSite: "lax",
-  domain: ".gitpod.io",
+  domain: import.meta.env.PUBLIC_COOKIE_DOMAIN,
   path: "/",
   lifetime: 60 * 60 * 8,
 };

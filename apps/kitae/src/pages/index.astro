@@ -1,12 +1,13 @@
 ---
-import { getSessionByCookie } from "../features/supabase";
+import { getSession } from "../features/supabase";
 import Layout from "../layouts/Layout.astro";
 
 try {
-  await getSessionByCookie(Astro.request, Astro.response);
+  await getSession((Astro as any).cookies);
   return Astro.redirect("/dashboard");
 } catch (e) {
   // @TODO: add logs.
+  console.log(e);
   return Astro.redirect("/login");
 }
 ---

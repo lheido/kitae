@@ -4,6 +4,9 @@ import {
   Session,
   User,
 } from "@supabase/supabase-js";
+import type { APIContext, APIRoute } from "astro";
+import type { AstroCookies } from "astro/dist/core/cookies";
+// import type { AstroCookies } from "astro/dist/core/cookies";
 import { parse, serialize } from "cookie";
 
 /**
@@ -12,17 +15,27 @@ import { parse, serialize } from "cookie";
  * The Supabase js sdk for node js doesn't work with Astro request/response objects.
  */
 
-export const cookieOptions: CookieOptions = {
-  name: "kitae",
+export interface AppCookieOptions {
+  domain?: string;
+  expires?: Date;
+  httpOnly?: boolean;
+  maxAge?: number;
+  path?: string;
+  sameSite?: boolean | "lax" | "none" | "strict";
+  secure?: boolean;
+}
+
+export const defaultCookieOptions: AppCookieOptions = {
   sameSite: "lax",
   domain: import.meta.env.PUBLIC_COOKIE_DOMAIN,
   path: "/",
-  lifetime: 60 * 60 * 8,
+  httpOnly: true,
+  maxAge: 60 * 60 * 8,
 };
 
-export const ACCESS_TOKEN_NAME = `${cookieOptions.name}-access-token`;
-export const REFRESH_TOKEN_NAME = `${cookieOptions.name}-refresh-token`;
-export const PROVIDER_TOKEN_NAME = `${cookieOptions.name}-provider-token`;
+export const ACCESS_TOKEN_NAME = `kitae-access-token`;
+export const REFRESH_TOKEN_NAME = `kitae-refresh-token`;
+export const PROVIDER_TOKEN_NAME = `kitae-provider-token`;
 
 export const supabase = createClient(
   import.meta.env.PUBLIC_KITAE_SUPABASE_URL,
@@ -30,7 +43,7 @@ export const supabase = createClient(
   {
     persistSession: false,
     detectSessionInUrl: true,
-    cookieOptions,
+    cookieOptions: defaultCookieOptions as CookieOptions,
   }
 );
 
@@ -38,8 +51,10 @@ export interface AuthRequestBody {
   session: Session | null;
 }
 
-export function setAuthCookie(body: AuthRequestBody, res: ResponseInit): void {
-  if (!res.headers) throw new Error("No response headers found");
+export const handleAuthCookies = async (
+  body: AuthRequestBody,
+  { cookies }: APIContext
+) => {
   if (!body.session) {
     throw new Error("No session found in the request");
   }
@@ -48,85 +63,57 @@ export function setAuthCookie(body: AuthRequestBody, res: ResponseInit): void {
       "Wrong session object: missing access_token or refresh_token properties"
     );
   }
-  const cookies = [
-    {
-      name: ACCESS_TOKEN_NAME,
-      value: body.session.access_token,
-      options: {
-        domain: cookieOptions.domain,
-        sameSite: cookieOptions.sameSite,
-        path: cookieOptions.path,
-        httpOnly: true,
-        maxAge: cookieOptions.lifetime,
-      },
-    },
-    {
-      name: REFRESH_TOKEN_NAME,
-      value: body.session.refresh_token,
-      options: {
-        domain: cookieOptions.domain,
-        sameSite: cookieOptions.sameSite,
-        path: cookieOptions.path,
-        httpOnly: true,
-        maxAge: cookieOptions.lifetime,
-      },
-    },
-  ];
+
+  cookies.set(
+    ACCESS_TOKEN_NAME,
+    body.session.access_token,
+    defaultCookieOptions
+  );
+  cookies.set(
+    REFRESH_TOKEN_NAME,
+    body.session.refresh_token,
+    defaultCookieOptions
+  );
+
   if (body.session.provider_token) {
-    cookies.push({
-      name: PROVIDER_TOKEN_NAME,
-      value: body.session.provider_token,
-      options: {
-        domain: cookieOptions.domain,
-        sameSite: cookieOptions.sameSite,
-        path: cookieOptions.path,
-        httpOnly: true,
-        maxAge: cookieOptions.lifetime,
-      },
-    });
-  }
-  cookies
-    .map((c) => serialize(c.name, c.value, c.options as any))
-    .forEach((cookie) => (res.headers as Headers).append("Set-Cookie", cookie));
-}
-
-export async function refreshAccessToken(
-  request: Request,
-  response: ResponseInit
-): Promise<{ data: Session; response: ResponseInit }> {
-  const cookies = parse(request.headers.get("cookie") ?? "");
-  const refreshToken = cookies[REFRESH_TOKEN_NAME] ?? undefined;
-  if (refreshToken) {
-    const { data, error } = await supabase.auth.api.refreshAccessToken(
-      refreshToken
+    cookies.set(
+      PROVIDER_TOKEN_NAME,
+      body.session.provider_token,
+      defaultCookieOptions
     );
-    if (error) {
-      throw new Error(error.message);
-    }
-    setAuthCookie({ session: data }, response);
-    return { data: data as Session, response };
-  } else {
-    throw new Error("No refresh_token cookie found!");
   }
-}
+};
 
-export async function getSessionByCookie(
-  req: Request,
-  res: ResponseInit
-): Promise<Session> {
-  const cookies = parse(req.headers.get("cookie") ?? "");
-  const access_token = cookies[ACCESS_TOKEN_NAME];
-  const refresh_token = cookies[REFRESH_TOKEN_NAME];
-  const provider_token = cookies[PROVIDER_TOKEN_NAME];
-  if (!access_token) {
+export const handleRefreshAccessToken = async (
+  refreshToken: string,
+  cookies: AstroCookies
+) => {
+  const { data, error } = await supabase.auth.api.refreshAccessToken(
+    refreshToken
+  );
+  if (error) {
+    throw new Error(error.message);
+  }
+  handleAuthCookies({ session: data }, { cookies } as APIContext);
+  return { data: data as Session };
+};
+
+export const getSession = async (cookies: AstroCookies) => {
+  if (!cookies.has(ACCESS_TOKEN_NAME)) {
     throw new Error("No access_token cookie found.");
   }
+  const access_token = cookies.get(ACCESS_TOKEN_NAME).value;
+  if (!access_token) {
+    throw new Error("No access_token found in the access token cookie.");
+  }
+  const refresh_token = cookies.get(REFRESH_TOKEN_NAME).value;
+  const provider_token = cookies.get(PROVIDER_TOKEN_NAME).value;
   const { user, error: getUserError } = await supabase.auth.api.getUser(
     access_token
   );
   if (getUserError) {
     if (!refresh_token) throw new Error("No refresh_token cookie found.");
-    const { data } = await refreshAccessToken(req, res);
+    const { data } = await handleRefreshAccessToken(refresh_token, cookies);
     return data;
   }
   return {
@@ -136,4 +123,4 @@ export async function getSessionByCookie(
     provider_token,
     token_type: "bearer",
   };
-}
+};

@@ -1,8 +1,9 @@
-import { setAuthCookie } from "../../features/supabase";
+import type { APIRoute } from "astro";
+import { handleAuthCookies } from "../../features/supabase";
 import { buildJsonResponse } from "../../features/utils/api";
 
-export async function post({ request }: { request: Request }) {
-  const res = buildJsonResponse();
-  setAuthCookie(await request.json(), res);
-  return res;
-}
+export const post: APIRoute = async (context) => {
+  const body = await context.request.json();
+  await handleAuthCookies(body, context);
+  return buildJsonResponse();
+};

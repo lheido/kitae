@@ -1,11 +1,11 @@
 ---
 import Dashboard from "../components/dashboard/Dashboard";
-import { getSessionByCookie } from "../features/supabase";
+import { getSession } from "../features/supabase";
 import Layout from "../layouts/Layout.astro";
 
 let session;
 try {
-  session = await getSessionByCookie(Astro.request, Astro.response);
+  session = await getSession((Astro as any).cookies);
 } catch (e) {
   console.error(e);
   return Astro.redirect("/login");
@@ -39,7 +39,7 @@ try {
     class="w-10/12 m-auto -mt-24 rounded-lg p-1 bg-gradient-to-r from-kitae-start to-kitae-end"
   >
     <div class="bg-kitae-container rounded-lg p-2 grid grid-cols-2 gap-2">
-      <Dashboard client:load />
+      <!-- <Dashboard client:load /> -->
       <!-- <button
         id="start-container-btn"
         class="relative flex flex-start gap-2 p-2 w-full rounded bg-neutral-700 kitae-gradient mb-9 mt-9"

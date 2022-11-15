@@ -1,13 +1,6 @@
-import {
-  CookieOptions,
-  createClient,
-  Session,
-  User,
-} from "@supabase/supabase-js";
-import type { APIContext, APIRoute } from "astro";
+import { CookieOptions, createClient, Session } from "@supabase/supabase-js";
+import type { APIContext } from "astro";
 import type { AstroCookies } from "astro/dist/core/cookies";
-// import type { AstroCookies } from "astro/dist/core/cookies";
-import { parse, serialize } from "cookie";
 
 /**
  * /!\ WARNING

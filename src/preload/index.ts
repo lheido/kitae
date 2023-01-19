@@ -1,8 +1,23 @@
-import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { KitaeWindowAPI, WindowArgs } from '@shared/types'
+import { contextBridge } from 'electron'
+
+export const parser = (argv: string[]): { [k: string]: string } => {
+  return argv.reduce((o, arg) => {
+    if (arg.indexOf('--') === 0) {
+      const [name, value] = arg.split('=')
+      o[name.slice(2)] = value
+    }
+    return o
+  }, {})
+}
+
+const windowArgs: WindowArgs = parser(process.argv) as never
 
 // Custom APIs for renderer
-const api = {}
+const api: KitaeWindowAPI = {
+  windowArgs
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

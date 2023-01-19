@@ -1,24 +1,55 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { app, BrowserWindow, shell } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { getSettings, updateSettings } from './settings'
+
+const TITLE_BAR_OVERLAY_HEIGHT = 36
 
 function createWindow(): void {
+  const settings = getSettings()
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: settings.window?.width ?? 900,
+    height: settings.window?.height ?? 670,
     show: false,
     autoHideMenuBar: true,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#332E38',
+      symbolColor: '#B8B0BF',
+      height: TITLE_BAR_OVERLAY_HEIGHT
+    },
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
+      additionalArguments: [`--title-bar-overlay-height=${TITLE_BAR_OVERLAY_HEIGHT}`],
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
 
+  mainWindow.on('maximize', () => {
+    updateSettings('window.maximized', true)
+  })
+  mainWindow.on('unmaximize', () => {
+    updateSettings('window.maximized', false)
+  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mainWindow.on('resized', () => {
+    const bounds = mainWindow.getBounds()
+    updateSettings('window', {
+      ...(getSettings().window ?? {}),
+      width: bounds.width,
+      height: bounds.height
+    })
+  })
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    mainWindow.webContents.openDevTools({ mode: 'left' })
+    if (settings.window?.maximized) {
+      mainWindow.maximize()
+    }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -40,7 +71,7 @@ function createWindow(): void {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('com.kitae')
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

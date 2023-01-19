@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.kitae.app
 productName: kitae
 directories:
   buildResources: build

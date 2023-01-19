@@ -1,5 +1,5 @@
 import { render } from 'solid-js/web'
 import './assets/index.css'
-import App from './App'
+import Kitae from './Kitae'
 
-render(() => <App />, document.getElementById('root') as HTMLElement)
+render(() => <Kitae />, document.getElementById('root') as HTMLElement)

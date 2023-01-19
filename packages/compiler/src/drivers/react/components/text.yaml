@@ -1,4 +1,0 @@
-template: |
-  <%= it.props.content %>
-props:
-  content: string

@@ -1,0 +1,5 @@
+label: Paragraph
+extend: "container"
+props:
+  semantic:
+    default: "p"

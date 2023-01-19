@@ -1,0 +1,18 @@
+label: Container
+template: |
+  <<%= it.props.semantic %><%~ include('className', it.props) %>>
+    <%= it.props.children %>
+  </<%= it.props.semantic %>>
+props:
+  semantic:
+    default: "div"
+    options:
+      - value: "div"
+      - value: "section"
+      - value: "aside"
+      - value: "main"
+      - value: "header"
+      - value: "footer"
+      - value: "nav"
+      - value: "p"
+      - value: "span"

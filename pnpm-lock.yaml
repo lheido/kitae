@@ -1,50 +1,64 @@
 lockfileVersion: 5.4
 
-specifiers:
-  '@electron-toolkit/preload': ^1.0.3
-  '@electron-toolkit/tsconfig': ^1.0.1
-  '@electron-toolkit/utils': ^1.0.2
-  '@electron/notarize': ^1.2.3
-  '@types/node': 16.18.11
-  '@typescript-eslint/eslint-plugin': ^5.48.0
-  '@typescript-eslint/parser': ^5.48.0
-  electron: ^21.3.3
-  electron-builder: ^23.6.0
-  electron-updater: ^5.3.0
-  electron-vite: ^1.0.17
-  eslint: ^8.31.0
-  eslint-config-prettier: ^8.6.0
-  eslint-plugin-prettier: ^4.2.1
-  eslint-plugin-solid: ^0.9.1
-  prettier: ^2.8.2
-  solid-js: ^1.6.8
-  typescript: ^4.9.4
-  vite: ^4.0.4
-  vite-plugin-solid: ^2.5.0
+importers:
 
-dependencies:
-  '@electron-toolkit/preload': 1.0.3_electron@21.3.5
-  '@electron-toolkit/utils': 1.0.2_electron@21.3.5
-  electron-updater: 5.3.0
+  .:
+    specifiers:
+      '@electron-toolkit/preload': ^1.0.3
+      '@electron-toolkit/tsconfig': ^1.0.1
+      '@electron-toolkit/utils': ^1.0.2
+      '@electron/notarize': ^1.2.3
+      '@types/node': 16.18.11
+      '@typescript-eslint/eslint-plugin': ^5.48.0
+      '@typescript-eslint/parser': ^5.48.0
+      electron: ^21.3.3
+      electron-builder: ^23.6.0
+      electron-updater: ^5.3.0
+      electron-vite: ^1.0.17
+      eslint: ^8.31.0
+      eslint-config-prettier: ^8.6.0
+      eslint-plugin-prettier: ^4.2.1
+      eslint-plugin-solid: ^0.9.1
+      prettier: ^2.8.2
+      solid-js: ^1.6.8
+      typescript: ^4.9.4
+      vite: ^4.0.4
+      vite-plugin-solid: ^2.5.0
+    dependencies:
+      '@electron-toolkit/preload': 1.0.3_electron@21.3.5
+      '@electron-toolkit/utils': 1.0.2_electron@21.3.5
+      electron-updater: 5.3.0
+    devDependencies:
+      '@electron-toolkit/tsconfig': 1.0.1_@types+node@16.18.11
+      '@electron/notarize': 1.2.3
+      '@types/node': 16.18.11
+      '@typescript-eslint/eslint-plugin': 5.48.2_caon6io6stgpr7lz2rtbhekxqy
+      '@typescript-eslint/parser': 5.48.2_7uibuqfxkfaozanbtbziikiqje
+      electron: 21.3.5
+      electron-builder: 23.6.0
+      electron-vite: 1.0.18_vite@4.0.4
+      eslint: 8.32.0
+      eslint-config-prettier: 8.6.0_eslint@8.32.0
+      eslint-plugin-prettier: 4.2.1_cn4lalcyadplruoxa5mhp7j3dq
+      eslint-plugin-solid: 0.9.3_7uibuqfxkfaozanbtbziikiqje
+      prettier: 2.8.3
+      solid-js: 1.6.9
+      typescript: 4.9.4
+      vite: 4.0.4_@types+node@16.18.11
+      vite-plugin-solid: 2.5.0_solid-js@1.6.9+vite@4.0.4
 
-devDependencies:
-  '@electron-toolkit/tsconfig': 1.0.1_@types+node@16.18.11
-  '@electron/notarize': 1.2.3
-  '@types/node': 16.18.11
-  '@typescript-eslint/eslint-plugin': 5.48.2_caon6io6stgpr7lz2rtbhekxqy
-  '@typescript-eslint/parser': 5.48.2_7uibuqfxkfaozanbtbziikiqje
-  electron: 21.3.5
-  electron-builder: 23.6.0
-  electron-vite: 1.0.18_vite@4.0.4
-  eslint: 8.32.0
-  eslint-config-prettier: 8.6.0_eslint@8.32.0
-  eslint-plugin-prettier: 4.2.1_cn4lalcyadplruoxa5mhp7j3dq
-  eslint-plugin-solid: 0.9.3_7uibuqfxkfaozanbtbziikiqje
-  prettier: 2.8.3
-  solid-js: 1.6.9
-  typescript: 4.9.4
-  vite: 4.0.4_@types+node@16.18.11
-  vite-plugin-solid: 2.5.0_solid-js@1.6.9+vite@4.0.4
+  packages/compiler:
+    specifiers:
+      eta: ^1.12.3
+      prettier: ^2.7.1
+      typescript: ^4.9.4
+      yaml: ^2.1.1
+    dependencies:
+      eta: 1.13.0
+      prettier: 2.8.3
+      yaml: 2.2.1
+    devDependencies:
+      typescript: 4.9.4
 
 packages:
 
@@ -2010,6 +2024,11 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /eta/1.13.0:
+    resolution: {integrity: sha512-GTgHqxvbQbNoUfkbdgHMVTY3bXVRJUWkfWEImZ2TPjln6nFlsYvu2fIVGWQmsa3qQ1ck0HwGq8OhS0wPCnsjMw==}
+    engines: {node: '>=6.0.0'}
+    dev: false
+
   /extract-zip/2.0.1:
     resolution: {integrity: sha512-GDhU9ntwuKyGXdZBUgTIe+vXnWj0fppUEtMDL0+idd5Sta8TGpHssn/eusA9mrPr9qNDym6SxAYZjNvCn/9RBg==}
     engines: {node: '>= 10.17.0'}
@@ -3098,7 +3117,6 @@ packages:
     resolution: {integrity: sha512-tJ/oJ4amDihPoufT5sM0Z1SKEuKay8LfVAMlbbhnnkvt6BUserZylqo2PN+p9KeljLr0OHa2rXHU1T8reeoTrw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
-    dev: true
 
   /process-nextick-args/2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
@@ -3768,6 +3786,11 @@ packages:
 
   /yallist/4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+
+  /yaml/2.2.1:
+    resolution: {integrity: sha512-e0WHiYql7+9wr4cWMx3TVQrNwejKaEe7/rHNmQmqRjazfOP5W8PB6Jpebb5o6fIapbz9o9+2ipcaTM2ZwDI6lw==}
+    engines: {node: '>= 14'}
+    dev: false
 
   /yargs-parser/21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}

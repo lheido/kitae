@@ -1,15 +1,18 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import { getSettings, updateSettings } from './settings'
+import { fetchWorkspaces, updateWorkspaces } from './workspaces'
 
 const TITLE_BAR_OVERLAY_HEIGHT = 36
+
+let mainWindow: BrowserWindow
 
 function createWindow(): void {
   const settings = getSettings()
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: settings.window?.width ?? 900,
     height: settings.window?.height ?? 670,
     show: false,
@@ -100,3 +103,10 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.handle('get-workspaces', () => {
+  return fetchWorkspaces()
+})
+
+ipcMain.handle('update-workspaces', (_, workspaces) => {
+  return updateWorkspaces(workspaces)
+})

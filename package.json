@@ -27,7 +27,9 @@
     "motion": "^10.15.5",
     "overlayscrollbars": "^2.0.3",
     "overlayscrollbars-solid": "^0.5.0",
-    "tailwind-merge": "^1.8.1"
+    "tailwind-merge": "^1.8.1",
+    "@kitae/shared": "workspace:*",
+    "@kitae/local-backend": "workspace:*"
   },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",

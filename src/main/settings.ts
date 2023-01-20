@@ -1,4 +1,4 @@
-import { JSONValue, KitaeSettings } from '@shared/types'
+import { JSONValue, KitaeSettings } from '@kitae/shared/types'
 import { app } from 'electron'
 import { readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'

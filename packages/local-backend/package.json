@@ -1,0 +1,13 @@
+{
+  "name": "@kitae/local-backend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@kitae/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.4",
+    "electron": "^21.3.3"
+  }
+}

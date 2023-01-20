@@ -1,6 +1,6 @@
 import { electronAPI } from '@electron-toolkit/preload'
-import { KitaeWindowAPI, WindowArgs } from '@shared/types'
-import { contextBridge } from 'electron'
+import { UiApi, WindowArgs } from '@kitae/shared/types'
+import { contextBridge, ipcRenderer } from 'electron'
 
 export const parser = (argv: string[]): { [k: string]: string } => {
   return argv.reduce((o, arg) => {
@@ -15,8 +15,14 @@ export const parser = (argv: string[]): { [k: string]: string } => {
 const windowArgs: WindowArgs = parser(process.argv) as never
 
 // Custom APIs for renderer
-const api: KitaeWindowAPI = {
-  windowArgs
+const api: UiApi = {
+  windowArgs,
+  getWorkspaces: () => {
+    return ipcRenderer.invoke('get-workspaces')
+  },
+  updateWorkspaces: (workspaces) => {
+    return ipcRenderer.invoke('update-workspaces', workspaces)
+  }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

@@ -119,12 +119,14 @@ ipcMain.handle('local:open-workspace', () => {
   if (!paths) {
     return false
   }
-  return updateWorkspaces([
-    ...fetchWorkspaces(),
-    ...paths.map((path) => {
-      console.log(path)
+  const items = fetchWorkspaces()
+  const initialLenght = items.length
+  paths
+    .map((path) => {
       const name = basename(path)
+      const id = Buffer.from(path).toString('base64')
       return {
+        id,
         name,
         previewUrl: 'http://localhost:3000',
         backends: [
@@ -135,5 +137,10 @@ ipcMain.handle('local:open-workspace', () => {
         ]
       } as Workspace
     })
-  ])
+    .filter((w) => !items.find((i) => i.id === w.id))
+    .forEach((w) => items.push(w))
+  if (initialLenght !== items.length) {
+    return updateWorkspaces(items)
+  }
+  return false
 })

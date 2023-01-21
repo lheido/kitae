@@ -8,5 +8,5 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "conventionalCommits.scopes": ["electron"]
+  "conventionalCommits.scopes": ["electron", "ui"]
 }

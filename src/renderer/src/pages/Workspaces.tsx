@@ -2,6 +2,7 @@ import { Workspace } from '@kitae/shared/types'
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import { api } from '@renderer/features/api'
+import { fetchWorkspaces, removeWorkspace, workspacesState } from '@renderer/features/workspaces'
 import { AnimationControls, timeline } from 'motion'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import { Component, createEffect, createSignal, For, JSXElement, onMount } from 'solid-js'
@@ -11,6 +12,9 @@ interface WorkspaceItemProps {
 }
 
 const WorkspaceItem: Component<WorkspaceItemProps> = (props: WorkspaceItemProps) => {
+  const removeHandler = (): void => {
+    removeWorkspace(props.workspace.id)
+  }
   return (
     <div class="group relative overflow-hidden w-full">
       <Button
@@ -30,6 +34,7 @@ const WorkspaceItem: Component<WorkspaceItemProps> = (props: WorkspaceItemProps)
         </span>
       </Button>
       <Button
+        onClick={removeHandler}
         class="btn-error btn-icon absolute top-1/2 right-3 -translate-y-1/2"
         title="Remove workspace"
       >
@@ -47,11 +52,10 @@ const Workspaces: Component = () => {
   const headerHeight = 300
   const minHeaderHeight = 64
 
-  const [workspaces, setWorkspaces] = createSignal<Workspace[]>([])
   const [scroll, setScroll] = createSignal<number>(0)
 
   onMount(() => {
-    api.getWorkspaces().then(setWorkspaces)
+    fetchWorkspaces()
     animation = timeline(
       [
         [
@@ -94,7 +98,7 @@ const Workspaces: Component = () => {
     const result = await api.openLocalWorkspace()
     if (result === true) {
       // TODO: Navigate to the workspace page instead of update the view
-      setWorkspaces(await api.getWorkspaces())
+      fetchWorkspaces()
     } else {
       // TODO: Display an error toast
       console.error(result)
@@ -136,7 +140,7 @@ const Workspaces: Component = () => {
       </header>
       <div class="p-4 h-[200%]" style={{ 'margin-top': `${headerHeight}px` }}>
         <ul class="flex flex-col gap-2">
-          <For each={workspaces()} fallback={<li>No workspace found.</li>}>
+          <For each={workspacesState.workspaces} fallback={<li>No workspace found.</li>}>
             {(workspace): JSXElement => (
               <li>
                 <WorkspaceItem workspace={workspace} />

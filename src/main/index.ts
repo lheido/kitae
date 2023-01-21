@@ -1,6 +1,7 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, ipcMain, shell } from 'electron'
-import { join } from 'path'
+import { Workspace } from '@kitae/shared/types'
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
+import { basename, join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import { getSettings, updateSettings } from './settings'
 import { fetchWorkspaces, updateWorkspaces } from './workspaces'
@@ -109,4 +110,30 @@ ipcMain.handle('get-workspaces', () => {
 
 ipcMain.handle('update-workspaces', (_, workspaces) => {
   return updateWorkspaces(workspaces)
+})
+
+ipcMain.handle('local:open-workspace', () => {
+  const paths = dialog.showOpenDialogSync(mainWindow, {
+    properties: ['openDirectory']
+  })
+  if (!paths) {
+    return false
+  }
+  return updateWorkspaces([
+    ...fetchWorkspaces(),
+    ...paths.map((path) => {
+      console.log(path)
+      const name = basename(path)
+      return {
+        name,
+        previewUrl: 'http://localhost:3000',
+        backends: [
+          {
+            name: 'local',
+            path
+          }
+        ]
+      } as Workspace
+    })
+  ])
 })

@@ -22,6 +22,9 @@ const api: UiApi = {
   },
   updateWorkspaces: (workspaces) => {
     return ipcRenderer.invoke('update-workspaces', workspaces)
+  },
+  openLocalWorkspace: () => {
+    return ipcRenderer.invoke('local:open-workspace')
   }
 }
 

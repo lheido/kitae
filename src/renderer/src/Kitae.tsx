@@ -15,7 +15,7 @@ const App: Component = () => {
       >
         <p class="text-ellipsis whitespace-nowrap flex-1 overflow-hidden">Kitae</p>
       </header>
-      <main>
+      <main class="flex-1 flex justify-center items-center w-full">
         <Routes routes={routes} initialRoute={initialRoute} />
       </main>
     </>

@@ -18,7 +18,7 @@ export const fetchWorkspaces = (): Workspace[] => {
 
 export const updateWorkspaces = (workspaces: Workspace[]): boolean | Error => {
   try {
-    writeFileSync(WORKSPACES_PATH, JSON.stringify(workspaces), { flag: 'wx' })
+    writeFileSync(WORKSPACES_PATH, JSON.stringify(workspaces))
   } catch (error) {
     return error as Error
   }

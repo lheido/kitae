@@ -9,5 +9,38 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  @apply bg-base-300 text-base-content;
+  @apply bg-base-300 text-base-content h-screen flex flex-col;
+}
+
+#root {
+  @apply contents;
+}
+
+@layer components {
+  .btn {
+    @apply px-3 py-2 rounded-lg scale-100 transition-all transform-gpu flex gap-2 outline-none;
+    @apply hover:bg-base-300 hover:bg-opacity-25;
+    @apply focus-visible:outline-none focus-visible:bg-base-300 focus-visible:bg-opacity-20;
+    @apply active:bg-opacity-100 active:scale-90;
+  }
+
+  .btn.btn-icon {
+    @apply p-3 justify-center items-center;
+  }
+
+  .btn.btn-primary {
+    @apply hover:bg-primary hover:bg-opacity-25 hover:text-primary-content;
+    @apply focus-visible:outline-none focus-visible:bg-primary-focus focus-visible:bg-opacity-20;
+    @apply active:bg-opacity-100;
+  }
+  .btn.btn-secondary {
+    @apply hover:bg-secondary hover:bg-opacity-25 hover:text-secondary-content;
+    @apply focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-20;
+    @apply active:bg-opacity-100;
+  }
+  .btn.btn-error {
+    @apply hover:bg-error hover:bg-opacity-25 hover:text-error-content;
+    @apply focus-visible:outline-none focus-visible:bg-error-focus focus-visible:bg-opacity-20;
+    @apply active:bg-opacity-100;
+  }
 }

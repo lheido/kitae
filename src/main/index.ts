@@ -121,27 +121,24 @@ ipcMain.handle('local:open-workspace', () => {
   }
   const items = fetchWorkspaces()
   const initialLenght = items.length
-  const itemsToAdd = paths
-    .map((path) => {
-      const name = basename(path)
-      const id = Buffer.from(path).toString('base64')
-      return {
-        id,
-        name,
-        previewUrl: 'http://localhost:3000',
-        backends: [
-          {
-            name: 'local',
-            path
-          }
-        ]
-      } as Workspace
-    })
-    .filter((w) => !items.find((i) => i.id === w.id))
-  itemsToAdd.forEach((w) => items.push(w))
-  if (initialLenght !== items.length) {
-    updateWorkspaces(items)
-    return itemsToAdd.map((i) => i.id)
+  const itemsToOpen = paths.map((path) => {
+    const name = basename(path)
+    const id = Buffer.from(path).toString('base64')
+    return {
+      id,
+      name,
+      previewUrl: 'http://localhost:3000',
+      backends: [
+        {
+          name: 'local',
+          path
+        }
+      ]
+    } as Workspace
+  })
+  const itemsToSave = itemsToOpen.filter((i) => !items.find((j) => j.id === i.id))
+  if (initialLenght !== items.length + itemsToSave.length) {
+    updateWorkspaces([...itemsToSave, ...items])
   }
-  return false
+  return itemsToOpen.map((i) => i.id)
 })

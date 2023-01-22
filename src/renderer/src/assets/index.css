@@ -18,14 +18,15 @@ body {
 
 @layer components {
   .btn {
-    @apply px-3 py-2 rounded-lg scale-100 transition-all transform-gpu flex gap-2 outline-none;
+    @apply px-3 py-2 rounded-lg text-left scale-100 transition-all transform-gpu flex gap-2 outline-none;
     @apply hover:bg-base-300 hover:bg-opacity-25;
     @apply focus-visible:outline-none focus-visible:bg-base-300 focus-visible:bg-opacity-20;
-    @apply active:bg-opacity-100 active:scale-90;
+    @apply active:bg-opacity-100 active:scale-95;
   }
 
   .btn.btn-icon {
     @apply p-3 justify-center items-center;
+    @apply active:scale-90;
   }
 
   .btn.btn-primary {

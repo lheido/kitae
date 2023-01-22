@@ -1,4 +1,5 @@
 import { Component, Show } from 'solid-js'
+import WorkspacesMenu from './components/WorkspacesMenu'
 import { api } from './features/api'
 import { routerState } from './features/router'
 import Routes from './features/router/Routes'
@@ -16,13 +17,9 @@ const App: Component = () => {
         class="box-content bg-base-100 text-base-content flex items-center gap-4 pl-2 pr-36 select-none relative z-10 drop-shadow-lg"
       >
         <p class="text-ellipsis whitespace-nowrap overflow-hidden">Kitae</p>
-        <p class="text-ellipsis whitespace-nowrap overflow-hidden">
-          <Show when={routerState.current?.name === 'designer' && workspacesState.currentWorkspace}>
-            <span class="capitalize">
-              {workspacesState.currentWorkspace?.name.replace('-', ' ')}
-            </span>
-          </Show>
-        </p>
+        <Show when={routerState.current?.name === 'designer' && workspacesState.currentWorkspace}>
+          <WorkspacesMenu />
+        </Show>
       </header>
       <main class="flex-1 flex justify-center items-center w-full">
         <Routes routes={routes} initialRoute={routes[0]} />

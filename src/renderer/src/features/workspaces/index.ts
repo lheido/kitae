@@ -37,6 +37,6 @@ export const removeWorkspace = async (id: string): Promise<boolean | Error> => {
   return result
 }
 
-export const openWorkspace = (id: string): void => {
+export const openWorkspace = (id: string | undefined): void => {
   setWorkspacesState('current', id)
 }

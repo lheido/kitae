@@ -1,7 +1,7 @@
 import { Workspace } from '@kitae/shared/types'
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
-import { api } from '@renderer/features/api'
+import { moveWorkspaceAtFirst, openLocalWorkspaceHandler } from '@renderer/features/api'
 import { navigate } from '@renderer/features/router'
 import {
   fetchWorkspaces,
@@ -27,6 +27,7 @@ const WorkspaceItem: Component<WorkspaceItemProps> = (props: WorkspaceItemProps)
         onClick={(): void => {
           openWorkspace(props.workspace.id)
           navigate('designer')
+          moveWorkspaceAtFirst(props.workspace.id)
         }}
         class="btn-secondary bg-base-300 bg-opacity-30 flex-col w-full active:scale-[0.99] gap-1"
         title="Open workspace"
@@ -103,17 +104,6 @@ const Workspaces: Component = () => {
   createEffect(() => {
     animation.currentTime = Math.max(1 - Math.max(headerHeight - scroll(), 0) / headerHeight, 0)
   })
-
-  const openLocalWorkspaceHandler = async (): Promise<void> => {
-    const result = await api.openLocalWorkspace()
-    if (Array.isArray(result)) {
-      openWorkspace(result[0])
-      navigate('designer')
-    } else if (typeof result === 'string') {
-      // TODO: Display an error toast
-      console.error(result)
-    }
-  }
 
   return (
     <OverlayScrollbarsComponent

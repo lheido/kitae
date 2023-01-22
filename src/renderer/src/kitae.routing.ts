@@ -1,9 +1,14 @@
 import { RouteDefinition } from './features/router'
+import Designer from './pages/Designer'
 import Workspaces from './pages/Workspaces'
 
-export const initialRoute: RouteDefinition = {
-  name: 'workspaces',
-  component: Workspaces
-}
-
-export const routes: RouteDefinition[] = [initialRoute]
+export const routes: RouteDefinition[] = [
+  {
+    name: 'workspaces',
+    component: Workspaces
+  },
+  {
+    name: 'designer',
+    component: Designer
+  }
+]

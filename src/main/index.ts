@@ -121,7 +121,7 @@ ipcMain.handle('local:open-workspace', () => {
   }
   const items = fetchWorkspaces()
   const initialLenght = items.length
-  paths
+  const itemsToAdd = paths
     .map((path) => {
       const name = basename(path)
       const id = Buffer.from(path).toString('base64')
@@ -138,9 +138,10 @@ ipcMain.handle('local:open-workspace', () => {
       } as Workspace
     })
     .filter((w) => !items.find((i) => i.id === w.id))
-    .forEach((w) => items.push(w))
+  itemsToAdd.forEach((w) => items.push(w))
   if (initialLenght !== items.length) {
-    return updateWorkspaces(items)
+    updateWorkspaces(items)
+    return itemsToAdd.map((i) => i.id)
   }
   return false
 })

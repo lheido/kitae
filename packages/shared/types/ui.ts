@@ -9,5 +9,5 @@ export interface UiApi {
 
   getWorkspaces(): Promise<Workspace[]>
   updateWorkspaces(workspaces: Workspace[]): Promise<boolean | Error>
-  openLocalWorkspace(): Promise<boolean | Error>
+  openLocalWorkspace(): Promise<[string] | boolean | Error>
 }

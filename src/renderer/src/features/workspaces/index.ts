@@ -2,7 +2,19 @@ import { Workspace } from '@kitae/shared/types'
 import { createStore } from 'solid-js/store'
 import { api } from '../api'
 
-export const [workspacesState, setWorkspacesState] = createStore({ workspaces: [] as Workspace[] })
+export interface WorkspacesState {
+  workspaces: Workspace[]
+  current?: string
+  readonly currentWorkspace: Workspace | undefined
+}
+
+export const [workspacesState, setWorkspacesState] = createStore<WorkspacesState>({
+  workspaces: [] as Workspace[],
+  current: undefined,
+  get currentWorkspace(): Workspace | undefined {
+    return this.workspaces.find((w) => w.id === this.current)
+  }
+})
 
 export const fetchWorkspaces = async (): Promise<void> => {
   setWorkspacesState('workspaces', await api.getWorkspaces())
@@ -23,4 +35,8 @@ export const removeWorkspace = async (id: string): Promise<boolean | Error> => {
     setWorkspacesState('workspaces', items)
   }
   return result
+}
+
+export const openWorkspace = (id: string): void => {
+  setWorkspacesState('current', id)
 }

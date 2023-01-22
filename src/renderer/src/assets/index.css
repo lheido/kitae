@@ -43,4 +43,29 @@ body {
     @apply focus-visible:outline-none focus-visible:bg-error-focus focus-visible:bg-opacity-20;
     @apply active:bg-opacity-100;
   }
+  .btn.btn-designer-nav {
+    @apply w-16 px-2 py-3 rounded-none scale-100 transition-all transform-gpu flex flex-col items-center outline-none;
+    @apply hover:bg-base-300 hover:bg-opacity-25;
+    @apply focus-visible:outline-none focus-visible:bg-base-300 focus-visible:bg-opacity-20;
+    @apply active:bg-opacity-100 active:scale-90 active:rounded-lg;
+  }
+  .btn.btn-designer-nav:not(.active) {
+    @apply bg-base-300;
+  }
+  .btn.btn-designer-nav.active {
+    @apply bg-base-100;
+  }
+}
+
+.designer-nav li.active + li .btn-designer-nav {
+  @apply rounded-tr-lg;
+}
+
+.designer-nav li.before-active .btn-designer-nav {
+  @apply rounded-br-lg;
+}
+
+.designer-nav li:last-of-type.active::after {
+  content: '';
+  @apply bg-base-300 block rounded-tr-lg h-4 w-full;
 }

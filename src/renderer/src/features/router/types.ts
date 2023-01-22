@@ -8,4 +8,5 @@ export interface RouteDefinition {
 export interface RouterState {
   history: RouteDefinition[]
   routes: RouteDefinition[]
+  readonly current: RouteDefinition | undefined
 }

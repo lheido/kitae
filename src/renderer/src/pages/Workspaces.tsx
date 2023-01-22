@@ -2,7 +2,13 @@ import { Workspace } from '@kitae/shared/types'
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import { api } from '@renderer/features/api'
-import { fetchWorkspaces, removeWorkspace, workspacesState } from '@renderer/features/workspaces'
+import { navigate } from '@renderer/features/router'
+import {
+  fetchWorkspaces,
+  openWorkspace,
+  removeWorkspace,
+  workspacesState
+} from '@renderer/features/workspaces'
 import { AnimationControls, timeline } from 'motion'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import { Component, createEffect, createSignal, For, JSXElement, onMount } from 'solid-js'
@@ -18,6 +24,10 @@ const WorkspaceItem: Component<WorkspaceItemProps> = (props: WorkspaceItemProps)
   return (
     <div class="group relative overflow-hidden w-full">
       <Button
+        onClick={(): void => {
+          openWorkspace(props.workspace.id)
+          navigate('designer')
+        }}
         class="btn-secondary bg-base-300 bg-opacity-30 flex-col w-full active:scale-[0.99] gap-1"
         title="Open workspace"
       >
@@ -96,10 +106,10 @@ const Workspaces: Component = () => {
 
   const openLocalWorkspaceHandler = async (): Promise<void> => {
     const result = await api.openLocalWorkspace()
-    if (result === true) {
-      // TODO: Navigate to the workspace page instead of update the view
-      fetchWorkspaces()
-    } else {
+    if (Array.isArray(result)) {
+      openWorkspace(result[0])
+      navigate('designer')
+    } else if (typeof result === 'string') {
       // TODO: Display an error toast
       console.error(result)
     }
@@ -138,7 +148,7 @@ const Workspaces: Component = () => {
           </Button>
         </div>
       </header>
-      <div class="p-4 h-[200%]" style={{ 'margin-top': `${headerHeight}px` }}>
+      <div class="p-4 h-[150%]" style={{ 'margin-top': `${headerHeight}px` }}>
         <ul class="flex flex-col gap-2">
           <For each={workspacesState.workspaces} fallback={<li>No workspace found.</li>}>
             {(workspace): JSXElement => (

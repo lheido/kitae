@@ -21,7 +21,14 @@ const App: Component = () => {
           <WorkspacesMenu />
         </Show>
       </header>
-      <main class="flex-1 flex justify-center items-center w-full">
+      <main
+        class="flex-1 flex justify-center items-center w-full"
+        style={{
+          height: `calc(100% - ${
+            api.windowArgs ? api.windowArgs['title-bar-overlay-height'] : 36
+          }px)`
+        }}
+      >
         <Routes routes={routes} initialRoute={routes[0]} />
       </main>
     </>

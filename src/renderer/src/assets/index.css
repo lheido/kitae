@@ -70,3 +70,19 @@ body {
   content: '';
   @apply bg-base-300 block rounded-tr-lg h-4 w-full;
 }
+
+/*** animated icons */
+
+.nc-int-sorting {
+  --transition-duration: 0.3s;
+}
+.nc-int-sorting * {
+  transform-origin: 16px 22px;
+  transition: transform var(--transition-duration) cubic-bezier(0.86, 0, 0.07, 1);
+}
+.nc-int-sorting.nc-int-icon-state-b :nth-child(1) {
+  transform: translateY(-12px) rotate(-90deg);
+}
+.nc-int-sorting.nc-int-icon-state-b :nth-child(2) {
+  transform: translateY(-12px) rotate(90deg);
+}

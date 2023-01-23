@@ -1,9 +1,30 @@
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
-import { Component, createSignal, For, JSX } from 'solid-js'
+import WorkspaceLeftPanelSettings from '@renderer/components/workspace/WorkspaceLeftPanelSettings'
+import WorkspaceLeftPanelTheme from '@renderer/components/workspace/WorkspaceLeftPanelTheme'
+import WorkspaceLeftPanelViews from '@renderer/components/workspace/WorkspaceLeftPanelViews'
+import { Component, For, JSX } from 'solid-js'
+import { createStore } from 'solid-js/store'
+import { Dynamic } from 'solid-js/web'
+
+interface DesignerState {
+  current: string
+  readonly leftPanel: Component
+}
+
+const leftPanels: Record<string, Component> = {
+  settings: WorkspaceLeftPanelSettings,
+  views: WorkspaceLeftPanelViews,
+  theme: WorkspaceLeftPanelTheme
+}
 
 const Designer: Component = () => {
-  const [currentPanel, setCurrentPanel] = createSignal<string>('settings')
+  const [designerState, setDesignerState] = createStore<DesignerState>({
+    current: 'settings',
+    get leftPanel(): Component {
+      return leftPanels[this.current]
+    }
+  })
   const panels: { id: string; icon: string; label: string; rightPanel: boolean }[] = [
     { id: 'settings', icon: 'settings', label: 'Settings', rightPanel: false },
     { id: 'views', icon: 'designer-tree', label: 'Views', rightPanel: true },
@@ -18,14 +39,15 @@ const Designer: Component = () => {
             {(panel, index): JSX.Element => (
               <li
                 classList={{
-                  active: currentPanel() === panel.id,
-                  'before-active': panels.findIndex((p) => p.id === currentPanel()) === index() + 1
+                  active: designerState.current === panel.id,
+                  'before-active':
+                    panels.findIndex((p) => p.id === designerState.current) === index() + 1
                 }}
               >
                 <Button
                   class="btn-designer-nav"
-                  classList={{ active: currentPanel() === panel.id }}
-                  onClick={(): string => setCurrentPanel(panel.id)}
+                  classList={{ active: designerState.current === panel.id }}
+                  onClick={(): void => setDesignerState('current', panel.id)}
                 >
                   <Icon icon={panel.icon} />
                   <span class="text-xs">{panel.label}</span>
@@ -35,7 +57,9 @@ const Designer: Component = () => {
           </For>
         </ul>
       </section>
-      <section class="bg-base-100 p-2 basis-80 transition-all">{/* left panel */}</section>
+      <section class="bg-base-100 p-2 basis-80 transition-all flex flex-col gap-2 h-full">
+        <Dynamic component={designerState.leftPanel} />
+      </section>
       <section class="bg-base-100 flex-1 flex flex-col">
         <header class="py-2 px-3">Preview header</header>
         <div class="bg-base-300 flex-1 p-4 rounded-t-lg overflow-hidden">
@@ -45,8 +69,8 @@ const Designer: Component = () => {
         </div>
       </section>
       <section
-        class="bg-base-100 p-2 transition-all basis-0 overflow-hidden"
-        classList={{ '!basis-80': panels.find((p) => p.id === currentPanel())?.rightPanel }}
+        class="bg-base-100 p-2 transition-all basis-0 overflow-hidden flex flex-col gap-2 h-full"
+        classList={{ '!basis-80': panels.find((p) => p.id === designerState.current)?.rightPanel }}
       >
         {/* <!-- lorem --> */}
       </section>

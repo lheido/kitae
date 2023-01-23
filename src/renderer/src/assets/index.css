@@ -50,12 +50,19 @@ body {
     @apply focus-visible:outline-none focus-visible:bg-base-300 focus-visible:bg-opacity-20;
     @apply active:bg-opacity-100 active:scale-90 active:rounded-lg;
   }
-  .btn.btn-designer-nav:not(.active) {
-    @apply bg-base-300;
+  .btn.btn-list-item {
+    @apply w-full;
   }
-  .btn.btn-designer-nav.active {
-    @apply bg-base-100;
+  .btn.btn-list-item.active {
+    @apply bg-primary bg-opacity-40 text-primary-content;
   }
+}
+
+.btn.btn-designer-nav:not(.active) {
+  @apply bg-base-300;
+}
+.btn.btn-designer-nav.active {
+  @apply bg-base-100;
 }
 
 .designer-nav li.active + li .btn-designer-nav {

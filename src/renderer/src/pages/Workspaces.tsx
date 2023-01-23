@@ -110,6 +110,7 @@ const Workspaces: Component = () => {
       defer
       element="section"
       events={{ scroll: ({ elements }): number => setScroll(elements().viewport.scrollTop) }}
+      options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0 } }}
       class="basis-2/3 h-4/5 xl:basis-1/2 xl:h-2/3 bg-base-200 rounded-lg"
     >
       <header class="sticky top-0 z-10">

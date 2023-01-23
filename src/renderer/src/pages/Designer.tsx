@@ -20,7 +20,7 @@ const leftPanels: Record<string, Component> = {
 
 const Designer: Component = () => {
   const [designerState, setDesignerState] = createStore<DesignerState>({
-    current: 'settings',
+    current: 'theme',
     get leftPanel(): Component {
       return leftPanels[this.current]
     }

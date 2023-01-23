@@ -1,11 +1,19 @@
 import { Motion } from '@motionone/solid'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
-import { Component, ComponentProps, createSignal, JSX, onMount, splitProps } from 'solid-js'
+import {
+  Component,
+  ComponentProps,
+  createEffect,
+  createSignal,
+  JSX,
+  splitProps,
+  untrack
+} from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 import AnimatedArrowDown from './AnimatedArrowDown'
 
 interface AccordionProps extends ComponentProps<'section'> {
-  label: string
+  label: string | JSX.Element
   accordionId: string
   opened: boolean
   headerSlot?: JSX.Element
@@ -18,21 +26,21 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
     ['label', 'opened', 'accordionId', 'headerSlot', 'children', 'basis'],
     ['class']
   )
-  const [expanded, setExpanded] = createSignal(true)
+  const [expanded, setExpanded] = createSignal(untrack(() => component.opened))
   const [scrolling, isScrolling] = createSignal(false)
   const [headerHeight, setHeaderHeight] = createSignal(0)
   const [ids, setIds] = createSignal({ header: '', content: '' })
   let contentRef: HTMLDivElement | undefined
   let headerRef: HTMLDivElement | undefined
-  onMount(() => {
-    if (contentRef && headerRef) {
-      setHeaderHeight(headerRef.offsetHeight)
-    }
-    setExpanded(component.opened)
+  createEffect(() => {
     setIds({
       header: `${component.accordionId}-header`,
       content: `${component.accordionId}-content`
     })
+    if (contentRef && headerRef) {
+      setHeaderHeight(headerRef.offsetHeight)
+    }
+    setExpanded(component.opened)
   })
   return (
     <Motion.section
@@ -43,6 +51,10 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
       transition={{ duration: 0.4 }}
       {...container}
       class={twMerge('overflow-hidden relative', classes.class)}
+      style={{
+        'min-height': `${headerHeight()}px`,
+        'flex-basis': !component.opened ? `${headerHeight()}px` : `${component.basis}`
+      }}
     >
       <header
         ref={headerRef}
@@ -59,7 +71,7 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
             onClick={(): boolean => setExpanded((prev) => !prev)}
           >
             <span class="flex-1 text-left">{component.label}</span>
-            <AnimatedArrowDown state={expanded()} class="h-4 w-4" />
+            <AnimatedArrowDown initial={component.opened} state={expanded()} class="h-4 w-4" />
           </button>
         </h1>
         {component.headerSlot}
@@ -77,6 +89,7 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
       >
         <OverlayScrollbarsComponent
           defer
+          options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0 } }}
           class="h-full"
           events={{ scroll: ({ elements }) => isScrolling(elements().viewport.scrollTop !== 0) }}
         >

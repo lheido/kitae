@@ -1,13 +1,21 @@
-import { Component, ComponentProps, createEffect, createSignal, splitProps } from 'solid-js'
+import {
+  Component,
+  ComponentProps,
+  createEffect,
+  createSignal,
+  splitProps,
+  untrack
+} from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 
 export interface AnimatedArrowDownProps extends ComponentProps<'svg'> {
   state: boolean
+  initial: boolean
 }
 
 const AnimatedArrowDown: Component<AnimatedArrowDownProps> = (props: AnimatedArrowDownProps) => {
-  const [classes, component, container] = splitProps(props, ['class'], ['state'])
-  const [state, setState] = createSignal(false)
+  const [classes, component, container] = splitProps(props, ['class'], ['state', 'initial'])
+  const [state, setState] = createSignal(untrack(() => component.initial))
   createEffect(() => {
     setState(component.state)
   })

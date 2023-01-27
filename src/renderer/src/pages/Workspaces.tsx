@@ -32,7 +32,7 @@ const WorkspaceItem: Component<WorkspaceItemProps> = (props: WorkspaceItemProps)
         class="btn-secondary bg-base-300 bg-opacity-30 flex-col w-full active:scale-[0.99] gap-1"
         title="Open workspace"
       >
-        <span class="text-base capitalize">{props.workspace.name.replace('-', ' ')}</span>
+        <span class="text-base capitalize">{props.workspace.name.replaceAll('-', ' ')}</span>
         <span class="opacity-40 text-sm">
           {props.workspace.backends.reduce((acc, backend) => {
             if (!acc) {

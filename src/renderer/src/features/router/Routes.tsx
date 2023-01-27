@@ -1,4 +1,5 @@
-import { Component, onMount, Show } from 'solid-js'
+import Toast from '@renderer/components/Toast'
+import { Component, ErrorBoundary, JSX, onMount, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import { routerState, setRouterState } from './store'
 import { RouteDefinition } from './types'
@@ -14,7 +15,9 @@ const Routes: Component<RoutesProps> = (props: RoutesProps) => {
   })
   return (
     <Show when={routerState.history.length > 0}>
-      <Dynamic component={routerState.history[routerState.history.length - 1]?.component} />
+      <ErrorBoundary fallback={(error): JSX.Element => <Toast type="error">{error}</Toast>}>
+        <Dynamic component={routerState.history[routerState.history.length - 1]?.component} />
+      </ErrorBoundary>
     </Show>
   )
 }

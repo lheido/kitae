@@ -1,7 +1,9 @@
-import { BackendSettings } from '../types'
+import { BackendSettings, WorkspaceData } from '../types'
 
 export abstract class Backend {
   constructor(public settings: BackendSettings) {}
+
+  abstract getWorkspaceData(): Promise<WorkspaceData | undefined>
 
   /**** Compile API */
 

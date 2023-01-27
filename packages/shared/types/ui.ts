@@ -1,3 +1,4 @@
+import { WorkspaceData } from './backend'
 import { Workspace } from './workspace'
 
 export type WindowArgumentsKeys = 'title-bar-overlay-height'
@@ -10,4 +11,5 @@ export interface UiApi {
   getWorkspaces(): Promise<Workspace[]>
   updateWorkspaces(workspaces: Workspace[]): Promise<boolean | Error>
   openLocalWorkspace(): Promise<[string] | boolean | Error>
+  getWorkspaceData(workspace: Workspace): Promise<WorkspaceData | Error>
 }

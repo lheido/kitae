@@ -1,5 +1,5 @@
 import { Component } from 'solid-js'
-import Accordion from '../Accordion'
+import Accordion from '../../../../components/Accordion'
 
 const WorkspaceLeftPanelSettings: Component = () => {
   return (

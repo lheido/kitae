@@ -21,16 +21,13 @@ const WorkspacesMenu: Component = () => {
       <Button
         ref={buttonRef}
         title="Workspaces"
-        style={{
-          '-webkit-app-region': 'no-drag'
-        }}
-        class="btn-secondary rounded-none text-sm"
+        class="btn-secondary rounded-none text-sm no-drag"
         onClick={(): void => {
           open((prev) => !prev)
         }}
       >
         <span class="text-ellipsis whitespace-nowrap overflow-hidden max-w-xs capitalize">
-          {workspacesState.currentWorkspace?.name.replace('-', ' ')}
+          {workspacesState.currentWorkspace?.name.replaceAll('-', ' ')}
         </span>
       </Button>
       <Show when={opened()}>

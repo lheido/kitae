@@ -16,12 +16,17 @@ body {
   @apply contents;
 }
 
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
 @layer components {
   .btn {
     @apply px-3 py-2 rounded-lg text-left scale-100 transition-all transform-gpu flex gap-2 outline-none;
     @apply hover:bg-base-300 hover:bg-opacity-25;
     @apply focus-visible:outline-none focus-visible:bg-base-300 focus-visible:bg-opacity-20;
     @apply active:bg-opacity-100 active:scale-95;
+    @apply disabled:opacity-30 disabled:cursor-default disabled:hover:bg-transparent;
   }
 
   .btn.btn-icon {
@@ -33,16 +38,19 @@ body {
     @apply hover:bg-primary hover:bg-opacity-25 hover:text-primary-content;
     @apply focus-visible:outline-none focus-visible:bg-primary-focus focus-visible:bg-opacity-20;
     @apply active:bg-opacity-100;
+    @apply disabled:hover:bg-transparent disabled:hover:text-base-content;
   }
   .btn.btn-secondary {
     @apply hover:bg-secondary hover:bg-opacity-25 hover:text-secondary-content;
     @apply focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-20;
     @apply active:bg-opacity-100;
+    @apply disabled:hover:bg-transparent disabled:hover:text-base-content;
   }
   .btn.btn-error {
     @apply hover:bg-error hover:bg-opacity-25 hover:text-error-content;
     @apply focus-visible:outline-none focus-visible:bg-error-focus focus-visible:bg-opacity-20;
     @apply active:bg-opacity-100;
+    @apply disabled:hover:bg-transparent disabled:hover:text-base-content;
   }
   .btn.btn-designer-nav {
     @apply w-16 px-2 py-3 rounded-none scale-100 transition-all transform-gpu flex flex-col items-center outline-none;
@@ -92,4 +100,11 @@ body {
 }
 .nc-int-sorting.nc-int-icon-state-b :nth-child(2) {
   transform: translateY(-12px) rotate(90deg);
+}
+
+/*** forms */
+
+input {
+  @apply bg-transparent rounded w-full border border-base-300 px-2 py-1;
+  @apply focus-visible:outline-none focus-visible:border-secondary-focus;
 }

@@ -1,7 +1,7 @@
-import { theme } from 'tailwindcss/defaultConfig'
+// import { theme } from 'tailwindcss/defaultConfig'
 import { WorkspaceData } from '../../types'
 
-console.log(theme)
+// console.log(theme)
 
 export const defaultWorkspaceData: WorkspaceData = {
   themes: [

@@ -3,6 +3,7 @@ import { Workspace } from '@kitae/shared/types'
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import { basename, join } from 'path'
 import icon from '../../resources/icon.png?asset'
+import { getBackend } from './backends'
 import { getSettings, updateSettings } from './settings'
 import { fetchWorkspaces, updateWorkspaces } from './workspaces'
 
@@ -127,10 +128,11 @@ ipcMain.handle('local:open-workspace', () => {
     return {
       id,
       name,
-      previewUrl: 'http://localhost:3000',
       backends: [
         {
           name: 'local',
+          workspaceId: id,
+          dataPath: './kitae.data.json',
           path
         }
       ]
@@ -141,4 +143,9 @@ ipcMain.handle('local:open-workspace', () => {
     updateWorkspaces([...itemsToSave, ...items])
   }
   return itemsToOpen.map((i) => i.id)
+})
+
+ipcMain.handle('get-workspace-data', async (_, workspace: Workspace) => {
+  const backend = getBackend(workspace.backends[0])
+  return await backend.getWorkspaceData()
 })

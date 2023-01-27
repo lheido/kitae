@@ -17,7 +17,22 @@ export interface WorkspaceData {
   themes: ThemeData[]
 }
 
-export type BackendSettings = { data: WorkspaceData } & (
-  | { name: 'local'; path: string }
-  | { name: 'ssh'; user: string; destination: string }
-)
+export interface BaseBackendSettings {
+  data: WorkspaceData
+}
+
+export interface LocalBackendSettings extends BaseBackendSettings {
+  name: 'local'
+  workspaceId: string
+  dataPath: string
+  path: string
+}
+
+export interface SshBackendSettings extends BaseBackendSettings {
+  name: 'ssh'
+  workspaceId: string
+  user: string
+  destination: string
+}
+
+export type BackendSettings = LocalBackendSettings | SshBackendSettings

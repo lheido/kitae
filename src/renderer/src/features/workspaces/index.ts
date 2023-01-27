@@ -11,8 +11,12 @@ export interface WorkspacesState {
 export const [workspacesState, setWorkspacesState] = createStore<WorkspacesState>({
   workspaces: [] as Workspace[],
   current: undefined,
-  get currentWorkspace(): Workspace | undefined {
-    return this.workspaces.find((w) => w.id === this.current)
+  get currentWorkspace(): Workspace {
+    const w = this.workspaces.find((w) => w.id === this.current)
+    if (!w) {
+      throw `You should use the currentWorkspace getter too soon`
+    }
+    return w
   }
 })
 

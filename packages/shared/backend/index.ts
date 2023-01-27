@@ -4,6 +4,7 @@ export abstract class Backend {
   constructor(public settings: BackendSettings) {}
 
   abstract getWorkspaceData(): Promise<WorkspaceData | undefined>
+  abstract setWorkspaceData(data: WorkspaceData): Promise<boolean | Error>
 
   /**** Compile API */
 

@@ -18,4 +18,14 @@ export class LocalBackend extends Backend {
       return workspaceData
     }
   }
+
+  async setWorkspaceData(data: WorkspaceData): Promise<boolean | Error> {
+    const dataPath = join(this.settings.path, this.settings.dataPath)
+    try {
+      await fs.writeFile(dataPath, JSON.stringify(data))
+      return true
+    } catch (error) {
+      return error as Error
+    }
+  }
 }

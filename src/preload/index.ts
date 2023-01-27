@@ -28,6 +28,9 @@ const api: UiApi = {
   },
   getWorkspaceData: (workspace) => {
     return ipcRenderer.invoke('get-workspace-data', workspace)
+  },
+  setWorkspaceData: (workspace, data) => {
+    return ipcRenderer.invoke('set-workspace-data', workspace, data)
   }
 }
 

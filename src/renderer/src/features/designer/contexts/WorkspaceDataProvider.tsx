@@ -1,7 +1,8 @@
-import { WorkspaceData } from '@kitae/shared/types'
+import { Workspace, WorkspaceData } from '@kitae/shared/types'
 import { api } from '@renderer/features/api'
 import { workspacesState } from '@renderer/features/workspaces'
 import { createShortcut } from '@solid-primitives/keyboard'
+import { debounce } from '@solid-primitives/scheduled'
 import { Component, createContext, createEffect } from 'solid-js'
 import { createStore, produce, SetStoreFunction } from 'solid-js/store'
 import {
@@ -77,6 +78,9 @@ export const WorkspaceDataProvider: Component<WorkspaceDataProviderProps> = (
   redo.shortcut = ['Control', 'y']
   const isUndoable = (): boolean => updates.position >= 0
   const isRedoable = (): boolean => updates.position < updates.history.length - 1
+  const saveWorkspaceData = debounce((workspace: Workspace, data: WorkspaceData): void => {
+    api.setWorkspaceData(JSON.parse(JSON.stringify(workspace)), JSON.parse(JSON.stringify(data)))
+  }, 2000)
   const store: ResultWorkspaceDataContext = [
     state,
     updates,
@@ -89,6 +93,11 @@ export const WorkspaceDataProvider: Component<WorkspaceDataProviderProps> = (
             u.history.splice(u.position, u.position + 1)
             u.history.push(update)
             update.execute()
+            saveWorkspaceData.clear()
+            saveWorkspaceData(
+              workspacesState.currentWorkspace as Workspace,
+              state.data as WorkspaceData
+            )
           })
         )
       },

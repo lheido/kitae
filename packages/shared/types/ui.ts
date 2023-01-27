@@ -12,4 +12,5 @@ export interface UiApi {
   updateWorkspaces(workspaces: Workspace[]): Promise<boolean | Error>
   openLocalWorkspace(): Promise<[string] | boolean | Error>
   getWorkspaceData(workspace: Workspace): Promise<WorkspaceData | Error>
+  setWorkspaceData(workspace: Workspace, data: WorkspaceData): Promise<boolean | Error>
 }

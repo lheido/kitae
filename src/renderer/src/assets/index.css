@@ -64,6 +64,9 @@ body {
   .btn.btn-list-item.active {
     @apply bg-primary bg-opacity-40 text-primary-content;
   }
+  .btn.btn-list-item.border-active {
+    @apply border border-secondary bg-opacity-40 text-base-content;
+  }
 }
 
 .btn.btn-designer-nav:not(.active) {

@@ -26,6 +26,7 @@ export type ResultWorkspaceDataContext = [
     isRedoable: () => boolean
     select: (path: Path) => void
     get: (path: Path) => unknown
+    samePath: (path1: Path, path2: Path) => boolean
   }
 ]
 
@@ -47,7 +48,8 @@ export const WorkspaceDataContext = createContext<ResultWorkspaceDataContext>([
     undo: fallbackUndo,
     redo: fallbackRedo,
     isUndoable: (): boolean => false,
-    isRedoable: (): boolean => false
+    isRedoable: (): boolean => false,
+    samePath: (): boolean => false
   }
 ])
 
@@ -129,6 +131,12 @@ export const WorkspaceDataProvider: Component<WorkspaceDataProviderProps> = (
       },
       get: (path): unknown => {
         return walker(state.data as WorkspaceData, path)
+      },
+      samePath: (path1, path2): boolean => {
+        if (path1.length !== path2.length) {
+          return false
+        }
+        return path1.every((value, index) => value === path2[index])
       }
     }
   ]

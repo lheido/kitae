@@ -21,23 +21,32 @@ const ColorThemeEntryForm: Component = () => {
     setShouldSubmit(false)
   })
   const updateHandler = debounce((data: ThemeEntry) => {
-    const previous = JSON.parse(JSON.stringify(get(workspaceDataStore.selectedPath))) as ThemeEntry
+    const path = JSON.parse(JSON.stringify(workspaceDataStore.selectedPath))
+    const previous = JSON.parse(JSON.stringify(get(path))) as ThemeEntry
     createUpdate({
       execute: (): void => {
         setState(
           produce((s) => {
-            const entry = walker(s.data, workspaceDataStore.selectedPath) as ThemeEntry
-            entry.name = data.name
-            entry.value = data.value
+            const entry = walker(s.data, path) as ThemeEntry
+            if (entry) {
+              entry.name = data.name
+              entry.value = data.value
+            } else {
+              console.error('Try to execute update :', path)
+            }
           })
         )
       },
       undo: (): void => {
         setState(
           produce((s) => {
-            const entry = walker(s.data, workspaceDataStore.selectedPath) as ThemeEntry
-            entry.name = previous.name
-            entry.value = previous.value
+            const entry = walker(s.data, path) as ThemeEntry
+            if (entry) {
+              entry.name = previous.name
+              entry.value = previous.value
+            } else {
+              console.error('Try to undo update :', path)
+            }
           })
         )
       }
@@ -50,7 +59,8 @@ const ColorThemeEntryForm: Component = () => {
     }
   })
   return (
-    <div class="p-2 flex flex-col gap-4">
+    <div class="px-2 flex flex-col gap-4">
+      <h1 class="text-lg">Edit Color</h1>
       <FormField label="Name">
         <input
           type="text"

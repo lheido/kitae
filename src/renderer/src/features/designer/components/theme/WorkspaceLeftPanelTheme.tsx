@@ -1,31 +1,115 @@
-import { ThemeData } from '@kitae/shared/types'
+import { ThemeData, ThemeEntry } from '@kitae/shared/types'
 import Accordion from '@renderer/components/Accordion'
 import Button from '@renderer/components/Button'
+import Icon from '@renderer/components/Icon'
 import { WorkspaceDataContext } from '@renderer/features/designer/contexts/WorkspaceDataProvider'
 import { Component, ComponentProps, For, JSX, Show, useContext } from 'solid-js'
-import { createStore } from 'solid-js/store'
+import { createStore, produce } from 'solid-js/store'
+import { Path } from '../../types'
+import { walker } from '../../utils'
 
 interface ThemeEntryItemProps extends ComponentProps<'li'> {
   children: JSX.Element
   theme: number
-  path: (string | number)[]
+  path: Path
 }
 
 const ThemeEntryItem: Component<ThemeEntryItemProps> = (props: ThemeEntryItemProps) => {
-  const [, , { select }] = useContext(WorkspaceDataContext)
+  const [workspaceDataStore, , { get, select, samePath, createUpdate, setState }] =
+    useContext(WorkspaceDataContext)
+  const path = (): Path => ['themes', props.theme, ...props.path]
+  const deleteItem = (): void => {
+    const p = JSON.parse(JSON.stringify(path()))
+    const previous = JSON.parse(JSON.stringify(get(p)))
+    createUpdate({
+      execute: (): void => {
+        setState(
+          produce((s) => {
+            const list = walker(s.data, p.slice(0, -1)) as ThemeEntry[]
+            if (list) {
+              list.splice(p[p.length - 1], 1)
+              s.selectedPath = []
+            } else {
+              console.error('Try to execute delete :', path)
+            }
+          })
+        )
+      },
+      undo: (): void => {
+        setState(
+          produce((s) => {
+            const list = walker(s.data, p.slice(0, -1)) as ThemeEntry[]
+            if (list) {
+              list.splice(p[p.length - 1], 0, previous)
+            } else {
+              console.error('Try to undo delete :', p)
+            }
+          })
+        )
+      }
+    })
+  }
   return (
-    <li>
+    <li class="relative">
       <Button
-        class="btn-list-item"
-        classList={{ active: false }}
+        class="btn-list-item items-center border border-base-200"
+        classList={{ 'border-active': samePath(path(), workspaceDataStore.selectedPath) }}
         onClick={(): void => {
-          select(['themes', props.theme, ...props.path])
-          // update(['themes', props.theme, ...props.path], (entry: ThemeEntry) => {
-          //   entry.value = '#FF0000'
-          // })
+          select(path())
         }}
       >
         {props.children}
+      </Button>
+      <Button
+        class="btn-error btn-icon !p-2 absolute top-1/2 right-1 -translate-y-1/2"
+        onClick={(): void => deleteItem()}
+      >
+        <Icon icon="bin" class="w-4 h-4" />
+      </Button>
+    </li>
+  )
+}
+
+interface AddThemeEntryItemProps extends ComponentProps<'li'> {
+  theme: number
+}
+
+const AddColorThemeEntryItem: Component<AddThemeEntryItemProps> = (
+  props: AddThemeEntryItemProps
+) => {
+  const [, , { createUpdate, setState }] = useContext(WorkspaceDataContext)
+  const path = (): Path => ['themes', props.theme, 'colors']
+  return (
+    <li>
+      <Button
+        class="btn-list-item items-center pl-4 border border-base-200"
+        onClick={(): void => {
+          createUpdate({
+            execute: (): void => {
+              setState(
+                produce((s) => {
+                  const list = walker<ThemeEntry[]>(s.data, path())
+                  list!.push({
+                    name: 'new-color',
+                    value: '#828282'
+                  })
+                  s.selectedPath = [...path(), list!.length - 1]
+                })
+              )
+            },
+            undo: (): void => {
+              setState(
+                produce((s) => {
+                  walker<ThemeEntry[]>(s.data, path())!.pop()
+                  s.selectedPath = []
+                })
+              )
+            }
+          })
+        }}
+      >
+        <Icon icon="add" />
+        <span class="flex-1 text-ellipsis whitespace-nowrap overflow-hidden">Add a new color</span>
       </Button>
     </li>
   )
@@ -38,7 +122,7 @@ interface ThemeState {
 }
 
 const WorkspaceLeftPanelTheme: Component = () => {
-  const [workspaceDataStore, , { select }] = useContext(WorkspaceDataContext)
+  const [workspaceDataStore, , { select, createUpdate }] = useContext(WorkspaceDataContext)
   const [state, setState] = createStore<ThemeState>({
     current: 'default',
     get theme(): ThemeData {
@@ -111,6 +195,7 @@ const WorkspaceLeftPanelTheme: Component = () => {
                 </ThemeEntryItem>
               )}
             </For>
+            <AddColorThemeEntryItem theme={state.themeIndex} />
           </ul>
         </Show>
       </Accordion>

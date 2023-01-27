@@ -105,6 +105,86 @@ const ColorThemeEntryForm: Component = () => {
   )
 }
 
+const FontFamilyThemeEntryForm: Component = () => {
+  let valueRef: HTMLInputElement | undefined
+  const [workspaceDataStore, , { get, createUpdate, setState }] = useContext(WorkspaceDataContext)
+  const [form, setForm] = createStore({ name: '', value: '' })
+  const [shouldSubmit, setShouldSubmit] = createSignal(false)
+  createEffect(() => {
+    const data = get(workspaceDataStore.selectedPath) as ThemeEntry
+    setForm({ name: data?.name, value: data?.value })
+    setShouldSubmit(false)
+  })
+  const updateHandler = debounce((data: ThemeEntry) => {
+    const path = JSON.parse(JSON.stringify(workspaceDataStore.selectedPath))
+    const previous = JSON.parse(JSON.stringify(get(path))) as ThemeEntry
+    createUpdate({
+      execute: (): void => {
+        setState(
+          produce((s) => {
+            const entry = walker(s.data, path) as ThemeEntry
+            if (entry) {
+              entry.name = data.name
+              entry.value = data.value
+            } else {
+              console.error('Try to execute update :', path)
+            }
+          })
+        )
+      },
+      undo: (): void => {
+        setState(
+          produce((s) => {
+            const entry = walker(s.data, path) as ThemeEntry
+            if (entry) {
+              entry.name = previous.name
+              entry.value = previous.value
+            } else {
+              console.error('Try to undo update :', path)
+            }
+          })
+        )
+      }
+    })
+  }, 250)
+  createEffect(() => {
+    if (shouldSubmit()) {
+      updateHandler.clear()
+      updateHandler(JSON.parse(JSON.stringify(form)))
+    }
+  })
+  return (
+    <div class="px-2 flex flex-col gap-4">
+      <h1 class="text-lg">Edit Font Family</h1>
+      <FormField label="Name">
+        <input
+          type="text"
+          name="name"
+          id="theme-color-name-input"
+          value={form.name}
+          onInput={(e): void => {
+            setForm('name', e.currentTarget.value)
+            setShouldSubmit(true)
+          }}
+        />
+      </FormField>
+      <FormField label="Font Family">
+        <input
+          ref={valueRef}
+          type="text"
+          name="value"
+          id="theme-color-value-input"
+          value={form.value}
+          onInput={(e): void => {
+            setForm('value', e.currentTarget.value)
+            setShouldSubmit(true)
+          }}
+        />
+      </FormField>
+    </div>
+  )
+}
+
 const WorkspaceRightPanelTheme: Component = () => {
   const [workspaceDataStore] = useContext(WorkspaceDataContext)
   return (
@@ -123,7 +203,7 @@ const WorkspaceRightPanelTheme: Component = () => {
           <ColorThemeEntryForm />
         </Match>
         <Match when={workspaceDataStore.selectedPath.includes('family')}>
-          <p>Family config</p>
+          <FontFamilyThemeEntryForm />
         </Match>
       </Switch>
     </>

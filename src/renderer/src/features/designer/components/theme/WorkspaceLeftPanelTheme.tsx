@@ -115,6 +115,49 @@ const AddColorThemeEntryItem: Component<AddThemeEntryItemProps> = (
   )
 }
 
+const AddFontFamilyThemeEntryItem: Component<AddThemeEntryItemProps> = (
+  props: AddThemeEntryItemProps
+) => {
+  const [, , { createUpdate, setState }] = useContext(WorkspaceDataContext)
+  const path = (): Path => ['themes', props.theme, 'fonts', 'family']
+  return (
+    <li>
+      <Button
+        class="btn-list-item items-center pl-4 border border-base-200"
+        onClick={(): void => {
+          createUpdate({
+            execute: (): void => {
+              setState(
+                produce((s) => {
+                  const list = walker<ThemeEntry[]>(s.data, path())
+                  list!.push({
+                    name: 'new-font-family',
+                    value: 'sans-serif'
+                  })
+                  s.selectedPath = [...path(), list!.length - 1]
+                })
+              )
+            },
+            undo: (): void => {
+              setState(
+                produce((s) => {
+                  walker<ThemeEntry[]>(s.data, path())!.pop()
+                  s.selectedPath = []
+                })
+              )
+            }
+          })
+        }}
+      >
+        <Icon icon="add" />
+        <span class="flex-1 text-ellipsis whitespace-nowrap overflow-hidden">
+          Add a new font family
+        </span>
+      </Button>
+    </li>
+  )
+}
+
 interface ThemeState {
   current: string
   readonly theme: ThemeData
@@ -122,7 +165,7 @@ interface ThemeState {
 }
 
 const WorkspaceLeftPanelTheme: Component = () => {
-  const [workspaceDataStore, , { select, createUpdate }] = useContext(WorkspaceDataContext)
+  const [workspaceDataStore, , { select }] = useContext(WorkspaceDataContext)
   const [state, setState] = createStore<ThemeState>({
     current: 'default',
     get theme(): ThemeData {
@@ -220,6 +263,7 @@ const WorkspaceLeftPanelTheme: Component = () => {
                 </ThemeEntryItem>
               )}
             </For>
+            <AddFontFamilyThemeEntryItem theme={state.themeIndex} />
           </ul>
         </Show>
       </Accordion>

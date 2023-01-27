@@ -47,9 +47,9 @@ body {
     @apply disabled:hover:bg-transparent disabled:hover:text-base-content;
   }
   .btn.btn-error {
-    @apply hover:bg-error hover:bg-opacity-25 hover:text-error-content;
+    @apply hover:bg-error hover:bg-opacity-25 hover:text-base-content;
     @apply focus-visible:outline-none focus-visible:bg-error-focus focus-visible:bg-opacity-20;
-    @apply active:bg-opacity-100;
+    @apply active:bg-opacity-100 active:text-error-content;
     @apply disabled:hover:bg-transparent disabled:hover:text-base-content;
   }
   .btn.btn-designer-nav {

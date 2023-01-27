@@ -3,18 +3,27 @@ import Accordion from '@renderer/components/Accordion'
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import { WorkspaceDataContext } from '@renderer/features/designer/contexts/WorkspaceDataProvider'
-import { Component, ComponentProps, For, JSX, Show, useContext } from 'solid-js'
+import {
+  Component,
+  ComponentProps,
+  createEffect,
+  For,
+  JSX,
+  Show,
+  splitProps,
+  useContext
+} from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 import { Path } from '../../types'
 import { walker } from '../../utils'
 
-interface ThemeEntryItemProps extends ComponentProps<'li'> {
+interface ThemeItemProps extends ComponentProps<'li'> {
   children: JSX.Element
   theme: number
   path: Path
 }
 
-const ThemeEntryItem: Component<ThemeEntryItemProps> = (props: ThemeEntryItemProps) => {
+const ThemeEntryItem: Component<ThemeItemProps> = (props: ThemeItemProps) => {
   const [workspaceDataStore, , { get, select, samePath, createUpdate, setState }] =
     useContext(WorkspaceDataContext)
   const path = (): Path => ['themes', props.theme, ...props.path]
@@ -30,7 +39,7 @@ const ThemeEntryItem: Component<ThemeEntryItemProps> = (props: ThemeEntryItemPro
               list.splice(p[p.length - 1], 1)
               s.selectedPath = []
             } else {
-              console.error('Try to execute delete :', path)
+              console.error('Try to execute delete :', p)
             }
           })
         )
@@ -66,6 +75,71 @@ const ThemeEntryItem: Component<ThemeEntryItemProps> = (props: ThemeEntryItemPro
       >
         <Icon icon="bin" class="w-4 h-4" />
       </Button>
+    </li>
+  )
+}
+
+interface ThemeDataItemProps extends ComponentProps<'button'> {
+  theme: ThemeData
+  active: boolean
+}
+
+const ThemeDataItem: Component<ThemeDataItemProps> = (props: ThemeDataItemProps) => {
+  const [component, button] = splitProps(props, ['theme', 'active'])
+  const [workspaceDataStore, , { get, createUpdate, setState }] = useContext(WorkspaceDataContext)
+  const deleteTheme = (): void => {
+    const p = JSON.parse(
+      JSON.stringify([
+        'themes',
+        workspaceDataStore.data!.themes.findIndex((t) => t.id === component.theme.id)
+      ])
+    )
+    const previous = JSON.parse(JSON.stringify(get(p)))
+    createUpdate({
+      execute: (): void => {
+        setState(
+          produce((s) => {
+            const list = walker(s.data, p.slice(0, -1)) as ThemeData[]
+            if (list) {
+              list.splice(p[p.length - 1], 1)
+              s.selectedPath = []
+            } else {
+              console.error('Try to execute delete :', p)
+            }
+          })
+        )
+      },
+      undo: (): void => {
+        setState(
+          produce((s) => {
+            const list = walker(s.data, p.slice(0, -1)) as ThemeData[]
+            if (list) {
+              list.splice(p[p.length - 1], 0, previous)
+            } else {
+              console.error('Try to undo delete :', p)
+            }
+          })
+        )
+      }
+    })
+  }
+  return (
+    <li class="relative">
+      <Button class="btn-list-item" classList={{ active: component.active }} {...button}>
+        {component.theme.name}
+      </Button>
+      <Show when={workspaceDataStore.data!.themes.length > 1}>
+        <Button
+          class="btn-error btn-icon !p-2 absolute top-1/2 right-1 -translate-y-1/2"
+          // TODO: Why eslint solid/reactivity warning here ? It doesn't throw a warning in the ThemeEntryItem component...
+          // eslint-disable-next-line solid/reactivity
+          onClick={(): void => {
+            deleteTheme()
+          }}
+        >
+          <Icon icon="bin" class="w-4 h-4" />
+        </Button>
+      </Show>
     </li>
   )
 }
@@ -165,22 +239,29 @@ interface ThemeState {
 }
 
 const WorkspaceLeftPanelTheme: Component = () => {
-  const [workspaceDataStore, , { select }] = useContext(WorkspaceDataContext)
-  const [state, setState] = createStore<ThemeState>({
-    current: 'default',
+  const [workspaceDataStore, , { select, setState, createUpdate }] =
+    useContext(WorkspaceDataContext)
+  const [state, setThemeState] = createStore<ThemeState>({
+    current: '',
     get theme(): ThemeData {
-      return workspaceDataStore.data?.themes.find((t) => t.name === this.current) as ThemeData
+      return workspaceDataStore.data?.themes.find((t) => t.id === this.current) as ThemeData
     },
     get themeIndex(): number {
-      return workspaceDataStore.data?.themes.findIndex((t) => t.name === this.current) as number
+      return workspaceDataStore.data?.themes.findIndex((t) => t.id === this.current) as number
     }
+  })
+  createEffect(() => {
+    setThemeState('current', workspaceDataStore.data?.themes[0].id as string)
+  })
+  createEffect(() => {
+    select(['themes', state.themeIndex])
   })
   return (
     <>
       <h1 class="sr-only">Workspace Theme - left panel</h1>
       <Accordion
         accordionId="workspace-themes"
-        opened={false}
+        opened={true}
         label="Themes"
         basis="50%"
         class="bg-base-200 rounded-lg"
@@ -197,20 +278,55 @@ const WorkspaceLeftPanelTheme: Component = () => {
         <ul class="flex flex-col">
           <For each={workspaceDataStore.data?.themes}>
             {(theme): JSX.Element => (
-              <li>
-                <Button
-                  class="btn-list-item"
-                  classList={{ active: state.current === theme.name }}
-                  onClick={(): void => {
-                    setState('current', theme.name)
-                    select([])
-                  }}
-                >
-                  {theme.name}
-                </Button>
-              </li>
+              <ThemeDataItem
+                theme={theme}
+                active={theme.id === state.current}
+                onClick={(): void => {
+                  setThemeState('current', theme.id)
+                }}
+              />
             )}
           </For>
+          <li>
+            <Button
+              class="btn-list-item items-center pl-4 border border-base-200"
+              onClick={(): void => {
+                createUpdate({
+                  execute: (): void => {
+                    setState(
+                      produce((s) => {
+                        const list = walker<ThemeData[]>(s.data, ['themes'])
+                        const newTheme = {
+                          id: crypto.randomUUID(),
+                          name: `new-theme-${list!.length + 1}`,
+                          colors: [],
+                          fonts: {
+                            family: []
+                          }
+                        }
+                        list!.push(newTheme)
+                        s.selectedPath = ['themes', newTheme.id]
+                        setThemeState('current', newTheme.id)
+                      })
+                    )
+                  },
+                  undo: (): void => {
+                    setState(
+                      produce((s) => {
+                        walker<ThemeData[]>(s.data, ['themes'])!.pop()
+                        s.selectedPath = []
+                      })
+                    )
+                  }
+                })
+              }}
+            >
+              <Icon icon="add" />
+              <span class="flex-1 text-ellipsis whitespace-nowrap overflow-hidden">
+                Add a new theme
+              </span>
+            </Button>
+          </li>
         </ul>
       </Accordion>
       <Accordion

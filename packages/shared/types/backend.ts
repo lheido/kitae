@@ -8,6 +8,7 @@ export interface ThemeFontData {
 }
 
 export interface ThemeData {
+  id: string
   name: string
   colors: ThemeEntry[]
   fonts: ThemeFontData

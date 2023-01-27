@@ -1,4 +1,4 @@
-import { ThemeEntry } from '@kitae/shared/types'
+import { ThemeData, ThemeEntry } from '@kitae/shared/types'
 import ColorPicker from '@renderer/components/form/ColorPicker'
 import FormField from '@renderer/components/form/FormField'
 import Toast from '@renderer/components/Toast'
@@ -160,7 +160,7 @@ const FontFamilyThemeEntryForm: Component = () => {
         <input
           type="text"
           name="name"
-          id="theme-color-name-input"
+          id="theme-font-family-name-input"
           value={form.name}
           onInput={(e): void => {
             setForm('name', e.currentTarget.value)
@@ -173,10 +173,76 @@ const FontFamilyThemeEntryForm: Component = () => {
           ref={valueRef}
           type="text"
           name="value"
-          id="theme-color-value-input"
+          id="theme-font-family-value-input"
           value={form.value}
           onInput={(e): void => {
             setForm('value', e.currentTarget.value)
+            setShouldSubmit(true)
+          }}
+        />
+      </FormField>
+    </div>
+  )
+}
+
+type ThemeFormData = Pick<ThemeData, 'name'>
+
+const ThemeForm: Component = () => {
+  const [workspaceDataStore, , { get, createUpdate, setState }] = useContext(WorkspaceDataContext)
+  const [form, setForm] = createStore({ name: '' })
+  const [shouldSubmit, setShouldSubmit] = createSignal(false)
+  createEffect(() => {
+    const data = get(workspaceDataStore.selectedPath) as ThemeFormData
+    setForm({ name: data?.name })
+    setShouldSubmit(false)
+  })
+  const updateHandler = debounce((data: ThemeFormData) => {
+    const path = JSON.parse(JSON.stringify(workspaceDataStore.selectedPath))
+    const previous = JSON.parse(JSON.stringify(get(path))) as ThemeFormData
+    createUpdate({
+      execute: (): void => {
+        setState(
+          produce((s) => {
+            const entry = walker(s.data, path) as ThemeFormData
+            if (entry) {
+              entry.name = data.name
+            } else {
+              console.error('Try to execute update :', path)
+            }
+          })
+        )
+      },
+      undo: (): void => {
+        setState(
+          produce((s) => {
+            const entry = walker(s.data, path) as ThemeFormData
+            if (entry) {
+              entry.name = previous.name
+            } else {
+              console.error('Try to undo update :', path)
+            }
+          })
+        )
+      }
+    })
+  }, 250)
+  createEffect(() => {
+    if (shouldSubmit()) {
+      updateHandler.clear()
+      updateHandler(JSON.parse(JSON.stringify(form)))
+    }
+  })
+  return (
+    <div class="px-2 flex flex-col gap-4">
+      <h1 class="text-lg">Edit Theme</h1>
+      <FormField label="Name">
+        <input
+          type="text"
+          name="name"
+          id="theme-name-input"
+          value={form.name}
+          onInput={(e): void => {
+            setForm('name', e.currentTarget.value)
             setShouldSubmit(true)
           }}
         />
@@ -199,10 +265,25 @@ const WorkspaceRightPanelTheme: Component = () => {
           </Show>
         }
       >
-        <Match when={workspaceDataStore.selectedPath.includes('colors')}>
+        <Match
+          when={
+            workspaceDataStore.selectedPath.length === 2 &&
+            workspaceDataStore.selectedPath.includes('themes') &&
+            workspaceDataStore.selectedPath[1] !== undefined
+          }
+        >
+          <ThemeForm />
+        </Match>
+        <Match
+          when={['themes', 'colors'].every((p) => workspaceDataStore.selectedPath.includes(p))}
+        >
           <ColorThemeEntryForm />
         </Match>
-        <Match when={workspaceDataStore.selectedPath.includes('family')}>
+        <Match
+          when={['themes', 'fonts', 'family'].every((p) =>
+            workspaceDataStore.selectedPath.includes(p)
+          )}
+        >
           <FontFamilyThemeEntryForm />
         </Match>
       </Switch>

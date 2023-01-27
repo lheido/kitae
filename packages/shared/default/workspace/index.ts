@@ -1,4 +1,5 @@
 // import { theme } from 'tailwindcss/defaultConfig'
+import crypto from 'crypto'
 import { WorkspaceData } from '../../types'
 
 // console.log(theme)
@@ -6,6 +7,7 @@ import { WorkspaceData } from '../../types'
 export const defaultWorkspaceData: WorkspaceData = {
   themes: [
     {
+      id: crypto.randomUUID(),
       name: 'default',
       colors: [
         { name: 'primary', value: 'hsl(158deg, 64%, 32%)' },

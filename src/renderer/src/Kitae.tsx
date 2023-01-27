@@ -10,7 +10,7 @@ import { routes } from './kitae.routing'
 
 const App: Component = () => {
   return (
-    <>
+    <WorkspaceDataProvider>
       <header
         style={{
           height: `${api.windowArgs ? api.windowArgs['title-bar-overlay-height'] : 36}px`,
@@ -21,9 +21,8 @@ const App: Component = () => {
         <p class="text-ellipsis whitespace-nowrap overflow-hidden">Kitae</p>
         <Show when={routerState.current?.name === 'designer' && workspacesState.current}>
           <WorkspacesMenu />
-          <WorkspaceDataProvider>
-            <DesignerToolbarActions />
-          </WorkspaceDataProvider>
+
+          <DesignerToolbarActions />
         </Show>
       </header>
       <main
@@ -36,7 +35,7 @@ const App: Component = () => {
       >
         <Routes routes={routes} initialRoute={routes[0]} />
       </main>
-    </>
+    </WorkspaceDataProvider>
   )
 }
 

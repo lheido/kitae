@@ -2,7 +2,7 @@ import { WorkspaceData } from '@kitae/shared/types'
 import { api } from '@renderer/features/api'
 import { workspacesState } from '@renderer/features/workspaces'
 import { createShortcut } from '@solid-primitives/keyboard'
-import { Component, createContext, onMount } from 'solid-js'
+import { Component, createContext, createEffect } from 'solid-js'
 import { createStore, produce, SetStoreFunction } from 'solid-js/store'
 import {
   Path,
@@ -58,10 +58,8 @@ export const WorkspaceDataProvider: Component<WorkspaceDataProviderProps> = (
   const undo = (): void => {
     setUpdates(
       produce((u) => {
-        updates.history[u.position].undo()
-        // if (u.position > 0) {
+        u.history[u.position].undo()
         u.position -= 1
-        // }
       })
     )
   }
@@ -70,7 +68,7 @@ export const WorkspaceDataProvider: Component<WorkspaceDataProviderProps> = (
       produce((u) => {
         if (u.position < u.history.length - 1) {
           u.position += 1
-          updates.history[u.position].execute()
+          u.history[u.position].execute()
         }
       })
     )
@@ -106,37 +104,39 @@ export const WorkspaceDataProvider: Component<WorkspaceDataProviderProps> = (
       }
     }
   ]
-  onMount(() => {
-    api
-      .getWorkspaceData(JSON.parse(JSON.stringify(workspacesState.currentWorkspace)))
-      .then((result) => {
-        if ('themes' in result) {
-          setState('data', result as WorkspaceData)
-          setState('state', 'ready')
-        } else {
-          setState('state', 'error')
-          setState('error', result as Error)
-        }
-      })
-    createShortcut(
-      undo.shortcut,
-      () => {
-        if (isUndoable()) {
-          undo()
-        }
-      },
-      { preventDefault: true }
-    )
-    createShortcut(
-      redo.shortcut,
-      () => {
-        if (isRedoable()) {
-          redo()
-        }
-      },
-      { preventDefault: true }
-    )
+  createEffect(() => {
+    if (workspacesState.current !== undefined) {
+      api
+        .getWorkspaceData(JSON.parse(JSON.stringify(workspacesState.currentWorkspace)))
+        .then((result) => {
+          if ('themes' in result) {
+            setState('data', result as WorkspaceData)
+            setState('state', 'ready')
+          } else {
+            setState('state', 'error')
+            setState('error', result as Error)
+          }
+        })
+    }
   })
+  createShortcut(
+    undo.shortcut,
+    () => {
+      if (isUndoable()) {
+        undo()
+      }
+    },
+    { preventDefault: true }
+  )
+  createShortcut(
+    redo.shortcut,
+    () => {
+      if (isRedoable()) {
+        redo()
+      }
+    },
+    { preventDefault: true }
+  )
   return (
     <WorkspaceDataContext.Provider value={store}>{props.children}</WorkspaceDataContext.Provider>
   )

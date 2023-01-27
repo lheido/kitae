@@ -1,7 +1,7 @@
 import { Component, Show } from 'solid-js'
 import WorkspacesMenu from './components/WorkspacesMenu'
 import { api } from './features/api'
-import DesignerToolbarActions from './features/designer/components/DesignerToolbarActions'
+import DesignerToolbar from './features/designer/components/DesignerToolbar'
 import { WorkspaceDataProvider } from './features/designer/contexts/WorkspaceDataProvider'
 import { routerState } from './features/router'
 import Routes from './features/router/Routes'
@@ -21,8 +21,7 @@ const App: Component = () => {
         <p class="text-ellipsis whitespace-nowrap overflow-hidden">Kitae</p>
         <Show when={routerState.current?.name === 'designer' && workspacesState.current}>
           <WorkspacesMenu />
-
-          <DesignerToolbarActions />
+          <DesignerToolbar />
         </Show>
       </header>
       <main

@@ -30,7 +30,7 @@ export type ResultWorkspaceDataContext = [
 ]
 
 const initialValue: WorkspaceDataState = { selectedPath: [], data: undefined, state: 'loading' }
-const initialUpdates: WorkspaceDataUpdates = { history: [], position: -1 }
+const initialUpdates: WorkspaceDataUpdates = { history: [], position: -1, waitForSave: false }
 const fallbackUndo = (): void => {}
 fallbackUndo.shortcut = []
 const fallbackRedo = (): void => {}
@@ -56,11 +56,30 @@ export const WorkspaceDataProvider: Component<WorkspaceDataProviderProps> = (
 ) => {
   const [state, setState] = createStore<WorkspaceDataState>(initialValue)
   const [updates, setUpdates] = createStore<WorkspaceDataUpdates>(initialUpdates)
+  const saveWorkspaceData = debounce(
+    async (workspace: Workspace, data: WorkspaceData): Promise<void> => {
+      await api.setWorkspaceData(
+        JSON.parse(JSON.stringify(workspace)),
+        JSON.parse(JSON.stringify(data))
+      )
+      setUpdates('waitForSave', false)
+    },
+    2000
+  )
+  const saveWorkspaceDataHandler = (workspace: Workspace, data: WorkspaceData): void => {
+    saveWorkspaceData.clear()
+    setUpdates('waitForSave', true)
+    saveWorkspaceData(workspace, data)
+  }
   const undo = (): void => {
     setUpdates(
       produce((u) => {
         u.history[u.position].undo()
         u.position -= 1
+        saveWorkspaceDataHandler(
+          workspacesState.currentWorkspace as Workspace,
+          state.data as WorkspaceData
+        )
       })
     )
   }
@@ -70,6 +89,10 @@ export const WorkspaceDataProvider: Component<WorkspaceDataProviderProps> = (
         if (u.position < u.history.length - 1) {
           u.position += 1
           u.history[u.position].execute()
+          saveWorkspaceDataHandler(
+            workspacesState.currentWorkspace as Workspace,
+            state.data as WorkspaceData
+          )
         }
       })
     )
@@ -78,9 +101,6 @@ export const WorkspaceDataProvider: Component<WorkspaceDataProviderProps> = (
   redo.shortcut = ['Control', 'y']
   const isUndoable = (): boolean => updates.position >= 0
   const isRedoable = (): boolean => updates.position < updates.history.length - 1
-  const saveWorkspaceData = debounce((workspace: Workspace, data: WorkspaceData): void => {
-    api.setWorkspaceData(JSON.parse(JSON.stringify(workspace)), JSON.parse(JSON.stringify(data)))
-  }, 2000)
   const store: ResultWorkspaceDataContext = [
     state,
     updates,
@@ -93,8 +113,7 @@ export const WorkspaceDataProvider: Component<WorkspaceDataProviderProps> = (
             u.history.splice(u.position, u.position + 1)
             u.history.push(update)
             update.execute()
-            saveWorkspaceData.clear()
-            saveWorkspaceData(
+            saveWorkspaceDataHandler(
               workspacesState.currentWorkspace as Workspace,
               state.data as WorkspaceData
             )

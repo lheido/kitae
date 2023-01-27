@@ -22,4 +22,5 @@ export interface WorkspaceUpdate {
 export interface WorkspaceDataUpdates {
   history: WorkspaceUpdate[]
   position: number
+  waitForSave: boolean
 }

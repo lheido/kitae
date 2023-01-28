@@ -263,6 +263,7 @@ const WorkspaceLeftPanelTheme: Component = () => {
         accordionId="workspace-themes"
         opened={true}
         label="Themes"
+        icon="theme"
         basis="50%"
         class="bg-base-200 rounded-lg"
         headerSlot={
@@ -283,6 +284,10 @@ const WorkspaceLeftPanelTheme: Component = () => {
                 active={theme.id === state.current}
                 onClick={(): void => {
                   setThemeState('current', theme.id)
+                  select([
+                    'themes',
+                    workspaceDataStore.data?.themes.findIndex((t) => t.id === theme.id) as number
+                  ])
                 }}
               />
             )}
@@ -333,6 +338,7 @@ const WorkspaceLeftPanelTheme: Component = () => {
         accordionId="workspace-colors"
         opened={true}
         label="Colors"
+        icon="edit-color"
         basis="200%"
         class="bg-base-200 rounded-lg max-w-xs"
       >
@@ -362,6 +368,7 @@ const WorkspaceLeftPanelTheme: Component = () => {
         accordionId="workspace-font"
         opened={true}
         label="Fonts"
+        icon="font-family"
         basis="100%"
         class="bg-base-200 rounded-lg"
       >

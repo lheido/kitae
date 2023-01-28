@@ -6,14 +6,17 @@ import {
   createEffect,
   createSignal,
   JSX,
+  Show,
   splitProps,
   untrack
 } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 import AnimatedArrowDown from './AnimatedArrowDown'
+import Icon from './Icon'
 
 interface AccordionProps extends ComponentProps<'section'> {
   label: string | JSX.Element
+  icon?: string
   accordionId: string
   opened: boolean
   headerSlot?: JSX.Element
@@ -23,7 +26,7 @@ interface AccordionProps extends ComponentProps<'section'> {
 const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
   const [component, classes, container] = splitProps(
     props,
-    ['label', 'opened', 'accordionId', 'headerSlot', 'children', 'basis'],
+    ['label', 'icon', 'opened', 'accordionId', 'headerSlot', 'children', 'basis'],
     ['class']
   )
   const [expanded, setExpanded] = createSignal(untrack(() => component.opened))
@@ -67,10 +70,15 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
             id={ids().header}
             aria-controls={ids().content}
             aria-expanded={expanded()}
-            class="px-2 py-1 flex-1 flex justify-center items-center hover:bg-base-300 transition-colors"
+            class="px-2 py-1 flex-1 flex gap-2 items-center hover:bg-base-300 transition-colors"
             onClick={(): boolean => setExpanded((prev) => !prev)}
           >
-            <span class="flex-1 text-left">{component.label}</span>
+            <Show when={component.icon}>
+              <Icon icon={component.icon as string} class="w-4 h-4" />
+            </Show>
+            <span class="flex-1 text-left text-ellipsis whitespace-nowrap overflow-hidden">
+              {component.label}
+            </span>
             <AnimatedArrowDown initial={component.opened} state={expanded()} class="h-4 w-4" />
           </button>
         </h1>

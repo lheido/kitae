@@ -1,6 +1,7 @@
 import { ThemeData, ThemeEntry } from '@kitae/shared/types'
 import ColorPicker from '@renderer/components/form/ColorPicker'
 import FormField from '@renderer/components/form/FormField'
+import Icon from '@renderer/components/Icon'
 import Toast from '@renderer/components/Toast'
 import { debounce } from '@solid-primitives/scheduled'
 import Color from 'color'
@@ -60,7 +61,10 @@ const ColorThemeEntryForm: Component = () => {
   })
   return (
     <div class="px-2 flex flex-col gap-4">
-      <h1 class="text-lg">Edit Color</h1>
+      <div class="flex items-center gap-2">
+        <Icon icon="edit-color" />
+        <h1 class="text-lg text-ellipsis whitespace-nowrap overflow-hidden">Edit Color</h1>
+      </div>
       <FormField label="Name">
         <input
           type="text"
@@ -155,7 +159,10 @@ const FontFamilyThemeEntryForm: Component = () => {
   })
   return (
     <div class="px-2 flex flex-col gap-4">
-      <h1 class="text-lg">Edit Font Family</h1>
+      <div class="flex items-center gap-2">
+        <Icon icon="font-family" />
+        <h1 class="text-lg text-ellipsis whitespace-nowrap overflow-hidden">Edit Font Family</h1>
+      </div>
       <FormField label="Name">
         <input
           type="text"
@@ -234,7 +241,10 @@ const ThemeForm: Component = () => {
   })
   return (
     <div class="px-2 flex flex-col gap-4">
-      <h1 class="text-lg">Edit Theme</h1>
+      <div class="flex items-center gap-2">
+        <Icon icon="theme" />
+        <h1 class="text-lg text-ellipsis whitespace-nowrap overflow-hidden">Edit Theme</h1>
+      </div>
       <FormField label="Name">
         <input
           type="text"

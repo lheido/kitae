@@ -25,7 +25,7 @@ export const panels: Record<string, { left: Component; right?: Component }> = {
 }
 
 export const [designerState, setDesignerState] = createStore<DesignerState>({
-  current: 'theme',
+  current: 'views',
   get leftPanel(): Component {
     return panels[this.current].left
   },

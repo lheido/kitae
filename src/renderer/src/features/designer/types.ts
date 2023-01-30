@@ -1,11 +1,6 @@
 import { WorkspaceData } from '@kitae/shared/types'
-import { JSX } from 'solid-js'
 
 export type Path = (string | number)[]
-
-export interface WorkspaceDataProviderProps {
-  children: JSX.Element
-}
 
 export interface WorkspaceDataState {
   selectedPath: Path

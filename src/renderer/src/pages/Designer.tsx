@@ -1,14 +1,15 @@
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
-import { designerState, setDesignerState } from '@renderer/features/designer'
-import { Component, For, JSX, Show } from 'solid-js'
+import { WorkspaceDataContext } from '@renderer/features/designer'
+import { Component, For, JSX, Show, useContext } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 const Designer: Component = () => {
+  const [state, { navigate, getLeftPanel, getRightPanel }] = useContext(WorkspaceDataContext)
   const panels: { id: string; icon: string; label: string; rightPanel: boolean }[] = [
     { id: 'settings', icon: 'settings', label: 'Settings', rightPanel: false },
     { id: 'views', icon: 'designer-tree', label: 'Views', rightPanel: true },
-    { id: 'theme', icon: 'palette', label: 'Theme', rightPanel: true }
+    { id: 'themes', icon: 'palette', label: 'Theme', rightPanel: true }
   ]
   return (
     <section class="flex-1 h-full flex designer-page">
@@ -19,15 +20,15 @@ const Designer: Component = () => {
             {(panel, index): JSX.Element => (
               <li
                 classList={{
-                  active: designerState.current === panel.id,
+                  active: state.current[0] === panel.id,
                   'before-active':
-                    panels.findIndex((p) => p.id === designerState.current) === index() + 1
+                    panels.findIndex((p) => p.id === state.current[0]) === index() + 1
                 }}
               >
                 <Button
                   class="btn-designer-nav"
-                  classList={{ active: designerState.current === panel.id }}
-                  onClick={(): void => setDesignerState('current', panel.id)}
+                  classList={{ active: state.current[0] === panel.id }}
+                  onClick={(): void => navigate([panel.id])}
                 >
                   <Icon icon={panel.icon} />
                   <span class="text-xs">{panel.label}</span>
@@ -38,7 +39,9 @@ const Designer: Component = () => {
         </ul>
       </section>
       <section class="bg-base-100 p-2 basis-80 transition-all flex flex-col gap-2 h-full">
-        <Dynamic component={designerState.leftPanel} />
+        <Show when={state.data}>
+          <Dynamic component={getLeftPanel()} />
+        </Show>
       </section>
       <section class="bg-base-100 flex-1 flex flex-col">
         <header class="py-2 px-3">Preview header</header>
@@ -51,11 +54,11 @@ const Designer: Component = () => {
       <section
         class="bg-base-100 p-2 transition-all basis-0 overflow-hidden flex flex-col gap-2 h-full"
         classList={{
-          '!basis-80': panels.find((p) => p.id === designerState.current)?.rightPanel
+          '!basis-80': panels.find((p) => p.id === state.current[0])?.rightPanel
         }}
       >
-        <Show when={designerState.rightPanel}>
-          <Dynamic component={designerState.rightPanel} />
+        <Show when={state.data}>
+          <Dynamic component={getRightPanel()} />
         </Show>
       </section>
     </section>

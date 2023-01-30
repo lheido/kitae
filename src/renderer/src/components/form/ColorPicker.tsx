@@ -4,10 +4,11 @@ import { Component, ComponentProps, createEffect, createSignal, onMount } from '
 import 'vanilla-colorful'
 import { HexColorPicker } from 'vanilla-colorful'
 
-declare global {
+declare module 'solid-js' {
   namespace JSX {
     interface IntrinsicElements {
-      ['hex-color-picker']: HexColorPicker
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ['hex-color-picker']: any
     }
   }
 }

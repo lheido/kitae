@@ -5,6 +5,58 @@ import { WorkspaceData } from '../../types'
 // console.log(theme)
 
 export const defaultWorkspaceData: WorkspaceData = {
+  components: [],
+  pages: [
+    {
+      id: crypto.randomUUID(),
+      name: 'Home',
+      type: 'container',
+      children: [
+        {
+          id: crypto.randomUUID(),
+          name: 'Header',
+          type: 'container',
+          config: {
+            semantic: 'header'
+          },
+          children: [
+            {
+              id: crypto.randomUUID(),
+              name: 'Title',
+              type: 'text',
+              config: {
+                text: 'Hello World',
+                semantic: 'h1'
+              }
+            }
+          ]
+        },
+        {
+          id: crypto.randomUUID(),
+          name: 'Main',
+          type: 'container',
+          children: [
+            {
+              id: crypto.randomUUID(),
+              name: 'Button',
+              type: 'button',
+              children: [
+                {
+                  id: crypto.randomUUID(),
+                  name: 'Button Text',
+                  type: 'text',
+                  config: {
+                    text: 'Click Me',
+                    semantic: 'span'
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
   themes: [
     {
       id: crypto.randomUUID(),

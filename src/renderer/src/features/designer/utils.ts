@@ -1,4 +1,4 @@
-import { Path } from './types'
+import { Path } from '@kitae/shared/types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const walker = <T>(tree: any, path: Path): T | undefined => {

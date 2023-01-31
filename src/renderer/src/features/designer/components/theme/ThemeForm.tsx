@@ -6,12 +6,11 @@ import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect, createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { useDesignerState } from '../../designer.state'
+import { DesignerHistoryHandlers, ThemeFormData } from '../../types'
 import { walker } from '../../utils'
 
-type ThemeFormData = Pick<ThemeData, 'name'>
-
 const ThemeForm: Component = () => {
-  const [state, { updatePath, getCurrentData }] = useDesignerState()
+  const [state, { getCurrentData }] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const [form, setForm] = createStore({ name: '' })
   const [shouldSubmit, setShouldSubmit] = createSignal(false)
@@ -24,16 +23,10 @@ const ThemeForm: Component = () => {
     const path = JSON.parse(JSON.stringify(state.current))
     const previous = JSON.parse(JSON.stringify(walker(state.data, path))) as ThemeData
     makeChange({
-      execute: (): void => {
-        updatePath(path, (current: ThemeFormData): void => {
-          current.name = data.name
-        })
-      },
-      undo: (): void => {
-        updatePath(path, (current: ThemeFormData): void => {
-          current.name = previous.name
-        })
-      }
+      path,
+      type: 'update',
+      changes: [data.name, previous.name],
+      handler: DesignerHistoryHandlers.UPDATE_THEME_DATA
     })
   }, 250)
   createEffect(() => {

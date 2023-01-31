@@ -8,12 +8,13 @@ import Color from 'color'
 import { Component, createEffect, createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { useDesignerState } from '../../designer.state'
+import { DesignerHistoryHandlers } from '../../types'
 import { walker } from '../../utils'
 
 const ColorForm: Component = () => {
   let colorPickerRef: HTMLDivElement | undefined
   let valueRef: HTMLInputElement | undefined
-  const [state, { updatePath, getCurrentData }] = useDesignerState()
+  const [state, { getCurrentData }] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const [form, setForm] = createStore({ name: '', value: '' })
   const [shouldSubmit, setShouldSubmit] = createSignal(false)
@@ -26,18 +27,10 @@ const ColorForm: Component = () => {
     const path = JSON.parse(JSON.stringify(state.current))
     const previous = JSON.parse(JSON.stringify(walker(state.data, path))) as ThemeEntry
     makeChange({
-      execute: (): void => {
-        updatePath(path, (current: ThemeEntry): void => {
-          current.name = data.name
-          current.value = data.value
-        })
-      },
-      undo: (): void => {
-        updatePath(path, (current: ThemeEntry): void => {
-          current.name = previous.name
-          current.value = previous.value
-        })
-      }
+      path,
+      type: 'update',
+      changes: [previous, data],
+      handler: DesignerHistoryHandlers.UPDATE_THEME_ENTRY
     })
   }, 250)
   createEffect(() => {

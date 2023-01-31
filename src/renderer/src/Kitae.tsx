@@ -3,11 +3,15 @@ import WorkspacesMenu from './components/WorkspacesMenu'
 import { api } from './features/api'
 import DesignerToolbar from './features/designer/components/DesignerToolbar'
 import { WorkspaceDataProvider } from './features/designer/contexts/WorkspaceDataProvider'
+import { WorkspaceDataHsitoryHandlers } from './features/designer/history-handlers'
+import { registerHistoryChangeHandler } from './features/history'
 import { ShortcutProvider } from './features/keyboard'
 import { routerState } from './features/router'
 import Routes from './features/router/Routes'
 import { workspacesState } from './features/workspaces'
 import { routes } from './kitae.routing'
+
+registerHistoryChangeHandler(WorkspaceDataHsitoryHandlers)
 
 const App: Component = () => {
   return (

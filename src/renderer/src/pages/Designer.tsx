@@ -1,6 +1,7 @@
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import { WorkspaceDataContext } from '@renderer/features/designer'
+import Preview from '@renderer/features/designer/components/Preview'
 import { Component, For, JSX, Show, useContext } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
@@ -44,12 +45,7 @@ const Designer: Component = () => {
         </Show>
       </section>
       <section class="bg-base-100 flex-1 flex flex-col">
-        <header class="py-2 px-3">Preview header</header>
-        <div class="bg-base-300 flex-1 p-4 rounded-t-lg overflow-hidden">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut atque asperiores
-          exercitationem incidunt repudiandae in vero accusamus, eligendi enim tempore, laboriosam
-          quod! Molestiae ab eum quos deleniti modi adipisci accusantium.
-        </div>
+        <Preview />
       </section>
       <section
         class="bg-base-100 p-2 transition-all basis-0 overflow-hidden flex flex-col gap-2 h-full"

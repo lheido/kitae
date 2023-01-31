@@ -1,14 +1,21 @@
-import { WorkspaceData } from '@kitae/shared/types'
+import { Path, WorkspaceData } from '@kitae/shared/types'
 import { Component } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 import ColorForm from './components/theme/ColorForm'
 import FontFamilyForm from './components/theme/FontFamilyForm'
 import ThemeForm from './components/theme/ThemeForm'
 import ThemeLeftPanel from './components/theme/ThemeLeftPanel'
-import { Path } from './types'
+import ViewsLeftPanel from './components/views/ViewsLeftPanel'
 import { walker } from './utils'
 
 export interface DesignerState {
+  /**
+   * The current displayed page in the preview panel.
+   */
+  page?: string
+  /**
+   * The current edited path in the workspace data tree.
+   */
   current: Path
   /**
    * The complete workspace data tree.
@@ -24,6 +31,7 @@ export interface DesignerStateActions {
   waitForSave: (value: boolean) => void
   setData: (data?: WorkspaceData) => void
   setError: (error?: unknown) => void
+  setPage: (page?: string) => void
   getLeftPanel: () => Component | undefined
   getRightPanel: () => Component | undefined
   getCurrentData: () => unknown
@@ -43,6 +51,10 @@ export const routes: Routes = [
     left: ThemeLeftPanel
   },
   {
+    path: 'views',
+    left: ViewsLeftPanel
+  },
+  {
     path: 'themes/$',
     right: ThemeForm
   },
@@ -57,7 +69,8 @@ export const routes: Routes = [
 ]
 
 export const initialState: DesignerState = {
-  current: ['themes'],
+  page: undefined,
+  current: ['views'],
   waitForSave: false,
   data: undefined,
   error: undefined
@@ -89,6 +102,9 @@ export const useDesignerState = (): [DesignerState, DesignerStateActions] => {
       },
       setError: (error?: unknown): void => {
         setState('error', error)
+      },
+      setPage: (page?: string): void => {
+        setState('page', page)
       },
       getLeftPanel: (): Component | undefined => {
         const currentPath = state.current.map((e) => (typeof e === 'number' ? '$' : e)).join('/')

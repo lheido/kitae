@@ -14,7 +14,19 @@ export interface ThemeData {
   fonts: ThemeFontData
 }
 
+export interface ComponentData {
+  id: string
+  name: string
+  type: string // container | button | etc
+  children?: ComponentData[]
+  driver?: string // react | astro | solid | etc
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config?: any
+}
+
 export interface WorkspaceData {
+  components: ComponentData[]
+  pages: ComponentData[]
   themes: ThemeData[]
 }
 

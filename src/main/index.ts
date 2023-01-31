@@ -13,6 +13,15 @@ let mainWindow: BrowserWindow
 
 function createWindow(): void {
   const settings = getSettings()
+  const appUrl =
+    is.dev && process.env['ELECTRON_RENDERER_URL']
+      ? process.env['ELECTRON_RENDERER_URL']
+      : `file://${join(__dirname, '../renderer/index.html')}`
+  const previewUrl =
+    is.dev && process.env['ELECTRON_RENDERER_URL']
+      ? `${process.env['ELECTRON_RENDERER_URL']}/preview.html`
+      : `file://${join(__dirname, '../renderer/preview.html')}`
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: settings.window?.width ?? 900,
@@ -27,7 +36,10 @@ function createWindow(): void {
     },
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      additionalArguments: [`--title-bar-overlay-height=${TITLE_BAR_OVERLAY_HEIGHT}`],
+      additionalArguments: [
+        `--title-bar-overlay-height=${TITLE_BAR_OVERLAY_HEIGHT}`,
+        `--kitae-preview-url=${previewUrl}`
+      ],
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
@@ -64,11 +76,12 @@ function createWindow(): void {
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  }
+  mainWindow.loadURL(appUrl)
+  // if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+  //   mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+  // } else {
+  //   mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  // }
 }
 
 // This method will be called when Electron has finished

@@ -1,7 +1,7 @@
 import { WorkspaceData } from './backend'
 import { Workspace } from './workspace'
 
-export type WindowArgumentsKeys = 'title-bar-overlay-height'
+export type WindowArgumentsKeys = 'title-bar-overlay-height' | 'kitae-preview-url'
 
 export type WindowArgs = Record<WindowArgumentsKeys, string>
 
@@ -14,3 +14,5 @@ export interface UiApi {
   getWorkspaceData(workspace: Workspace): Promise<WorkspaceData | Error>
   setWorkspaceData(workspace: Workspace, data: WorkspaceData): Promise<boolean | Error>
 }
+
+export type Path = (string | number)[]

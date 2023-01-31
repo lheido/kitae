@@ -1,11 +1,11 @@
-import { ThemeData, ThemeEntry } from '@kitae/shared/types'
+import { Path, ThemeData, ThemeEntry } from '@kitae/shared/types'
 import Accordion from '@renderer/components/Accordion'
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import { useHistory } from '@renderer/features/history'
 import { Component, ComponentProps, createMemo, For, JSX, Show, splitProps } from 'solid-js'
 import { useDesignerState } from '../../designer.state'
-import { Path } from '../../types'
+import { DesignerHistoryHandlers } from '../../types'
 import { samePath, walker } from '../../utils'
 
 interface ThemeItemProps extends ComponentProps<'li'> {
@@ -15,7 +15,7 @@ interface ThemeItemProps extends ComponentProps<'li'> {
 }
 
 const ThemeEntryItem: Component<ThemeItemProps> = (props: ThemeItemProps) => {
-  const [state, { updatePath, navigate }] = useDesignerState()
+  const [state, { navigate }] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const path = (): Path => ['themes', props.theme, ...props.path]
   const active = (): boolean => samePath(path(), state.current)
@@ -24,18 +24,16 @@ const ThemeEntryItem: Component<ThemeItemProps> = (props: ThemeItemProps) => {
     const previous = JSON.parse(JSON.stringify(walker(state.data, p)))
     const isActive = JSON.parse(JSON.stringify(active()))
     makeChange({
-      execute: (): void => {
-        updatePath(p, (_, list: ThemeEntry[]) => {
-          list.splice(p[p.length - 1], 1)
-        })
-        if (isActive) {
-          navigate(['themes', props.theme])
+      path: p,
+      type: 'remove',
+      changes: previous,
+      handler: DesignerHistoryHandlers.DELETE_THEME_ENTRY,
+      additionalHandler: {
+        execute: (): void => {
+          if (isActive) {
+            navigate(['themes', props.theme])
+          }
         }
-      },
-      undo: (): void => {
-        updatePath(p, (_, list: ThemeEntry[]) => {
-          list.splice(p[p.length - 1], 0, previous)
-        })
       }
     })
   }
@@ -67,7 +65,7 @@ interface ThemeDataItemProps extends ComponentProps<'button'> {
 
 const ThemeDataItem: Component<ThemeDataItemProps> = (props: ThemeDataItemProps) => {
   const [component, button] = splitProps(props, ['theme', 'active'])
-  const [state, { updatePath, navigate }] = useDesignerState()
+  const [state, { navigate }] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const deleteTheme = (): void => {
     const p = JSON.parse(
@@ -77,20 +75,20 @@ const ThemeDataItem: Component<ThemeDataItemProps> = (props: ThemeDataItemProps)
     const isActive = JSON.parse(JSON.stringify(component.active))
     const newIndex = Math.max(Math.min(p[1] - 1, state.data!.themes.length - 1), 0)
     makeChange({
-      execute: (): void => {
-        updatePath(p, (_, list: ThemeData[]) => {
-          list.splice(p[p.length - 1], 1)
-        })
-        if (isActive) {
-          navigate(['themes', newIndex])
-        }
-      },
-      undo: (): void => {
-        updatePath(p, (_, list: ThemeData[]) => {
-          list.splice(p[p.length - 1], 0, previous)
-        })
-        if (isActive) {
-          navigate(['themes', p[1]])
+      path: p,
+      type: 'remove',
+      changes: previous,
+      handler: DesignerHistoryHandlers.DELETE_THEME_DATA,
+      additionalHandler: {
+        execute: (): void => {
+          if (isActive) {
+            navigate(['themes', newIndex])
+          }
+        },
+        undo: (): void => {
+          if (isActive) {
+            navigate(['themes', p[1]])
+          }
         }
       }
     })
@@ -123,29 +121,32 @@ interface AddThemeEntryItemProps extends ComponentProps<'li'> {
 const AddColorThemeEntryItem: Component<AddThemeEntryItemProps> = (
   props: AddThemeEntryItemProps
 ) => {
-  const [state, { updatePath, navigate }] = useDesignerState()
+  const [state, { navigate }] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const path = createMemo((): Path => ['themes', props.theme, 'colors'])
   return (
     <li>
       <Button
         class="btn-list-item items-center pl-4 border border-base-200"
+        // eslint-disable-next-line solid/reactivity
         onClick={(): void => {
+          const p = JSON.parse(JSON.stringify(path()))
+          const changes = {
+            name: 'new-color',
+            value: '#828282'
+          }
           makeChange({
-            execute: (): void => {
-              updatePath(path(), (list: ThemeEntry[]) => {
-                list.push({
-                  name: 'new-color',
-                  value: '#828282'
-                })
-              })
-              navigate([...path(), walker<ThemeEntry[]>(state.data, path())!.length - 1])
-            },
-            undo: (): void => {
-              updatePath(path(), (list: ThemeEntry[]) => {
-                list.pop()
-              })
-              navigate(['themes', props.theme])
+            path: p,
+            type: 'add',
+            changes,
+            handler: DesignerHistoryHandlers.ADD_THEME_ENTRY,
+            additionalHandler: {
+              execute: (): void => {
+                navigate([...p, walker<ThemeEntry[]>(state.data, p)!.length - 1])
+              },
+              undo: (): void => {
+                navigate(['themes', props.theme])
+              }
             }
           })
         }}
@@ -160,29 +161,32 @@ const AddColorThemeEntryItem: Component<AddThemeEntryItemProps> = (
 const AddFontFamilyThemeEntryItem: Component<AddThemeEntryItemProps> = (
   props: AddThemeEntryItemProps
 ) => {
-  const [state, { updatePath, navigate }] = useDesignerState()
+  const [state, { navigate }] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const path = createMemo((): Path => ['themes', props.theme, 'fonts', 'family'])
   return (
     <li>
       <Button
         class="btn-list-item items-center pl-4 border border-base-200"
+        // eslint-disable-next-line solid/reactivity
         onClick={(): void => {
+          const p = JSON.parse(JSON.stringify(path()))
+          const changes = {
+            name: 'new-font-family',
+            value: 'sans-serif'
+          }
           makeChange({
-            execute: (): void => {
-              updatePath(path(), (list: ThemeEntry[]) => {
-                list.push({
-                  name: 'new-font-family',
-                  value: 'sans-serif'
-                })
-              })
-              navigate([...path(), walker<ThemeEntry[]>(state.data, path())!.length - 1])
-            },
-            undo: (): void => {
-              updatePath(path(), (list: ThemeEntry[]) => {
-                list.pop()
-              })
-              navigate(['themes', props.theme])
+            path: p,
+            type: 'add',
+            changes,
+            handler: DesignerHistoryHandlers.ADD_THEME_ENTRY,
+            additionalHandler: {
+              execute: (): void => {
+                navigate([...p, walker<ThemeEntry[]>(state.data, p)!.length - 1])
+              },
+              undo: (): void => {
+                navigate(['themes', props.theme])
+              }
             }
           })
         }}
@@ -197,7 +201,7 @@ const AddFontFamilyThemeEntryItem: Component<AddThemeEntryItemProps> = (
 }
 
 const ThemeLeftPanel: Component = () => {
-  const [state, { navigate, updatePath }] = useDesignerState()
+  const [state, { navigate }] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const selectedThemeIndex = createMemo((): number => (state.current[1] as number) ?? 0)
   const selectedTheme = createMemo((): ThemeData => {
@@ -244,26 +248,26 @@ const ThemeLeftPanel: Component = () => {
             <Button
               class="btn-list-item items-center pl-4 border border-base-200"
               onClick={(): void => {
+                const changes = {
+                  id: crypto.randomUUID(),
+                  name: `new-theme`,
+                  colors: [],
+                  fonts: {
+                    family: []
+                  }
+                }
                 makeChange({
-                  execute: (): void => {
-                    updatePath(['themes'], (list: ThemeData[]) => {
-                      const newTheme = {
-                        id: crypto.randomUUID(),
-                        name: `new-theme-${list.length + 1}`,
-                        colors: [],
-                        fonts: {
-                          family: []
-                        }
-                      }
-                      list.push(newTheme)
-                    })
-                    navigate(['themes', state.data!.themes.length - 1])
-                  },
-                  undo: (): void => {
-                    updatePath(['themes'], (list: ThemeData[]) => {
-                      list.pop()
-                    })
-                    navigate(['themes', state.data!.themes.length - 1])
+                  path: ['themes'],
+                  type: 'add',
+                  changes,
+                  handler: DesignerHistoryHandlers.ADD_THEME_DATA,
+                  additionalHandler: {
+                    execute: (): void => {
+                      navigate(['themes', state.data!.themes.length - 1])
+                    },
+                    undo: (): void => {
+                      navigate(['themes', state.data!.themes.length - 1])
+                    }
                   }
                 })
               }}

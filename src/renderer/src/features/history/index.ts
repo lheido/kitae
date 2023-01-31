@@ -1,9 +1,19 @@
+import { Path } from '@kitae/shared/types'
+import { createSignal } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
 import { registerGlobalShortcut, Shortcut } from '../keyboard'
 
 export interface HistoryChange {
-  execute: () => void
-  undo: () => void
+  path: Path
+  type: 'update' | 'add' | 'remove'
+  changes: unknown
+  handler: string
+  additionalHandler?: Partial<HistoryChangeHandler>
+}
+
+export interface HistoryChangeHandler {
+  execute: (change: HistoryChange) => void
+  undo: (change: HistoryChange) => void
 }
 
 export interface HistoryChangesState {
@@ -25,9 +35,12 @@ export interface HistoryChangesActions {
    */
   reset: () => void
 }
-
+const historyChangeHandlers: Record<string, HistoryChangeHandler> = {}
 const initialState: HistoryChangesState = { history: [], position: -1 }
 const [state, setState] = createStore<HistoryChangesState>(initialState)
+export const [historyEvent, dispatchEvent] = createSignal<string | undefined>(undefined, {
+  equals: () => false
+})
 
 const makeChange = (change: HistoryChange): void => {
   setState(
@@ -35,7 +48,13 @@ const makeChange = (change: HistoryChange): void => {
       s.position += 1
       s.history.splice(s.position, s.position + 1)
       s.history.push(change)
-      change.execute()
+      if (historyChangeHandlers[change.handler]) {
+        historyChangeHandlers[change.handler].execute(change)
+      }
+      if (change.additionalHandler && change.additionalHandler.execute) {
+        change.additionalHandler.execute(change)
+      }
+      dispatchEvent('change')
     })
   )
 }
@@ -46,8 +65,15 @@ const undo = new Shortcut(
     if (isUndoable()) {
       setState(
         produce((u) => {
-          u.history[u.position].undo()
+          const change = u.history[u.position]
+          if (historyChangeHandlers[change.handler]) {
+            historyChangeHandlers[change.handler].undo(change)
+          }
+          if (change.additionalHandler && change.additionalHandler.undo) {
+            change.additionalHandler.undo(change)
+          }
           u.position -= 1
+          dispatchEvent('undo')
         })
       )
     }
@@ -62,7 +88,14 @@ const redo = new Shortcut(
         produce((u) => {
           if (u.position < u.history.length - 1) {
             u.position += 1
-            u.history[u.position].execute()
+            const change = u.history[u.position]
+            if (historyChangeHandlers[change.handler]) {
+              historyChangeHandlers[change.handler].execute(change)
+            }
+            if (change.additionalHandler && change.additionalHandler.execute) {
+              change.additionalHandler.execute(change)
+            }
+            dispatchEvent('redo')
           }
         })
       )
@@ -90,4 +123,10 @@ export const useHistory = (): [HistoryChangesState, HistoryChangesActions] => {
   registerGlobalShortcut(undo)
   registerGlobalShortcut(redo)
   return [state, actions]
+}
+
+export const registerHistoryChangeHandler = (
+  handlers: Record<string, HistoryChangeHandler>
+): void => {
+  Object.assign(historyChangeHandlers, handlers)
 }

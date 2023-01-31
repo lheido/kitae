@@ -36,7 +36,6 @@ export const WorkspaceDataProvider: Component<ProviderProps> = (props: ProviderP
     actions.waitForSave(true)
     saveWorkspaceData(workspace, data)
   }
-
   createEffect(() => {
     if (workspacesState.current !== undefined) {
       api

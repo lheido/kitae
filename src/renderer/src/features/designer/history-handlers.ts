@@ -1,4 +1,4 @@
-import { ThemeData, ThemeEntry } from '@kitae/shared/types'
+import { ComponentData, ThemeData, ThemeEntry } from '@kitae/shared/types'
 import { HistoryChangeHandler } from '../history'
 import { useDesignerState } from './designer.state'
 import { DesignerHistoryHandlers, ThemeFormData } from './types'
@@ -77,6 +77,42 @@ export const WorkspaceDataHsitoryHandlers: Record<string, HistoryChangeHandler> 
     undo: ({ path, changes }): void => {
       updatePath(path, (_, list: ThemeData[]) => {
         list.splice(path[path.length - 1] as number, 0, changes as ThemeData)
+      })
+    }
+  },
+  [DesignerHistoryHandlers.ADD_PAGE_DATA]: {
+    execute: ({ path, changes }): void => {
+      updatePath(path, (list: ComponentData[]) => {
+        list.push(changes as ComponentData)
+      })
+    },
+    undo: ({ path }): void => {
+      updatePath(path, (list: ComponentData[]) => {
+        list.pop()
+      })
+    }
+  },
+  [DesignerHistoryHandlers.UPDATE_PAGE_DATA]: {
+    execute: ({ path, changes }): void => {
+      updatePath(path, (current: ComponentData): void => {
+        current.name = (changes as [ComponentData, ComponentData])[1].name
+      })
+    },
+    undo: ({ path, changes }): void => {
+      updatePath(path, (current: ComponentData): void => {
+        current.name = (changes as [ComponentData, ComponentData])[0].name
+      })
+    }
+  },
+  [DesignerHistoryHandlers.DELETE_PAGE_DATA]: {
+    execute: ({ path }): void => {
+      updatePath(path, (_, list: ComponentData[]) => {
+        list.splice(path[path.length - 1] as number, 1)
+      })
+    },
+    undo: ({ path, changes }): void => {
+      updatePath(path, (_, list: ComponentData[]) => {
+        list.splice(path[path.length - 1] as number, 0, changes as ComponentData)
       })
     }
   }

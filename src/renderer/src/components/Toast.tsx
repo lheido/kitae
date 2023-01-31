@@ -2,11 +2,12 @@ import { Component, ComponentProps, splitProps } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 
 interface ToastProps extends ComponentProps<'div'> {
-  type: 'error'
+  type: 'error' | 'info'
 }
 
 const typeMap: Record<string, string> = {
-  error: 'bg-error text-error-content'
+  error: 'bg-error text-error-content',
+  info: 'bg-secondary bg-opacity-90 text-secondary-content'
 }
 
 const Toast: Component<ToastProps> = (props: ToastProps) => {

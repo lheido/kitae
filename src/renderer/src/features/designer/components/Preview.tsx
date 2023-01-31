@@ -12,8 +12,14 @@ const Preview: Component = () => {
   onMount(() => {
     if (iframeRef) {
       unsubscriber.push(
-        handle(iframeRef, 'request-workspace-data', () => JSON.parse(JSON.stringify(state.data)))
+        handle(iframeRef, 'request-workspace-data', () => JSON.parse(JSON.stringify(state.data))),
+        handle(iframeRef, 'request-current-page', () => state.page)
       )
+    }
+  })
+  createEffect(() => {
+    if (iframeRef) {
+      send(iframeRef, 'current-page-change', state.page)
     }
   })
   createEffect(() => {

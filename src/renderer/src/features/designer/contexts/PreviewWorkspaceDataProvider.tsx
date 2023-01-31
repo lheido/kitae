@@ -19,10 +19,17 @@ const PreviewWorkspaceDataProvider: Component<ProviderProps> = (props: ProviderP
         actions.setData(undefined)
         actions.setError(result)
       }
+
+      invoke('request-current-page').then((page) => {
+        actions.setPage(page as string)
+      })
     })
     on('workspace-data-changes', (changes?: HistoryChange) => {
       if (!changes) return
       makeChange(changes)
+    })
+    on('current-page-change', (page?: string) => {
+      actions.setPage(page)
     })
     on('undo', () => {
       undo.execute()

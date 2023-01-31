@@ -51,7 +51,11 @@ export const routes: Routes = [
     left: ThemeLeftPanel
   },
   {
-    path: 'views',
+    path: 'pages',
+    left: ViewsLeftPanel
+  },
+  {
+    path: 'components',
     left: ViewsLeftPanel
   },
   {
@@ -70,7 +74,7 @@ export const routes: Routes = [
 
 export const initialState: DesignerState = {
   page: undefined,
-  current: ['views'],
+  current: ['pages'],
   waitForSave: false,
   data: undefined,
   error: undefined

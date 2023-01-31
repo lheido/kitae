@@ -7,10 +7,10 @@ import { Dynamic } from 'solid-js/web'
 
 const Designer: Component = () => {
   const [state, { navigate, getLeftPanel, getRightPanel }] = useContext(WorkspaceDataContext)
-  const panels: { id: string; icon: string; label: string; rightPanel: boolean }[] = [
-    { id: 'settings', icon: 'settings', label: 'Settings', rightPanel: false },
-    { id: 'views', icon: 'designer-tree', label: 'Views', rightPanel: true },
-    { id: 'themes', icon: 'palette', label: 'Theme', rightPanel: true }
+  const panels: { ids: string[]; icon: string; label: string; rightPanel: boolean }[] = [
+    { ids: ['settings'], icon: 'settings', label: 'Settings', rightPanel: false },
+    { ids: ['pages', 'components'], icon: 'designer-tree', label: 'Views', rightPanel: true },
+    { ids: ['themes'], icon: 'palette', label: 'Theme', rightPanel: true }
   ]
   return (
     <section class="flex-1 h-full flex designer-page">
@@ -21,15 +21,16 @@ const Designer: Component = () => {
             {(panel, index): JSX.Element => (
               <li
                 classList={{
-                  active: state.current[0] === panel.id,
+                  active: panel.ids.includes(state.current[0] as string),
                   'before-active':
-                    panels.findIndex((p) => p.id === state.current[0]) === index() + 1
+                    panels.findIndex((p) => p.ids.includes(state.current[0] as string)) ===
+                    index() + 1
                 }}
               >
                 <Button
                   class="btn-designer-nav"
-                  classList={{ active: state.current[0] === panel.id }}
-                  onClick={(): void => navigate([panel.id])}
+                  classList={{ active: panel.ids.includes(state.current[0] as string) }}
+                  onClick={(): void => navigate([panel.ids[0]])}
                 >
                   <Icon icon={panel.icon} />
                   <span class="text-xs">{panel.label}</span>
@@ -50,7 +51,7 @@ const Designer: Component = () => {
       <section
         class="bg-base-100 p-2 transition-all basis-0 overflow-hidden flex flex-col gap-2 h-full"
         classList={{
-          '!basis-80': panels.find((p) => p.id === state.current[0])?.rightPanel
+          '!basis-80': panels.find((p) => p.ids.includes(state.current[0] as string))?.rightPanel
         }}
       >
         <Show when={state.data}>

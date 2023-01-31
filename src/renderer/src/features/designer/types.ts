@@ -26,5 +26,8 @@ export enum DesignerHistoryHandlers {
   DELETE_THEME_ENTRY = 'themes:deleteThemeEntry',
   ADD_THEME_DATA = 'themes:addThemeData',
   UPDATE_THEME_DATA = 'themes:updateThemeData',
-  DELETE_THEME_DATA = 'themes:deleteThemeData'
+  DELETE_THEME_DATA = 'themes:deleteThemeData',
+  ADD_PAGE_DATA = 'pages:addComponentData',
+  UPDATE_PAGE_DATA = 'pages:updateComponentData',
+  DELETE_PAGE_DATA = 'pages:deleteComponentData'
 }

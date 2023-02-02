@@ -21,13 +21,14 @@ interface AccordionProps extends ComponentProps<'section'> {
   opened: boolean
   headerSlot?: JSX.Element
   basis: string
+  contentClass?: string
 }
 
 const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
   const [component, classes, container] = splitProps(
     props,
     ['label', 'icon', 'opened', 'accordionId', 'headerSlot', 'children', 'basis'],
-    ['class']
+    ['class', 'contentClass']
   )
   const [expanded, setExpanded] = createSignal(untrack(() => component.opened))
   const [scrolling, isScrolling] = createSignal(false)
@@ -74,7 +75,7 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
             onClick={(): boolean => setExpanded((prev) => !prev)}
           >
             <Show when={component.icon}>
-              <Icon icon={component.icon as string} class="w-4 h-4" />
+              <Icon icon={component.icon as string} class="w-4 h-4 opacity-50" />
             </Show>
             <span class="flex-1 text-left text-ellipsis whitespace-nowrap overflow-hidden">
               {component.label}
@@ -101,7 +102,7 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
           class="h-full"
           events={{ scroll: ({ elements }) => isScrolling(elements().viewport.scrollTop !== 0) }}
         >
-          <div class="p-2 pr-3">{component.children}</div>
+          <div class={twMerge('p-2', classes.contentClass)}>{component.children}</div>
         </OverlayScrollbarsComponent>
       </Motion>
     </Motion.section>

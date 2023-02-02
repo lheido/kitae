@@ -111,3 +111,15 @@ input {
   @apply bg-transparent rounded w-full border border-base-300 px-2 py-1;
   @apply focus-visible:outline-none focus-visible:border-secondary-focus;
 }
+
+button[role='separator'] {
+  @apply h-full w-0;
+}
+
+button[role='separator'] .separator-handler {
+  @apply absolute top-0 bottom-0 left-0.5 w-1 transition-all cursor-col-resize rounded;
+}
+
+button[role='separator']:is(:hover, :active) .separator-handler {
+  @apply -left-1 w-2 bg-secondary bg-opacity-50;
+}

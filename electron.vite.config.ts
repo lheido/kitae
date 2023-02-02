@@ -18,6 +18,9 @@ export default defineConfig({
         }
       }
     },
+    optimizeDeps: {
+      extensions: ['jsx']
+    },
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src')

@@ -24,8 +24,7 @@ const ThemeForm: Component = () => {
     const previous = JSON.parse(JSON.stringify(walker(state.data, path))) as ThemeData
     makeChange({
       path,
-      type: 'update',
-      changes: [data.name, previous.name],
+      changes: [previous.name, data.name],
       handler: DesignerHistoryHandlers.UPDATE_THEME_DATA
     })
   }, 250)

@@ -1,4 +1,4 @@
-import { Path, ThemeData, WorkspaceData } from '@kitae/shared/types'
+import { ComponentData, Path, ThemeData, WorkspaceData } from '@kitae/shared/types'
 
 export interface WorkspaceDataState {
   selectedPath: Path
@@ -29,5 +29,14 @@ export enum DesignerHistoryHandlers {
   DELETE_THEME_DATA = 'themes:deleteThemeData',
   ADD_PAGE_DATA = 'pages:addComponentData',
   UPDATE_PAGE_DATA = 'pages:updateComponentData',
-  DELETE_PAGE_DATA = 'pages:deleteComponentData'
+  DELETE_PAGE_DATA = 'pages:deleteComponentData',
+  ADD_COMPONENT_DATA = 'components:addComponentData',
+  DELETE_COMPONENT_DATA = 'components:deleteComponentData',
+  UPDATE_TEXT_COMPONENT_DATA = 'components:updateTextComponentData',
+  MOVE_COMPONENT_DATA = 'components:moveComponentData'
+}
+
+export interface FlatComponentData extends ComponentData {
+  path: Path
+  depth: number
 }

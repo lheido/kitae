@@ -5,7 +5,6 @@ import { registerGlobalShortcut, Shortcut } from '../keyboard'
 
 export interface HistoryChange {
   path: Path
-  type: 'update' | 'add' | 'remove'
   changes: unknown
   handler: string
   additionalHandler?: Partial<HistoryChangeHandler>

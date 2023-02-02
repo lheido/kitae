@@ -1,19 +1,40 @@
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
+import PanelSeparator from '@renderer/components/PanelSeparator'
 import { WorkspaceDataContext } from '@renderer/features/designer'
 import Preview from '@renderer/features/designer/components/Preview'
-import { Component, For, JSX, Show, useContext } from 'solid-js'
+import { routes } from '@renderer/features/designer/routing'
+import { Component, createMemo, For, JSX, Show, useContext } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 const Designer: Component = () => {
-  const [state, { navigate, getLeftPanel, getRightPanel }] = useContext(WorkspaceDataContext)
+  const [state, { navigate }] = useContext(WorkspaceDataContext)
   const panels: { ids: string[]; icon: string; label: string; rightPanel: boolean }[] = [
     { ids: ['settings'], icon: 'settings', label: 'Settings', rightPanel: false },
     { ids: ['pages', 'components'], icon: 'designer-tree', label: 'Views', rightPanel: true },
     { ids: ['themes'], icon: 'palette', label: 'Theme', rightPanel: true }
   ]
+  const getCurrentPath = createMemo(() => {
+    return state.current.map((e) => (typeof e === 'number' ? '$' : e)).join('/')
+  })
+  const getLeftPanel = createMemo(() => {
+    const currentPath = getCurrentPath()
+    const components = routes
+      .filter((r) => currentPath.startsWith(r.path))
+      .filter((r) => !!r.left)
+      .map((r) => r.left)
+    return components[components.length - 1]
+  })
+  const getRightPanel = createMemo(() => {
+    const currentPath = getCurrentPath()
+    const components = routes
+      .filter((r) => currentPath.startsWith(r.path))
+      .filter((r) => !!r.right)
+      .map((r) => r.right)
+    return components[components.length - 1]
+  })
   return (
-    <section class="flex-1 h-full flex designer-page">
+    <section class="flex-1 h-full flex designer-page relative">
       <h1 class="sr-only">Designer</h1>
       <section class="bg-base-300">
         <ul class="flex flex-col designer-nav bg-base-100">
@@ -40,11 +61,18 @@ const Designer: Component = () => {
           </For>
         </ul>
       </section>
-      <section class="bg-base-100 p-2 basis-80 transition-all flex flex-col gap-2 h-full">
+      <section id="left-panel" class="bg-base-100 p-2 w-[320px] flex flex-col gap-2 h-full">
         <Show when={state.data}>
           <Dynamic component={getLeftPanel()} />
         </Show>
       </section>
+      <PanelSeparator
+        class="absolute"
+        target="left-panel"
+        valuenow={320}
+        valuemin={320}
+        valuemax={720}
+      />
       <section class="bg-base-100 flex-1 flex flex-col">
         <Preview />
       </section>

@@ -23,6 +23,11 @@ const Preview: Component = () => {
     }
   })
   createEffect(() => {
+    if (iframeRef) {
+      send(iframeRef, 'selected-path-change', JSON.parse(JSON.stringify(state.current)))
+    }
+  })
+  createEffect(() => {
     const event = historyEvent()
     if (iframeRef && event !== undefined) {
       switch (event) {

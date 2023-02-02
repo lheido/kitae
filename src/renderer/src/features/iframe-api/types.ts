@@ -5,3 +5,5 @@ export type IframeApiEvents =
   | 'redo'
   | 'request-current-page'
   | 'current-page-change'
+  | 'request-selected-path'
+  | 'selected-path-change'

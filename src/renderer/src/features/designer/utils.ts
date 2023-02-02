@@ -1,4 +1,5 @@
-import { Path } from '@kitae/shared/types'
+import { ComponentData, Path } from '@kitae/shared/types'
+import { FlatComponentData } from './types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const walker = <T>(tree: any, path: Path): T | undefined => {
@@ -18,4 +19,18 @@ export const samePath = (path1: Path, path2: Path): boolean => {
     return false
   }
   return path1.every((value, index) => value === path2[index])
+}
+
+export const flattenComponentData = (
+  data: ComponentData,
+  path: Path,
+  depth = 0
+): FlatComponentData[] => {
+  const result: FlatComponentData[] = []
+  const walk = (data: ComponentData, p: Path, d: number): void => {
+    result.push({ ...data, path: p, depth: d, children: undefined })
+    if (data.children) data.children.forEach((c, i) => walk(c, [...p, 'children', i], d + 1))
+  }
+  walk(data, path, depth)
+  return result
 }

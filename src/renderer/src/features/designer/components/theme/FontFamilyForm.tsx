@@ -25,7 +25,6 @@ const FontFamilyForm: Component = () => {
     const previous = JSON.parse(JSON.stringify(walker(state.data, path))) as ThemeEntry
     makeChange({
       path,
-      type: 'update',
       changes: [previous, data],
       handler: DesignerHistoryHandlers.UPDATE_THEME_ENTRY
     })

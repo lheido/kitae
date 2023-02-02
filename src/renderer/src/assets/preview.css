@@ -9,9 +9,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  @apply bg-base-300 text-base-content h-screen flex flex-col;
+  @apply bg-base-300 text-base-content h-screen flex flex-col p-4;
 }
 
 #root {
   @apply contents;
+}
+
+.selected {
+  @apply outline-dashed outline-1 outline-secondary outline-offset-2;
 }

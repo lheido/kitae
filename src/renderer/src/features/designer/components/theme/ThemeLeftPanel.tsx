@@ -25,7 +25,6 @@ const ThemeEntryItem: Component<ThemeItemProps> = (props: ThemeItemProps) => {
     const isActive = JSON.parse(JSON.stringify(active()))
     makeChange({
       path: p,
-      type: 'remove',
       changes: previous,
       handler: DesignerHistoryHandlers.DELETE_THEME_ENTRY,
       additionalHandler: {
@@ -76,7 +75,6 @@ const ThemeDataItem: Component<ThemeDataItemProps> = (props: ThemeDataItemProps)
     const newIndex = Math.max(Math.min(p[1] - 1, state.data!.themes.length - 1), 0)
     makeChange({
       path: p,
-      type: 'remove',
       changes: previous,
       handler: DesignerHistoryHandlers.DELETE_THEME_DATA,
       additionalHandler: {
@@ -103,9 +101,7 @@ const ThemeDataItem: Component<ThemeDataItemProps> = (props: ThemeDataItemProps)
           class="btn-error btn-icon !p-2 absolute top-1/2 right-1 -translate-y-1/2"
           // TODO: Why eslint solid/reactivity warning here ? It doesn't throw a warning in the ThemeEntryItem component...
           // eslint-disable-next-line solid/reactivity
-          onClick={(): void => {
-            deleteTheme()
-          }}
+          onClick={deleteTheme}
         >
           <Icon icon="bin" class="w-4 h-4" />
         </Button>
@@ -124,33 +120,29 @@ const AddColorThemeEntryItem: Component<AddThemeEntryItemProps> = (
   const [state, { navigate }] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const path = createMemo((): Path => ['themes', props.theme, 'colors'])
+  const clickHandler = (): void => {
+    const p = JSON.parse(JSON.stringify(path()))
+    const changes = {
+      name: 'new-color',
+      value: '#828282'
+    }
+    makeChange({
+      path: p,
+      changes,
+      handler: DesignerHistoryHandlers.ADD_THEME_ENTRY,
+      additionalHandler: {
+        execute: (): void => {
+          navigate([...p, walker<ThemeEntry[]>(state.data, p)!.length - 1])
+        },
+        undo: (): void => {
+          navigate(['themes', props.theme])
+        }
+      }
+    })
+  }
   return (
     <li>
-      <Button
-        class="btn-list-item items-center pl-4 border border-base-200"
-        // eslint-disable-next-line solid/reactivity
-        onClick={(): void => {
-          const p = JSON.parse(JSON.stringify(path()))
-          const changes = {
-            name: 'new-color',
-            value: '#828282'
-          }
-          makeChange({
-            path: p,
-            type: 'add',
-            changes,
-            handler: DesignerHistoryHandlers.ADD_THEME_ENTRY,
-            additionalHandler: {
-              execute: (): void => {
-                navigate([...p, walker<ThemeEntry[]>(state.data, p)!.length - 1])
-              },
-              undo: (): void => {
-                navigate(['themes', props.theme])
-              }
-            }
-          })
-        }}
-      >
+      <Button class="btn-list-item items-center pl-4 border border-base-200" onClick={clickHandler}>
         <Icon icon="add" />
         <span class="flex-1 text-ellipsis whitespace-nowrap overflow-hidden">Add a new color</span>
       </Button>
@@ -164,33 +156,29 @@ const AddFontFamilyThemeEntryItem: Component<AddThemeEntryItemProps> = (
   const [state, { navigate }] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const path = createMemo((): Path => ['themes', props.theme, 'fonts', 'family'])
+  const clickHandler = (): void => {
+    const p = JSON.parse(JSON.stringify(path()))
+    const changes = {
+      name: 'new-font-family',
+      value: 'sans-serif'
+    }
+    makeChange({
+      path: p,
+      changes,
+      handler: DesignerHistoryHandlers.ADD_THEME_ENTRY,
+      additionalHandler: {
+        execute: (): void => {
+          navigate([...p, walker<ThemeEntry[]>(state.data, p)!.length - 1])
+        },
+        undo: (): void => {
+          navigate(['themes', props.theme])
+        }
+      }
+    })
+  }
   return (
     <li>
-      <Button
-        class="btn-list-item items-center pl-4 border border-base-200"
-        // eslint-disable-next-line solid/reactivity
-        onClick={(): void => {
-          const p = JSON.parse(JSON.stringify(path()))
-          const changes = {
-            name: 'new-font-family',
-            value: 'sans-serif'
-          }
-          makeChange({
-            path: p,
-            type: 'add',
-            changes,
-            handler: DesignerHistoryHandlers.ADD_THEME_ENTRY,
-            additionalHandler: {
-              execute: (): void => {
-                navigate([...p, walker<ThemeEntry[]>(state.data, p)!.length - 1])
-              },
-              undo: (): void => {
-                navigate(['themes', props.theme])
-              }
-            }
-          })
-        }}
-      >
+      <Button class="btn-list-item items-center pl-4 border border-base-200" onClick={clickHandler}>
         <Icon icon="add" />
         <span class="flex-1 text-ellipsis whitespace-nowrap overflow-hidden">
           Add a new font family
@@ -258,7 +246,6 @@ const ThemeLeftPanel: Component = () => {
                 }
                 makeChange({
                   path: ['themes'],
-                  type: 'add',
                   changes,
                   handler: DesignerHistoryHandlers.ADD_THEME_DATA,
                   additionalHandler: {

@@ -1,11 +1,5 @@
 import { Path, WorkspaceData } from '@kitae/shared/types'
-import { Component } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
-import ColorForm from './components/theme/ColorForm'
-import FontFamilyForm from './components/theme/FontFamilyForm'
-import ThemeForm from './components/theme/ThemeForm'
-import ThemeLeftPanel from './components/theme/ThemeLeftPanel'
-import ViewsLeftPanel from './components/views/ViewsLeftPanel'
 import { walker } from './utils'
 
 export interface DesignerState {
@@ -27,50 +21,13 @@ export interface DesignerState {
 
 export interface DesignerStateActions {
   navigate: (path: Path) => void
-  updatePath: (path: Path, updateFn: (data: never, parent: never) => void) => void
+  updatePath: (path: Path, updateFn: (data: never, parent: never, state: never) => void) => void
   waitForSave: (value: boolean) => void
   setData: (data?: WorkspaceData) => void
   setError: (error?: unknown) => void
   setPage: (page?: string) => void
-  getLeftPanel: () => Component | undefined
-  getRightPanel: () => Component | undefined
   getCurrentData: () => unknown
 }
-
-export interface Route {
-  path: string
-  left?: Component
-  right?: Component
-}
-
-export type Routes = Route[]
-
-export const routes: Routes = [
-  {
-    path: 'themes',
-    left: ThemeLeftPanel
-  },
-  {
-    path: 'pages',
-    left: ViewsLeftPanel
-  },
-  {
-    path: 'components',
-    left: ViewsLeftPanel
-  },
-  {
-    path: 'themes/$',
-    right: ThemeForm
-  },
-  {
-    path: 'themes/$/colors/$',
-    right: ColorForm
-  },
-  {
-    path: 'themes/$/fonts/family/$',
-    right: FontFamilyForm
-  }
-]
 
 export const initialState: DesignerState = {
   page: undefined,
@@ -94,7 +51,7 @@ export const useDesignerState = (): [DesignerState, DesignerStateActions] => {
           produce((s) => {
             const currentData = walker(s.data, path) as never
             const parent = walker(s.data, path.slice(0, -1)) as never
-            updateFn(currentData, parent)
+            updateFn(currentData, parent, s as never)
           })
         )
       },
@@ -109,22 +66,6 @@ export const useDesignerState = (): [DesignerState, DesignerStateActions] => {
       },
       setPage: (page?: string): void => {
         setState('page', page)
-      },
-      getLeftPanel: (): Component | undefined => {
-        const currentPath = state.current.map((e) => (typeof e === 'number' ? '$' : e)).join('/')
-        const components = routes
-          .filter((r) => currentPath.startsWith(r.path))
-          .filter((r) => !!r.left)
-          .map((r) => r.left)
-        return components[components.length - 1]
-      },
-      getRightPanel: (): Component | undefined => {
-        const currentPath = state.current.map((e) => (typeof e === 'number' ? '$' : e)).join('/')
-        const components = routes
-          .filter((r) => currentPath.startsWith(r.path))
-          .filter((r) => !!r.right)
-          .map((r) => r.right)
-        return components[components.length - 1]
       },
       getCurrentData: (): unknown => {
         return walker(state.data, state.current)

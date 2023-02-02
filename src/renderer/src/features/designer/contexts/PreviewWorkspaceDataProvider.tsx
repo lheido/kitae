@@ -1,4 +1,4 @@
-import { WorkspaceData } from '@kitae/shared/types'
+import { Path, WorkspaceData } from '@kitae/shared/types'
 import { HistoryChange, useHistory } from '@renderer/features/history'
 import { invoke, on } from '@renderer/features/iframe-api/preview'
 import { ProviderProps } from '@renderer/types'
@@ -23,6 +23,9 @@ const PreviewWorkspaceDataProvider: Component<ProviderProps> = (props: ProviderP
       invoke('request-current-page').then((page) => {
         actions.setPage(page as string)
       })
+      invoke('request-selected-path').then((path) => {
+        actions.navigate(path as Path)
+      })
     })
     on('workspace-data-changes', (changes?: HistoryChange) => {
       if (!changes) return
@@ -30,6 +33,9 @@ const PreviewWorkspaceDataProvider: Component<ProviderProps> = (props: ProviderP
     })
     on('current-page-change', (page?: string) => {
       actions.setPage(page)
+    })
+    on('selected-path-change', (path?: Path) => {
+      actions.navigate(path ?? [])
     })
     on('undo', () => {
       undo.execute()

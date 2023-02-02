@@ -12,7 +12,7 @@ const Renderer: Component = () => {
   })
   return (
     <Show
-      when={page()}
+      when={state.data && state.data.pages.length > 0 && page()}
       fallback={
         <Toast type="info" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           Select a page to see something here

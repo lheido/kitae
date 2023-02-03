@@ -1,0 +1,7 @@
+.selected {
+  /* TODO: use CSS custom properties instead of hardcoded values, without including tailwindcss */
+  outline-style: dashed;
+  outline-width: 1px;
+  outline-offset: 2px;
+  outline-color: hsl(198deg, 64%, 32%);
+}

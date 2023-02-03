@@ -33,6 +33,7 @@ importers:
       overlayscrollbars-solid: ^0.5.0
       postcss: ^8.4.21
       prettier: ^2.8.2
+      solid-element: ^1.6.3
       solid-js: ^1.6.8
       tailwind-merge: ^1.8.1
       tailwindcss: ^3.2.4
@@ -54,6 +55,7 @@ importers:
       motion: 10.15.5
       overlayscrollbars: 2.0.3
       overlayscrollbars-solid: 0.5.0_nwgkvzm6dilw5zqgqkisowh6ry
+      solid-element: 1.6.3_solid-js@1.6.9
       tailwind-merge: 1.8.1
       tailwindcss: 3.2.4_postcss@8.4.21
       vanilla-colorful: 0.7.2
@@ -1728,6 +1730,10 @@ packages:
     resolution: {integrity: sha512-pJDh5/4wrEnXX/VWRZvruAGHkzKdr46z11OlTPN+VrATlWWhSKewNCJ1futCO5C7eJB3nPMFZA1LeYtcFboZ2A==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /component-register/0.8.3:
+    resolution: {integrity: sha512-/0u8ov0WPWi2FL78rgB9aFOcfY8pJT4jP/l9NTOukGNLVQ6hk35sEJE1RkEnNQU3yk48Qr7HlDQjRQKEVfgeWg==}
+    dev: false
 
   /concat-map/0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
@@ -3792,6 +3798,15 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /solid-element/1.6.3_solid-js@1.6.9:
+    resolution: {integrity: sha512-yS/sePJNYsbdyZUL5LDIDVIW8VxDMbmx+qm8XRZ7WlR+cr5dHNjp1lIYqCku8DmGLzuYEoumHQAK2oPvEieqfQ==}
+    peerDependencies:
+      solid-js: ^1.6.3
+    dependencies:
+      component-register: 0.8.3
+      solid-js: 1.6.9
+    dev: false
 
   /solid-js/1.6.9:
     resolution: {integrity: sha512-kV3fMmm+1C2J95c8eDOPKGfZHnuAkHUBLG4hX1Xu08bXeAIPqmxuz/QdH3B8SIdTp3EatBVIyA6RCes3hrGzpg==}

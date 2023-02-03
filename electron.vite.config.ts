@@ -13,8 +13,7 @@ export default defineConfig({
     build: {
       rollupOptions: {
         input: {
-          index: resolve(__dirname, 'src/renderer/index.html'),
-          preview: resolve(__dirname, 'src/renderer/preview.html')
+          index: resolve(__dirname, 'src/renderer/index.html')
         }
       }
     },

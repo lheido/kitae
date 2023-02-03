@@ -17,10 +17,6 @@ function createWindow(): void {
     is.dev && process.env['ELECTRON_RENDERER_URL']
       ? process.env['ELECTRON_RENDERER_URL']
       : `file://${join(__dirname, '../renderer/index.html')}`
-  const previewUrl =
-    is.dev && process.env['ELECTRON_RENDERER_URL']
-      ? `${process.env['ELECTRON_RENDERER_URL']}/preview.html`
-      : `file://${join(__dirname, '../renderer/preview.html')}`
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -36,10 +32,7 @@ function createWindow(): void {
     },
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      additionalArguments: [
-        `--title-bar-overlay-height=${TITLE_BAR_OVERLAY_HEIGHT}`,
-        `--kitae-preview-url=${previewUrl}`
-      ],
+      additionalArguments: [`--title-bar-overlay-height=${TITLE_BAR_OVERLAY_HEIGHT}`],
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }

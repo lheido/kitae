@@ -123,3 +123,15 @@ button[role='separator'] .separator-handler {
 button[role='separator']:is(:hover, :active) .separator-handler {
   @apply -left-1 w-2 bg-secondary bg-opacity-50;
 }
+
+/* [draggable='true'] {
+  @apply border !border-error;
+} */
+
+/* [droppable='true'].dragover {
+  @apply bg-secondary bg-opacity-25;
+} */
+
+/* .dragover *:not(.dragover) {
+  @apply pointer-events-none;
+} */

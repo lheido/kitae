@@ -14,6 +14,20 @@ export const walker = <T>(tree: any, path: Path): T | undefined => {
   return undefined
 }
 
+// Check if the path exists in the tree
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const exists = (tree: any, path: Path): boolean => {
+  const current = path[0]
+  if (tree[current]) {
+    if (path.length === 1) {
+      return true
+    } else {
+      return exists(tree[current], path.slice(1))
+    }
+  }
+  return false
+}
+
 export const samePath = (path1: Path, path2: Path): boolean => {
   if (path1.length !== path2.length) {
     return false

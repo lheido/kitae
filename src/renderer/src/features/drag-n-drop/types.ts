@@ -1,6 +1,8 @@
 import { Path } from '@kitae/shared/types'
 
 export interface Draggable {
+  format: string
+  effect?: 'copy' | 'move' | 'link'
   id: string
   path: Path
   data?: unknown
@@ -9,7 +11,7 @@ export interface Draggable {
 export interface Droppable {
   id: string
   path: Path
-  root: boolean
+  allowedEffects: string[]
 }
 
 export interface DroppableElement extends HTMLElement {

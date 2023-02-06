@@ -138,34 +138,59 @@ export const WorkspaceDataHsitoryHandlers: Record<string, HistoryChangeHandler> 
       updatePath(
         path,
         (current: ComponentData, parent: ComponentData[], state: WorkspaceDataState): void => {
-          const container = walker<ComponentData>(state.data, (changes as Path[])[1] as Path)
-          container?.children?.push(current)
+          const target = [...(changes as Path[])[1]]
+          const index = target.pop() as number
+          const container = walker<ComponentData>(state.data, target.slice(0, -1))
+          if (index === container?.children?.length) {
+            container?.children?.push(current)
+          } else {
+            container?.children?.splice(index, 0, current)
+          }
           parent.splice(path[path.length - 1] as number, 1)
         }
       )
     },
     undo: ({ path, changes }): void => {
+      const currentTargetPath = [...(changes as Path[])[1]]
+      const currentContainerPath = currentTargetPath.slice(0, -2)
       updatePath(
-        (changes as Path[])[1],
-        (container: ComponentData, _, state: WorkspaceDataState) => {
-          const component = container.children?.pop()
-          const oldContainerPath = path.slice(0, -2)
-          const oldIndex = path[path.length - 1] as number
-          const oldContainer = walker<ComponentData>(state.data, oldContainerPath)
-          oldContainer?.children?.splice(oldIndex, 0, component as ComponentData)
+        currentContainerPath,
+        (container: ComponentData, parent: ComponentData[], state: WorkspaceDataState) => {
+          const index = currentTargetPath[currentTargetPath.length - 1] as number
+          const components = container
+            ? container.children?.splice(index, 1)
+            : parent[parent.length - 1].children?.splice(index, 1)
+          if (components && components.length > 0) {
+            const component = components[0]
+            const oldIndex = path[path.length - 1] as number
+            const oldContainer = walker<ComponentData>(state.data, path.slice(0, -2))
+            if (oldIndex === oldContainer?.children?.length) {
+              oldContainer?.children?.push(component)
+            } else {
+              oldContainer?.children?.splice(oldIndex, 0, component)
+            }
+          }
         }
       )
     }
   },
   [DesignerHistoryHandlers.ADD_COMPONENT_DATA]: {
     execute: ({ path, changes }): void => {
-      updatePath(path, (list: ComponentData[]) => {
-        list.push(changes as ComponentData)
+      const target = [...path]
+      const index = target.pop() as number
+      updatePath(target, (list: ComponentData[], parent: ComponentData) => {
+        if (list) {
+          list.splice(index, 0, changes as ComponentData)
+        } else {
+          parent.children = [changes as ComponentData]
+        }
       })
     },
     undo: ({ path }): void => {
-      updatePath(path, (list: ComponentData[]) => {
-        list.pop()
+      const target = [...path]
+      const index = target.pop() as number
+      updatePath(target, (list: ComponentData[]) => {
+        list.splice(index, 1)
       })
     }
   }

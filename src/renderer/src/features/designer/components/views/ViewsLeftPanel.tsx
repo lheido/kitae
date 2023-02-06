@@ -3,25 +3,23 @@ import Accordion from '@renderer/components/Accordion'
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import {
-  DnDContext,
-  DnDProvider,
   Draggable,
   draggable,
-  DragOverlay,
+  DragPlaceholder,
   droppable,
-  OnDroppedParam
+  useDnD
 } from '@renderer/features/drag-n-drop'
 import { useHistory } from '@renderer/features/history'
 import {
   Component,
   ComponentProps,
+  createEffect,
   createMemo,
   For,
   JSX,
   onMount,
   Show,
-  splitProps,
-  useContext
+  splitProps
 } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 import { defaultComponents } from '../../default-components'
@@ -89,16 +87,37 @@ const PageItem: Component<PageItemProps> = (props: PageItemProps) => {
   )
 }
 
+const componentTypeIconMap: Record<string, string> = {
+  container: 'box',
+  text: 'font-family',
+  button: 'tap'
+}
+
 interface RecursiveComponentItemProps extends ComponentProps<'button'> {
   path: Path
   data: ComponentData
   depth: number
 }
 
-const componentTypeIconMap: Record<string, string> = {
-  container: 'box',
-  text: 'font-family',
-  button: 'tap'
+const _placeholderPosition = (containerRef: HTMLUListElement, x = 0): { x: number; y: number } => {
+  const [dnd, setDndState] = useDnD()
+  const children = Array.from(containerRef?.children ?? []).filter(
+    (c) => c instanceof HTMLLIElement
+  ) as HTMLLIElement[]
+  if (children.length === 0 || !dnd.position) return { x, y: 0 }
+  const index = Array.from(children).findIndex((c) => {
+    const rect = c.getBoundingClientRect()
+    return dnd.position!.y < rect.top + rect.height / 2
+  })
+  if (index === -1) {
+    const last = children[children.length - 1]
+    const rect = last.getBoundingClientRect()
+    setDndState('index', children.length)
+    return { x, y: last.offsetTop + rect.height }
+  }
+  const child = children[index]
+  setDndState('index', index)
+  return { x, y: child.offsetTop }
 }
 
 const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
@@ -106,11 +125,7 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
 ) => {
   const [component, classes, button] = splitProps(props, ['path', 'data', 'depth'], ['class'])
   const [state, { navigate }] = useDesignerState()
-  const [dndState] = useContext(DnDContext)
-  const isDragging = createMemo(() => dndState.dragged?.id === component.data.id)
-  const isDroppable = createMemo(
-    () => !dndState.droppable?.root && dndState.droppable?.id === component.data.id
-  )
+  const [dnd] = useDnD()
   const isActive = createMemo(() => samePath(state.current, component.path))
   const leftPadding = createMemo(() => {
     return component.depth * 16 + 8
@@ -128,8 +143,18 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
   const clickHandler = (): void => {
     navigate(component.path)
   }
+  let containerRef: HTMLUListElement | undefined
+  const placeholderPosition = (): { x: number; y: number } =>
+    _placeholderPosition(containerRef as HTMLUListElement, leftPadding() + 16)
   return (
-    <li classList={{ 'opacity-25': isDragging(), 'bg-secondary bg-opacity-25': isDroppable() }}>
+    <li
+      classList={{
+        'opacity-25': dnd.draggable?.id === component.data.id
+      }}
+      // @ts-ignore - directive
+      // eslint-disable-next-line solid/jsx-no-undef
+      use:droppable={{ id: component.data.id, path: component.path, root: false }}
+    >
       <button
         class={twMerge(
           'flex px-2 gap-2 py-1 w-full rounded items-center whitespace-nowrap',
@@ -139,23 +164,27 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
           classes.class
         )}
         classList={{
-          '!border-secondary': isActive() && !isDragging()
+          '!border-secondary': isActive()
         }}
         style={{ 'padding-left': `${leftPadding()}px` }}
         onClick={clickHandler}
         {...button}
         // @ts-ignore - directive
         // eslint-disable-next-line solid/jsx-no-undef
-        use:draggable={{ id: component.data.id, path: component.path }}
+        use:draggable={{
+          format: 'kitae/move-component',
+          effect: 'move',
+          id: component.data.id,
+          path: component.path
+        }}
       >
         <Icon icon={componentTypeIconMap[component.data.type]} class="w-3 h-3 opacity-50" />
         {component.data.name}
       </button>
-      <ul
-        // @ts-ignore - directive
-        // eslint-disable-next-line solid/jsx-no-undef
-        use:droppable={{ id: component.data.id, path: component.path, root: false }}
-      >
+      <ul ref={containerRef} class="relative flex flex-col gap-0.5 pb-0.5">
+        <Show when={dnd.droppable?.id === component.data.id}>
+          <DragPlaceholder position={placeholderPosition()} />
+        </Show>
         <Show when={component.data.children && component.data.children.length > 0}>
           <For each={component.data.children}>
             {(child, index): JSX.Element => (
@@ -173,28 +202,70 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
 }
 
 const StructureList: Component = () => {
+  let containerRef: HTMLUListElement | undefined
   const [state] = useDesignerState()
-  const [dndState] = useContext(DnDContext)
+  const [, { makeChange }] = useHistory()
+  const [dnd, , dropped] = useDnD()
   const pageIndex = createMemo(() => {
     return state.data?.pages.findIndex((p) => p.id === state.page) ?? 0
   })
   const pageChildren = (): ComponentData[] => {
     return state.data?.pages.find((p) => p.id === state.page)?.children ?? []
   }
-  const isDroppable = createMemo(
-    (): boolean => !!dndState.droppable && dndState.droppable.root === true
-  )
-
+  const placeholderPosition = (): { x: number; y: number } => _placeholderPosition(containerRef!)
+  createEffect(() => {
+    const event = dropped()
+    if (!event) return
+    const { droppable, data, index } = event
+    if (droppable && data) {
+      data.types.forEach((t) => {
+        switch (t) {
+          case 'kitae/move-component': {
+            const draggable = JSON.parse(data.getData(t)) as Draggable
+            if (draggable.id === droppable.id) break
+            makeChange({
+              handler: DesignerHistoryHandlers.MOVE_COMPONENT_DATA,
+              path: draggable.path,
+              changes: [draggable.path, [...droppable.path, 'children', index]]
+            })
+            break
+          }
+          case 'kitae/add-component': {
+            const draggable = JSON.parse(data.getData(t)) as Draggable
+            makeChange({
+              handler: DesignerHistoryHandlers.ADD_COMPONENT_DATA,
+              path: [...droppable.path, 'children', index],
+              changes: JSON.parse(JSON.stringify(draggable.data))
+            })
+            break
+          }
+          case 'Files':
+            // @TODO: Handle files (create a new Image component for each file, also what to do with the files? added to the project? I don't now yet)
+            console.log(data.files)
+            break
+          case 'text/html':
+            // @TODO: Try to parse the html and create a new component for each element
+            break
+          case 'text/plain':
+          case 'text/uri-list':
+            // @TODO: Handle text (could a text component, a link component, or a external kitae component)
+            console.log(data.getData(t))
+            break
+        }
+      })
+    }
+  })
   return (
     <>
       <ul
-        class="min-w-full w-max pb-8"
-        classList={{
-          'bg-secondary bg-opacity-25': isDroppable()
-        }}
+        ref={containerRef}
+        class="min-w-full w-max py-8 relative flex flex-col gap-0.5"
         // @ts-ignore - directive
-        use:droppable={{ root: true, path: ['pages', pageIndex()] }}
+        use:droppable={{ id: 'root', path: ['pages', pageIndex()] }}
       >
+        <Show when={dnd.droppable?.id === 'root'}>
+          <DragPlaceholder position={placeholderPosition()} />
+        </Show>
         <For each={pageChildren()}>
           {(component, i): JSX.Element => (
             <RecursiveComponentItem
@@ -211,29 +282,27 @@ const StructureList: Component = () => {
 
 const ViewsLeftPanelContent: Component = () => {
   const [state, { setPage, navigate }] = useDesignerState()
-  const [dndState] = useContext(DnDContext)
   const [, { makeChange }] = useHistory()
+
   const pageName = createMemo(() => {
     return state.data?.pages.find((p) => p.id === state.page)?.name ?? ''
   })
   const pageId = createMemo(() => {
     return state.data?.pages.find((p) => p.id === state.page)?.id ?? ''
   })
+
   onMount(() => {
     if (state.page === undefined && state.data && state.data.pages.length > 0) {
       setPage(state.data?.pages[0].id)
     }
-  })
-  const draggedComponent = createMemo((): ComponentData | undefined => {
-    if (!dndState.dragged) return undefined
-    if (dndState.dragged.path.length === 0) return dndState.dragged.data as ComponentData
-    return walker(state.data, dndState.dragged?.path)
   })
 
   const makeComponent = (component: Partial<ComponentData>): Draggable => {
     const id = crypto.randomUUID()
     return JSON.parse(
       JSON.stringify({
+        format: 'kitae/add-component',
+        effect: 'copy',
         id,
         path: [],
         data: { ...component, id }
@@ -353,53 +422,16 @@ const ViewsLeftPanelContent: Component = () => {
           </For>
         </ul>
       </Accordion>
-      <DragOverlay>
-        <div class="flex px-2 gap-2 py-1 w-full rounded items-center whitespace-nowrap bg-secondary text-secondary-content -translate-x-1/2 -translate-y-1/2">
-          <Icon
-            icon={componentTypeIconMap[draggedComponent()?.type as string]}
-            class="w-3 h-3 opacity-50"
-          />
-          {draggedComponent()?.name}
-        </div>
-      </DragOverlay>
     </>
   )
 }
 
 const ViewsLeftPanel: Component = () => {
-  const [state] = useDesignerState()
-  const [, { makeChange }] = useHistory()
-
-  const onDropped = ({ draggable, droppable }: OnDroppedParam): void => {
-    if (droppable) {
-      const container = walker<ComponentData>(state.data, droppable.path)
-      if (walker<ComponentData>(state.data, droppable.path)?.children === undefined) return
-      if (
-        draggable.path.length > 0 &&
-        container?.children &&
-        !samePath(draggable.path, [...droppable.path, 'children', container.children.length - 1])
-      ) {
-        const path = JSON.parse(JSON.stringify(draggable.path))
-        makeChange({
-          handler: DesignerHistoryHandlers.MOVE_COMPONENT_DATA,
-          path: path,
-          changes: [path, JSON.parse(JSON.stringify(droppable.path))]
-        })
-      } else {
-        makeChange({
-          handler: DesignerHistoryHandlers.ADD_COMPONENT_DATA,
-          path: [...droppable.path, 'children'],
-          changes: draggable.data
-        })
-      }
-    }
-  }
-
   return (
-    <DnDProvider onDropped={onDropped}>
+    <>
       <h1 class="sr-only">Workspace Views - left panel</h1>
       <ViewsLeftPanelContent />
-    </DnDProvider>
+    </>
   )
 }
 

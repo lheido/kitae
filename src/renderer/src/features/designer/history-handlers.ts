@@ -2,7 +2,7 @@ import { ComponentData, Path, ThemeData, ThemeEntry } from '@kitae/shared/types'
 import { HistoryChangeHandler } from '../history'
 import { useDesignerState } from './designer.state'
 import { DesignerHistoryHandlers, ThemeFormData, WorkspaceDataState } from './types'
-import { walker } from './utils'
+import { samePath, walker } from './utils'
 
 const [, { updatePath }] = useDesignerState()
 
@@ -141,12 +141,20 @@ export const WorkspaceDataHsitoryHandlers: Record<string, HistoryChangeHandler> 
           const target = [...(changes as Path[])[1]]
           const index = target.pop() as number
           const container = walker<ComponentData>(state.data, target.slice(0, -1))
-          if (index === container?.children?.length) {
-            container?.children?.push(current)
+          const isSameParent = samePath(target, path.slice(0, -1))
+          if (isSameParent) {
+            const currentIndex = path[path.length - 1] as number
+            if (currentIndex < index) {
+              container?.children?.splice(index + 1, 0, current)
+              container?.children?.splice(currentIndex, 1)
+            } else {
+              container?.children?.splice(currentIndex, 1)
+              container?.children?.splice(index, 0, current)
+            }
           } else {
             container?.children?.splice(index, 0, current)
+            parent.splice(path[path.length - 1] as number, 1)
           }
-          parent.splice(path[path.length - 1] as number, 1)
         }
       )
     },

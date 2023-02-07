@@ -97,39 +97,30 @@ interface RecursiveComponentItemProps extends ComponentProps<'button'> {
   path: Path
   data: ComponentData
   depth: number
-}
-
-const _placeholderPosition = (containerRef: HTMLUListElement, x = 0): { x: number; y: number } => {
-  const [dnd, setDndState] = useDnD()
-  const children = Array.from(containerRef?.children ?? []).filter(
-    (c) => c instanceof HTMLLIElement
-  ) as HTMLLIElement[]
-  if (children.length === 0 || !dnd.position) return { x, y: 0 }
-  const index = Array.from(children).findIndex((c) => {
-    const rect = c.getBoundingClientRect()
-    return dnd.position!.y < rect.top + rect.height / 2
-  })
-  if (index === -1) {
-    const last = children[children.length - 1]
-    const rect = last.getBoundingClientRect()
-    setDndState('index', children.length)
-    return { x, y: last.offsetTop + rect.height }
-  }
-  const child = children[index]
-  setDndState('index', index)
-  return { x, y: child.offsetTop }
+  disableDrop?: boolean
 }
 
 const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
   props: RecursiveComponentItemProps
 ) => {
-  const [component, classes, button] = splitProps(props, ['path', 'data', 'depth'], ['class'])
+  let containerRef: HTMLUListElement | undefined
+  const [component, classes, button] = splitProps(
+    props,
+    ['path', 'data', 'depth', 'disableDrop'],
+    ['class']
+  )
   const [state, { navigate }] = useDesignerState()
   const [dnd] = useDnD()
   const isActive = createMemo(() => samePath(state.current, component.path))
   const leftPadding = createMemo(() => {
     return component.depth * 16 + 8
   })
+  const isDropEnabled = createMemo(
+    () =>
+      !component.disableDrop &&
+      dnd.draggable?.id !== component.data.id &&
+      component.data.children !== undefined
+  )
   // const [, { makeChange }] = useHistory()
   // const deleteComponent = (): void => {
   //   const p: Path = JSON.parse(JSON.stringify(component.path))
@@ -143,21 +134,26 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
   const clickHandler = (): void => {
     navigate(component.path)
   }
-  let containerRef: HTMLUListElement | undefined
-  const placeholderPosition = (): { x: number; y: number } =>
-    _placeholderPosition(containerRef as HTMLUListElement, leftPadding() + 16)
   return (
     <li
       classList={{
         'opacity-25': dnd.draggable?.id === component.data.id
       }}
+      data-dnd-index={component.path[component.path.length - 1]}
       // @ts-ignore - directive
       // eslint-disable-next-line solid/jsx-no-undef
-      use:droppable={{ id: component.data.id, path: component.path, root: false }}
+      use:droppable={{
+        enabled: isDropEnabled(),
+        id: component.data.id,
+        path: component.path,
+        root: false,
+        x: leftPadding() + 16,
+        container: containerRef
+      }}
     >
       <button
         class={twMerge(
-          'flex px-2 gap-2 py-1 w-full rounded items-center whitespace-nowrap',
+          'flex px-2 gap-2 py-1 w-full rounded items-center text-left whitespace-nowrap',
           'border border-transparent',
           'hover:bg-secondary-focus hover:bg-opacity-30',
           'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30',
@@ -179,12 +175,11 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
         }}
       >
         <Icon icon={componentTypeIconMap[component.data.type]} class="w-3 h-3 opacity-50" />
-        {component.data.name}
+        <span class="flex-1 max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
+          {component.data.name}
+        </span>
       </button>
       <ul ref={containerRef} class="relative flex flex-col gap-0.5 pb-0.5">
-        <Show when={dnd.droppable?.id === component.data.id}>
-          <DragPlaceholder position={placeholderPosition()} />
-        </Show>
         <Show when={component.data.children && component.data.children.length > 0}>
           <For each={component.data.children}>
             {(child, index): JSX.Element => (
@@ -192,6 +187,7 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
                 path={[...component.path, 'children', index()]}
                 data={child}
                 depth={component.depth + 1}
+                disableDrop={!isDropEnabled()}
               />
             )}
           </For>
@@ -212,7 +208,6 @@ const StructureList: Component = () => {
   const pageChildren = (): ComponentData[] => {
     return state.data?.pages.find((p) => p.id === state.page)?.children ?? []
   }
-  const placeholderPosition = (): { x: number; y: number } => _placeholderPosition(containerRef!)
   createEffect(() => {
     const event = dropped()
     if (!event) return
@@ -222,7 +217,8 @@ const StructureList: Component = () => {
         switch (t) {
           case 'kitae/move-component': {
             const draggable = JSON.parse(data.getData(t)) as Draggable
-            if (draggable.id === droppable.id) break
+            const isSamePath = samePath(draggable.path, [...droppable.path, 'children', index])
+            if (draggable.id === droppable.id || isSamePath) break
             makeChange({
               handler: DesignerHistoryHandlers.MOVE_COMPONENT_DATA,
               path: draggable.path,
@@ -259,12 +255,15 @@ const StructureList: Component = () => {
     <>
       <ul
         ref={containerRef}
-        class="min-w-full w-max py-8 relative flex flex-col gap-0.5"
+        class="min-w-full relative w-max py-8 flex flex-col gap-0.5"
         // @ts-ignore - directive
-        use:droppable={{ id: 'root', path: ['pages', pageIndex()] }}
+        use:droppable={{ enabled: true, id: 'root', path: ['pages', pageIndex()], x: 0 }}
       >
-        <Show when={dnd.droppable?.id === 'root'}>
-          <DragPlaceholder position={placeholderPosition()} />
+        <Show when={!!dnd.droppable && dnd.position && dnd.position.y > 0}>
+          <DragPlaceholder
+            position={dnd.position!}
+            offsetTop={containerRef?.getBoundingClientRect().top ?? 0}
+          />
         </Show>
         <For each={pageChildren()}>
           {(component, i): JSX.Element => (
@@ -314,7 +313,7 @@ const ViewsLeftPanelContent: Component = () => {
     <>
       <Accordion
         accordionId="workspace-views-page"
-        opened={true}
+        opened={false}
         label="Pages"
         icon="pages"
         basis="40%"
@@ -393,7 +392,7 @@ const ViewsLeftPanelContent: Component = () => {
         opened={true}
         label="Components"
         icon="components"
-        basis="100%"
+        basis="40%"
         class="bg-base-200 rounded-lg"
       >
         <ul>

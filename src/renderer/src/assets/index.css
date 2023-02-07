@@ -107,7 +107,8 @@ body {
 
 /*** forms */
 
-input {
+input,
+textarea {
   @apply bg-transparent rounded w-full border border-base-300 px-2 py-1;
   @apply focus-visible:outline-none focus-visible:border-secondary-focus;
 }

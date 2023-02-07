@@ -41,10 +41,11 @@ const TextForm: Component = () => {
         <h1 class="text-lg text-ellipsis whitespace-nowrap overflow-hidden">Edit Component</h1>
       </div>
       <FormField label="Text">
-        <input
-          type="text"
+        <textarea
           name="text"
-          id="component-text-form-text-input"
+          id="component-text-form-textarea"
+          cols="30"
+          rows="1"
           value={form.text}
           onInput={(e): void => {
             setForm('text', e.currentTarget.value)

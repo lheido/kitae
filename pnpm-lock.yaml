@@ -14,12 +14,14 @@ importers:
       '@solid-primitives/keyboard': ^1.0.6
       '@solid-primitives/scheduled': ^1.2.1
       '@types/color': ^3.0.3
+      '@types/dompurify': ^2.4.0
       '@types/node': 16.18.11
       '@typescript-eslint/eslint-plugin': ^5.48.0
       '@typescript-eslint/parser': ^5.48.0
       autoprefixer: ^10.4.13
       color: ^4.2.3
       contactjs: ^2.1.5
+      dompurify: ^2.4.3
       electron: ^21.3.3
       electron-builder: ^23.6.0
       electron-updater: ^5.3.0
@@ -51,6 +53,7 @@ importers:
       '@solid-primitives/scheduled': 1.2.1_solid-js@1.6.9
       color: 4.2.3
       contactjs: 2.1.5
+      dompurify: 2.4.3
       electron-updater: 5.3.0
       motion: 10.15.5
       overlayscrollbars: 2.0.3
@@ -63,6 +66,7 @@ importers:
       '@electron-toolkit/tsconfig': 1.0.1_@types+node@16.18.11
       '@electron/notarize': 1.2.3
       '@types/color': 3.0.3
+      '@types/dompurify': 2.4.0
       '@types/node': 16.18.11
       '@typescript-eslint/eslint-plugin': 5.48.2_caon6io6stgpr7lz2rtbhekxqy
       '@typescript-eslint/parser': 5.48.2_7uibuqfxkfaozanbtbziikiqje
@@ -992,6 +996,12 @@ packages:
       '@types/ms': 0.7.31
     dev: true
 
+  /@types/dompurify/2.4.0:
+    resolution: {integrity: sha512-IDBwO5IZhrKvHFUl+clZxgf3hn2b/lU6H1KaBShPkQyGJUQ0xwebezIPSuiyGwfz1UzJWQl4M7BDxtHtCCPlTg==}
+    dependencies:
+      '@types/trusted-types': 2.0.2
+    dev: true
+
   /@types/fs-extra/9.0.13:
     resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
     dependencies:
@@ -1044,6 +1054,10 @@ packages:
 
   /@types/semver/7.3.13:
     resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
+
+  /@types/trusted-types/2.0.2:
+    resolution: {integrity: sha512-F5DIZ36YVLE+PN+Zwws4kJogq47hNgX3Nx6WyDJ3kcplxyke3XIzB8uK5n/Lpm1HBsbGzd6nmGehL8cPekP+Tg==}
+    dev: true
 
   /@types/verror/1.10.6:
     resolution: {integrity: sha512-NNm+gdePAX1VGvPcGZCDKQZKYSiAWigKhKaz5KF94hG6f2s8de9Ow5+7AbXoeKxL8gavZfk4UquSAygOF2duEQ==}
@@ -1919,6 +1933,10 @@ packages:
     dependencies:
       esutils: 2.0.3
     dev: true
+
+  /dompurify/2.4.3:
+    resolution: {integrity: sha512-q6QaLcakcRjebxjg8/+NP+h0rPfatOgOzc46Fst9VAA3jF2ApfKBNKMzdP4DYTqtUMXSCd5pRS/8Po/OmoCHZQ==}
+    dev: false
 
   /dotenv-expand/5.1.0:
     resolution: {integrity: sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==}

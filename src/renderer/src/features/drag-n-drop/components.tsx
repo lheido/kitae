@@ -1,109 +1,11 @@
-// import { GestureEvent, Pan, PointerListener } from 'contactjs'
-
 import { Accessor, Component, createSignal, onCleanup } from 'solid-js'
-import { createStore, SetStoreFunction } from 'solid-js/store'
+import { createStore, produce, SetStoreFunction } from 'solid-js/store'
 import { Draggable, Droppable } from './types'
 
-// export const draggable = (
-//   elt: HTMLElement,
-//   accessor: () => Draggable | (() => Draggable)
-// ): void => {
-//   const [state, setState] = useContext(DnDContext)
-//   new PointerListener(elt, {
-//     supportedGestures: [Pan]
-//   })
-//   const onPanStart = (e: GestureEvent): void => {
-//     e.preventDefault()
-//     setState(
-//       produce((s) => {
-//         s.position = e.detail.global.center
-//         const acc = accessor()
-//         s.dragged = typeof acc === 'function' ? acc() : acc
-//       })
-//     )
-//   }
-//   const onPanMove = (e: GestureEvent): void => {
-//     e.preventDefault()
-//     const closest = state
-//       .droppables!.filter((d) => d.droppable.id !== state.dragged!.id)
-//       .reduce(
-//         (acc: { dist: number; d?: Droppable }, d) => {
-//           const rect = d.getBoundingClientRect()
-//           const dist = Math.abs(e.detail.global.center.y - rect.y)
-//           const inside =
-//             e.detail.global.center.x > rect.x && e.detail.global.center.x < rect.x + rect.width
-//           return inside && dist < acc.dist ? { dist, d: d.droppable } : acc
-//         },
-//         { dist: Infinity }
-//       )
-//     if (closest.d !== undefined) {
-//       setState('droppable', JSON.parse(JSON.stringify(closest.d)))
-//     } else {
-//       setState('droppable', undefined)
-//     }
-//     setState('position', e.detail.global.center)
-//   }
-//   const onPanEnd = (e: GestureEvent): void => {
-//     e.preventDefault()
-//     setState(
-//       produce((s) => {
-//         s.dragged = undefined
-//         s.droppable = undefined
-//       })
-//     )
-//   }
-//   elt.addEventListener('panstart', onPanStart as never)
-//   elt.addEventListener('pan', onPanMove as never)
-//   elt.addEventListener('panend', onPanEnd as never)
-//   onCleanup(() => {
-//     elt.removeEventListener('panstart', onPanStart as never)
-//     elt.removeEventListener('pan', onPanMove as never)
-//     elt.removeEventListener('panend', onPanEnd as never)
-//   })
-// }
-
-// export const droppable = (elt: Element, accessor: () => Droppable): void => {
-//   const [, setState] = useContext(DnDContext)
-//   createEffect(() => {
-//     setState(
-//       produce((s) => {
-//         let e = s.droppables?.find((d) => d === elt)
-//         if (e === undefined) {
-//           e = elt as DroppableElement
-//           s.droppables!.push(e)
-//         }
-//         e!.droppable = accessor()
-//       })
-//     )
-//   })
-// }
-
-// export type DragOverlayProps = ComponentProps<'div'>
-
-// export const DragOverlay: Component<DragOverlayProps> = (props: DragOverlayProps) => {
-//   const [state] = useContext(DnDContext)
-
-//   return (
-//     <Show when={state.dragged !== undefined}>
-//       <Portal mount={document.body}>
-//         <div
-//           class="absolute z-20"
-//           style={{
-//             top: `${state.position?.y}px`,
-//             left: `${state.position?.x}px`
-//           }}
-//         >
-//           {props.children}
-//         </div>
-//       </Portal>
-//     </Show>
-//   )
-// }
-
-// const [dragged, setDragged] = createSignal<Draggable | undefined>(undefined)
 export interface DndState {
   droppable?: Droppable
   draggable?: Draggable
+  draggableElt?: HTMLElement
   position?: { x: number; y: number }
   index?: number
 }
@@ -142,10 +44,16 @@ export const draggable = (
     }
     e.dataTransfer!.dropEffect = draggable.effect ?? 'move'
     e.dataTransfer!.effectAllowed = draggable.effect ?? 'move'
-    setState('draggable', draggable)
+    setState(
+      produce((s) => {
+        s.draggable = draggable
+        s.draggableElt = elt
+      })
+    )
   }
   const dragEndHandler = (): void => {
     setState('draggable', undefined)
+    setState('droppable', undefined)
   }
   elt.setAttribute('draggable', 'true')
   elt.addEventListener('dragstart', dragStartHandler)
@@ -164,61 +72,103 @@ export const droppable = (elt: HTMLElement, accessor: () => Droppable): void => 
     // Required for nested droppables
     e.stopPropagation()
     const acc = accessor() as Droppable
-
-    emitDropEvent(() => ({
-      droppable: JSON.parse(JSON.stringify(acc)),
-      index: dnd.index as number,
-      data: e.dataTransfer!
-    }))
-    setState('droppable', undefined)
-    setState('draggable', undefined)
+    if (acc.enabled) {
+      emitDropEvent(() => ({
+        droppable: JSON.parse(JSON.stringify(acc)),
+        index: dnd.index as number,
+        data: e.dataTransfer!
+      }))
+      setState('droppable', undefined)
+      setState('draggable', undefined)
+    }
   }
   const dragOverHandler = (e: DragEvent): void => {
     e.preventDefault()
     e.stopPropagation()
-    e.dataTransfer!.dropEffect = dnd.draggable?.effect ?? 'move'
-    setState('position', { x: e.clientX, y: e.clientY })
-  }
-  const dragEnterHandler = (e: DragEvent): void => {
-    e.preventDefault()
-    e.stopPropagation()
     const acc = accessor()
-    setState('droppable', acc)
-  }
-  const dragLeaveHandler = (e: DragEvent): void => {
-    e.preventDefault()
-    e.stopPropagation()
-    const acc = accessor()
-    if (dnd.droppable?.id === acc?.id) {
+    const container = acc.container ?? elt
+    const children = Array.from(container.children) as HTMLElement[]
+    if (children.length > 0) {
+      const closest = children
+        .filter((c) => c instanceof HTMLLIElement)
+        .reduce(
+          (acc: { dist: number; elt: HTMLElement | undefined }, elt: HTMLElement) => {
+            const rect = elt.getBoundingClientRect()
+            const dist = Math.abs(rect.top - e.clientY)
+            return dist < acc.dist ? { dist, elt } : acc
+          },
+          { dist: Infinity, elt: undefined } as { dist: number; elt: HTMLElement | undefined }
+        )
+      setState(
+        produce((s) => {
+          if (closest.elt !== undefined) {
+            const rect = closest.elt.getBoundingClientRect()
+            if (e.clientY < rect.top + rect.height / 2) {
+              s.index = children.indexOf(closest.elt)
+              s.position = { x: acc.x ?? e.clientX, y: rect.top }
+            } else {
+              s.index = children.indexOf(closest.elt) + 1
+              s.position = { x: acc.x ?? e.clientX, y: rect.bottom }
+            }
+          }
+        })
+      )
+    }
+    if (acc.enabled) {
+      setState('droppable', acc)
+      e.dataTransfer!.dropEffect = dnd.draggable?.effect ?? 'move'
+    } else {
       setState('droppable', undefined)
+      e.dataTransfer!.dropEffect = 'none'
+      e.dataTransfer!.effectAllowed = 'none'
     }
   }
   elt.addEventListener('dragover', dragOverHandler)
   elt.addEventListener('drop', dropHandler)
-  elt.addEventListener('dragenter', dragEnterHandler)
-  elt.addEventListener('dragleave', dragLeaveHandler)
   onCleanup(() => {
     elt.removeAttribute('droppable')
     elt.removeEventListener('dragover', dragOverHandler)
     elt.removeEventListener('drop', dropHandler)
-    elt.removeEventListener('dragenter', dragEnterHandler)
-    elt.removeEventListener('dragleave', dragLeaveHandler)
   })
 }
 
 export interface DragPlaceholderProps {
   position: { x: number; y: number }
+  offsetTop: number
 }
 
 export const DragPlaceholder: Component<DragPlaceholderProps> = (props: DragPlaceholderProps) => {
+  let ref: HTMLDivElement | undefined
   return (
     <div
+      ref={ref}
       aria-hidden="true"
-      class="absolute z-10 h-1 right-0 bg-secondary pointer-events-none rounded"
+      class="absolute z-10 h-1 -translate-y-1/2 right-0 bg-secondary pointer-events-none rounded"
       style={{
-        top: `${props.position.y}px`,
+        transition: 'left 150ms',
+        top: `${props.position.y - props.offsetTop}px`,
         left: `${props.position.x}px`
       }}
     />
   )
+}
+
+if (document.body) {
+  // Make sure to reset the dnd state for global drag and drop events (from outside the app)
+  // @TODO: For now, we can't use dropEffect 'none' because it prevent the drop event
+  document.body.addEventListener('dragover', (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  })
+  document.body.addEventListener('drop', (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setState(
+      produce((s) => {
+        s.draggable = undefined
+        s.droppable = undefined
+        s.position = undefined
+      })
+    )
+  })
 }

@@ -24,8 +24,8 @@ const FormField: Component<FormFieldProps> = (props: FormFieldProps) => {
     }
   })
   return (
-    <div ref={fieldRef} {...container} class={twMerge('flex gap-2 items-center', classes.class)}>
-      <label class={twMerge('basis-10', classes.labelClass)} for={labelFor()}>
+    <div ref={fieldRef} {...container} class={twMerge('flex gap-2 items-start', classes.class)}>
+      <label class={twMerge('basis-10 py-1', classes.labelClass)} for={labelFor()}>
         {component.label}
       </label>
       {component.children}

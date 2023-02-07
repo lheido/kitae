@@ -12,6 +12,9 @@ export interface Droppable {
   id: string
   path: Path
   allowedEffects: string[]
+  enabled?: boolean
+  x?: number
+  container?: HTMLElement
 }
 
 export interface DroppableElement extends HTMLElement {

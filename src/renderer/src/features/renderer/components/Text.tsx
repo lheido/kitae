@@ -1,4 +1,5 @@
 import { ComponentData } from '@kitae/shared/types'
+import DOMPurify from 'dompurify'
 import { Component } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import { useIsSelected } from '../utils'
@@ -12,9 +13,11 @@ const Text: Component<TextProps> = (props: TextProps) => {
       component={props.data.config?.semantic ?? 'span'}
       id={props.data.id}
       classList={{ selected: isSelected(props.data.id) }}
-    >
-      {props.data.config.text}
-    </Dynamic>
+      // eslint-disable-next-line solid/no-innerhtml
+      innerHTML={DOMPurify.sanitize(
+        props.data.config.text.replace(/(?:\r\n|\r|\n)/g, '<br>') ?? ''
+      )}
+    />
   )
 }
 

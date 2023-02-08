@@ -39,51 +39,59 @@ const ColorForm: Component = () => {
     }
   })
   return (
-    <div class="px-2 flex flex-col gap-4">
+    <div class="px-2 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <Icon icon="edit-color" />
         <h1 class="text-lg text-ellipsis whitespace-nowrap overflow-hidden">Edit Color</h1>
       </div>
-      <FormField label="Name">
-        <input
-          type="text"
-          name="name"
-          id="theme-color-name-input"
-          value={form.name}
-          onInput={(e): void => {
-            setForm('name', e.currentTarget.value)
-            setShouldSubmit(true)
-          }}
-        />
-      </FormField>
-      <div class="w-full h-12 rounded" style={{ background: form.value }} />
-      <ColorPicker
-        ref={colorPickerRef}
-        color={form.value}
-        onColorChanged={(c): void => {
-          setForm('value', c)
-          valueRef?.classList.remove('!border-error')
-          setShouldSubmit(true)
-        }}
-      />
-      <FormField label="Color">
-        <input
-          ref={valueRef}
-          type="text"
-          name="value"
-          id="theme-color-value-input"
-          value={form.value && Color(form.value).hex()}
-          onInput={(e): void => {
-            try {
-              setForm('value', Color(e.currentTarget.value).hex())
-              setShouldSubmit(true)
+      <section class="bg-base-200 rounded-lg">
+        <div class="p-2">
+          <FormField label="Name">
+            <input
+              type="text"
+              name="name"
+              id="theme-color-name-input"
+              value={form.name}
+              onInput={(e): void => {
+                setForm('name', e.currentTarget.value)
+                setShouldSubmit(true)
+              }}
+            />
+          </FormField>
+        </div>
+      </section>
+      <section class="bg-base-200 rounded-lg">
+        <div class="p-2 flex flex-col gap-2">
+          <div class="w-full h-12 rounded-lg" style={{ background: form.value }} />
+          <ColorPicker
+            ref={colorPickerRef}
+            color={form.value}
+            onColorChanged={(c): void => {
+              setForm('value', c)
               valueRef?.classList.remove('!border-error')
-            } catch (error) {
-              valueRef?.classList.add('!border-error')
-            }
-          }}
-        />
-      </FormField>
+              setShouldSubmit(true)
+            }}
+          />
+          <FormField label="Color">
+            <input
+              ref={valueRef}
+              type="text"
+              name="value"
+              id="theme-color-value-input"
+              value={form.value && Color(form.value).hex()}
+              onInput={(e): void => {
+                try {
+                  setForm('value', Color(e.currentTarget.value).hex())
+                  setShouldSubmit(true)
+                  valueRef?.classList.remove('!border-error')
+                } catch (error) {
+                  valueRef?.classList.add('!border-error')
+                }
+              }}
+            />
+          </FormField>
+        </div>
+      </section>
     </div>
   )
 }

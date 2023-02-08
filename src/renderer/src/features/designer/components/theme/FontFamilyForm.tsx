@@ -36,36 +36,44 @@ const FontFamilyForm: Component = () => {
     }
   })
   return (
-    <div class="px-2 flex flex-col gap-4">
+    <div class="px-2 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <Icon icon="font-family" />
         <h1 class="text-lg text-ellipsis whitespace-nowrap overflow-hidden">Edit Font Family</h1>
       </div>
-      <FormField label="Name">
-        <input
-          type="text"
-          name="name"
-          id="theme-font-family-name-input"
-          value={form.name}
-          onInput={(e): void => {
-            setForm('name', e.currentTarget.value)
-            setShouldSubmit(true)
-          }}
-        />
-      </FormField>
-      <FormField label="Font Family">
-        <input
-          ref={valueRef}
-          type="text"
-          name="value"
-          id="theme-font-family-value-input"
-          value={form.value}
-          onInput={(e): void => {
-            setForm('value', e.currentTarget.value)
-            setShouldSubmit(true)
-          }}
-        />
-      </FormField>
+      <section class="bg-base-200 rounded-lg">
+        <div class="p-2">
+          <FormField label="Name" labelClass="basis-20">
+            <input
+              type="text"
+              name="name"
+              id="theme-font-family-name-input"
+              value={form.name}
+              onInput={(e): void => {
+                setForm('name', e.currentTarget.value)
+                setShouldSubmit(true)
+              }}
+            />
+          </FormField>
+        </div>
+      </section>
+      <section class="bg-base-200 rounded-lg">
+        <div class="p-2">
+          <FormField label="Families" labelClass="basis-20">
+            <input
+              ref={valueRef}
+              type="text"
+              name="value"
+              id="theme-font-family-value-input"
+              value={form.value}
+              onInput={(e): void => {
+                setForm('value', e.currentTarget.value)
+                setShouldSubmit(true)
+              }}
+            />
+          </FormField>
+        </div>
+      </section>
     </div>
   )
 }

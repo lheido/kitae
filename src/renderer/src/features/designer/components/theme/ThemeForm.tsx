@@ -35,23 +35,27 @@ const ThemeForm: Component = () => {
     }
   })
   return (
-    <div class="px-2 flex flex-col gap-4">
+    <div class="px-2 flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <Icon icon="theme" />
         <h1 class="text-lg text-ellipsis whitespace-nowrap overflow-hidden">Edit Theme</h1>
       </div>
-      <FormField label="Name">
-        <input
-          type="text"
-          name="name"
-          id="theme-name-input"
-          value={form.name}
-          onInput={(e): void => {
-            setForm('name', e.currentTarget.value)
-            setShouldSubmit(true)
-          }}
-        />
-      </FormField>
+      <section class="bg-base-200 rounded-lg">
+        <div class="p-2">
+          <FormField label="Name">
+            <input
+              type="text"
+              name="name"
+              id="theme-name-input"
+              value={form.name}
+              onInput={(e): void => {
+                setForm('name', e.currentTarget.value)
+                setShouldSubmit(true)
+              }}
+            />
+          </FormField>
+        </div>
+      </section>
     </div>
   )
 }

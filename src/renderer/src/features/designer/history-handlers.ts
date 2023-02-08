@@ -133,6 +133,20 @@ export const WorkspaceDataHsitoryHandlers: Record<string, HistoryChangeHandler> 
       })
     }
   },
+  [DesignerHistoryHandlers.UPDATE_CONTAINER_COMPONENT_DATA]: {
+    execute: ({ path, changes }): void => {
+      updatePath(path, (current: ComponentData): void => {
+        const newData = (changes as [ComponentData, ComponentData])[1]
+        current.config = newData.config
+      })
+    },
+    undo: ({ path, changes }): void => {
+      updatePath(path, (current: ComponentData): void => {
+        const oldData = (changes as [ComponentData, ComponentData])[0]
+        current.config = oldData.config
+      })
+    }
+  },
   [DesignerHistoryHandlers.MOVE_COMPONENT_DATA]: {
     execute: ({ path, changes }): void => {
       updatePath(

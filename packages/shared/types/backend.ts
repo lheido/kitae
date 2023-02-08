@@ -12,6 +12,8 @@ export interface ThemeData {
   name: string
   colors: ThemeEntry[]
   fonts: ThemeFontData
+  spacing: ThemeEntry[]
+  rounded: ThemeEntry[]
 }
 
 export interface ComponentData {

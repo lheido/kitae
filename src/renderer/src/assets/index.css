@@ -109,7 +109,7 @@ body {
 
 input,
 textarea {
-  @apply bg-transparent rounded w-full border border-base-300 px-2 py-1;
+  @apply bg-transparent rounded-lg w-full border border-base-content border-opacity-50 px-2 py-1;
   @apply focus-visible:outline-none focus-visible:border-secondary-focus;
 }
 

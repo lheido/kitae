@@ -1,8 +1,8 @@
-import { Component, ComponentProps, createSignal, onMount, splitProps } from 'solid-js'
+import { Component, ComponentProps, createSignal, JSX, onMount, splitProps } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 
 interface FormFieldProps extends ComponentProps<'div'> {
-  label: string
+  label: string | JSX.Element
   labelClass?: string
   required?: boolean
 }
@@ -24,7 +24,11 @@ const FormField: Component<FormFieldProps> = (props: FormFieldProps) => {
     }
   })
   return (
-    <div ref={fieldRef} {...container} class={twMerge('flex gap-2 items-start', classes.class)}>
+    <div
+      ref={fieldRef}
+      {...container}
+      class={twMerge('flex gap-4 items-start pl-2', classes.class)}
+    >
       <label class={twMerge('basis-10 py-1', classes.labelClass)} for={labelFor()}>
         {component.label}
       </label>

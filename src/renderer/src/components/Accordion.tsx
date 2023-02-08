@@ -3,6 +3,7 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import {
   Component,
   ComponentProps,
+  createContext,
   createEffect,
   createSignal,
   JSX,
@@ -10,6 +11,7 @@ import {
   splitProps,
   untrack
 } from 'solid-js'
+import { createStore, SetStoreFunction } from 'solid-js/store'
 import { twMerge } from 'tailwind-merge'
 import AnimatedArrowDown from './AnimatedArrowDown'
 import Icon from './Icon'
@@ -22,6 +24,32 @@ interface AccordionProps extends ComponentProps<'section'> {
   headerSlot?: JSX.Element
   basis: string
   contentClass?: string
+}
+
+export interface AccordionsState {
+  // @TODO: remove the any type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  accordions: any[]
+}
+
+export const AccordionsContext = createContext<
+  [AccordionsState, SetStoreFunction<AccordionsState>]
+>([{ accordions: [] }, (): void => {}])
+
+export interface AccordionsProviderProps {
+  children: JSX.Element
+}
+
+// @TODO: do something with this
+export const AccordionsProvider: Component<AccordionsProviderProps> = (
+  props: AccordionsProviderProps
+) => {
+  const [state, setState] = createStore<AccordionsState>({ accordions: [] })
+  return (
+    <AccordionsContext.Provider value={[state, setState]}>
+      {props.children}
+    </AccordionsContext.Provider>
+  )
 }
 
 const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
@@ -71,7 +99,7 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
             id={ids().header}
             aria-controls={ids().content}
             aria-expanded={expanded()}
-            class="px-2 py-1 flex-1 flex gap-2 items-center hover:bg-base-300 transition-colors"
+            class="px-2 py-1 flex-1 flex gap-2 items-center hover:bg-base-300 transition-colors focus-visible:outline-none focus-visible:bg-secondary focus-visible:bg-opacity-50"
             onClick={(): boolean => setExpanded((prev) => !prev)}
           >
             <Show when={component.icon}>

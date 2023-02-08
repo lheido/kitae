@@ -8,12 +8,24 @@ export const defaultComponents: Partial<ComponentData>[] = [
     children: []
   },
   {
+    name: 'Text',
+    type: 'text',
+    config: {
+      text: 'Lorem ipsum'
+    }
+  },
+  {
     name: 'Paragraph',
     type: 'container',
     config: {
       semantic: 'p'
     },
     children: []
+  },
+  {
+    name: 'Button',
+    type: 'button',
+    config: {}
   },
   {
     name: 'Section',
@@ -62,17 +74,5 @@ export const defaultComponents: Partial<ComponentData>[] = [
       semantic: 'main'
     },
     children: []
-  },
-  {
-    name: 'Button',
-    type: 'button',
-    config: {}
-  },
-  {
-    name: 'Text',
-    type: 'text',
-    config: {
-      text: 'Lorem ipsum'
-    }
   }
 ]

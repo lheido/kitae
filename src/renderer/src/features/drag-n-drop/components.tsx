@@ -113,6 +113,14 @@ export const droppable = (elt: HTMLElement, accessor: () => Droppable): void => 
           }
         })
       )
+    } else {
+      setState(
+        produce((s) => {
+          s.index = 0
+          const rect = container.getBoundingClientRect()
+          s.position = { x: acc.x ?? e.clientX, y: rect.top }
+        })
+      )
     }
     if (acc.enabled) {
       setState('droppable', acc)

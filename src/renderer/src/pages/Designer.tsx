@@ -77,7 +77,7 @@ const Designer: Component = () => {
         <Preview />
       </section>
       <section
-        class="bg-base-100 p-2 transition-all basis-0 overflow-hidden flex flex-col gap-2 h-full"
+        class="bg-base-100 py-2 transition-all basis-0 overflow-hidden flex flex-col gap-2 h-full"
         classList={{
           '!basis-80': panels.find((p) => p.ids.includes(state.current[0] as string))?.rightPanel
         }}

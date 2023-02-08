@@ -179,20 +179,36 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
           {component.data.name}
         </span>
       </button>
-      <ul ref={containerRef} class="relative flex flex-col gap-0.5 pb-0.5">
-        <Show when={component.data.children && component.data.children.length > 0}>
-          <For each={component.data.children}>
-            {(child, index): JSX.Element => (
-              <RecursiveComponentItem
-                path={[...component.path, 'children', index()]}
-                data={child}
-                depth={component.depth + 1}
-                disableDrop={!isDropEnabled()}
-              />
-            )}
-          </For>
-        </Show>
-      </ul>
+      <Show when={component.data.children}>
+        <ul ref={containerRef} class="relative flex flex-col gap-0.5 pb-1">
+          <Show when={component.data.children!.length > 0}>
+            <For each={component.data.children}>
+              {(child, index): JSX.Element => (
+                <RecursiveComponentItem
+                  path={[...component.path, 'children', index()]}
+                  data={child}
+                  depth={component.depth + 1}
+                  disableDrop={!isDropEnabled()}
+                />
+              )}
+            </For>
+          </Show>
+          {/* <li>
+            <button
+              class={twMerge(
+                'flex px-2 gap-2 py-1 w-full rounded items-center text-left whitespace-nowrap',
+                'border border-transparent',
+                'hover:bg-secondary-focus hover:bg-opacity-30',
+                'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30'
+              )}
+              style={{ 'padding-left': `${leftPadding()}px` }}
+            >
+              <Icon icon="add" class="w-3 h-3 opacity-50" />
+              Add item
+            </button>
+          </li> */}
+        </ul>
+      </Show>
     </li>
   )
 }
@@ -255,7 +271,7 @@ const StructureList: Component = () => {
     <>
       <ul
         ref={containerRef}
-        class="min-w-full relative w-max py-8 flex flex-col gap-0.5"
+        class="min-w-full min-h-full relative w-max py-8 flex flex-col gap-0.5"
         // @ts-ignore - directive
         use:droppable={{ enabled: true, id: 'root', path: ['pages', pageIndex()], x: 0 }}
       >
@@ -383,7 +399,7 @@ const ViewsLeftPanelContent: Component = () => {
         icon="structure"
         basis="100%"
         class="bg-base-200 rounded-lg"
-        contentClass="p-0"
+        contentClass="p-0 h-full"
       >
         <StructureList />
       </Accordion>
@@ -395,7 +411,7 @@ const ViewsLeftPanelContent: Component = () => {
         basis="40%"
         class="bg-base-200 rounded-lg"
       >
-        <ul>
+        <ul class="grid grid-cols-2">
           <For each={defaultComponents}>
             {(component): JSX.Element => (
               <li>
@@ -414,7 +430,9 @@ const ViewsLeftPanelContent: Component = () => {
                     icon={componentTypeIconMap[component.type as string]}
                     class="w-3 h-3 opacity-50"
                   />
-                  {component.name}
+                  <span class="flex-1 text-left text-ellipsis whitespace-nowrap overflow-hidden">
+                    {component.name}
+                  </span>
                 </button>
               </li>
             )}

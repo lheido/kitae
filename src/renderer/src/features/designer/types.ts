@@ -33,7 +33,8 @@ export enum DesignerHistoryHandlers {
   ADD_COMPONENT_DATA = 'components:addComponentData',
   DELETE_COMPONENT_DATA = 'components:deleteComponentData',
   UPDATE_TEXT_COMPONENT_DATA = 'components:updateTextComponentData',
-  MOVE_COMPONENT_DATA = 'components:moveComponentData'
+  MOVE_COMPONENT_DATA = 'components:moveComponentData',
+  UPDATE_CONTAINER_COMPONENT_DATA = 'components:updateContainerComponentData'
 }
 
 export interface FlatComponentData extends ComponentData {

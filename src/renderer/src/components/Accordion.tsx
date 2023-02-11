@@ -1,4 +1,5 @@
 import { Motion } from '@motionone/solid'
+import { createResizeObserver } from '@solid-primitives/resize-observer'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import {
   Component,
@@ -7,6 +8,7 @@ import {
   createEffect,
   createSignal,
   JSX,
+  onMount,
   Show,
   splitProps,
   untrack
@@ -22,7 +24,9 @@ interface AccordionProps extends ComponentProps<'section'> {
   accordionId: string
   opened: boolean
   headerSlot?: JSX.Element
-  basis: string
+  basis?: string
+  maxHeight?: number
+  minHeight?: number
   contentClass?: string
 }
 
@@ -55,37 +59,57 @@ export const AccordionsProvider: Component<AccordionsProviderProps> = (
 const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
   const [component, classes, container] = splitProps(
     props,
-    ['label', 'icon', 'opened', 'accordionId', 'headerSlot', 'children', 'basis'],
+    [
+      'label',
+      'icon',
+      'opened',
+      'accordionId',
+      'headerSlot',
+      'children',
+      'basis',
+      'maxHeight',
+      'minHeight'
+    ],
     ['class', 'contentClass']
   )
   const [expanded, setExpanded] = createSignal(untrack(() => component.opened))
   const [scrolling, isScrolling] = createSignal(false)
   const [headerHeight, setHeaderHeight] = createSignal(0)
+  const [contentHeight, setContentHeight] = createSignal(0)
   const [ids, setIds] = createSignal({ header: '', content: '' })
-  let contentRef: HTMLDivElement | undefined
-  let headerRef: HTMLDivElement | undefined
+  let sectionRef!: HTMLDivElement
+  let headerRef!: HTMLDivElement
+  let contentRef!: HTMLDivElement
+  const height = (): number => headerHeight() + contentHeight() + 16
+  onMount(() => {
+    createResizeObserver(contentRef, ({ height }) => {
+      setContentHeight(
+        Math.max(
+          component.minHeight ?? headerRef.offsetHeight,
+          Math.min(component.maxHeight ?? height, height)
+        )
+      )
+    })
+  })
   createEffect(() => {
     setIds({
       header: `${component.accordionId}-header`,
       content: `${component.accordionId}-content`
     })
-    if (contentRef && headerRef) {
-      setHeaderHeight(headerRef.offsetHeight)
-    }
+    setHeaderHeight(headerRef.offsetHeight)
     setExpanded(component.opened)
   })
   return (
     <Motion.section
-      ref={contentRef}
+      ref={sectionRef}
       animate={{
-        flexBasis: expanded() ? `${component.basis}` : `${headerHeight()}px`
+        height: expanded() ? `${height()}px` : `${headerHeight()}px`
       }}
       transition={{ duration: 0.4 }}
       {...container}
       class={twMerge('overflow-hidden relative', classes.class)}
       style={{
-        'min-height': `${headerHeight()}px`,
-        'flex-basis': !component.opened ? `${headerHeight()}px` : `${component.basis}`
+        'min-height': `${headerHeight()}px`
       }}
     >
       <header
@@ -99,7 +123,7 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
             id={ids().header}
             aria-controls={ids().content}
             aria-expanded={expanded()}
-            class="px-2 py-1 flex-1 flex gap-2 items-center hover:bg-base-300 transition-colors focus-visible:outline-none focus-visible:bg-secondary focus-visible:bg-opacity-50"
+            class="px-2 py-1 flex-1 flex gap-2 items-center hover:bg-secondary hover:bg-opacity-50 transition-colors focus-visible:outline-none focus-visible:bg-secondary focus-visible:bg-opacity-50"
             onClick={(): boolean => setExpanded((prev) => !prev)}
           >
             <Show when={component.icon}>
@@ -115,7 +139,7 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
       </header>
       <Motion
         animate={{
-          height: expanded() ? `100%` : `0`,
+          height: expanded() ? `${height()}px` : `0`,
           opacity: expanded() ? 1 : 0
         }}
         transition={{ duration: 0.4 }}
@@ -130,7 +154,9 @@ const Accordion: Component<AccordionProps> = (props: AccordionProps) => {
           class="h-full"
           events={{ scroll: ({ elements }) => isScrolling(elements().viewport.scrollTop !== 0) }}
         >
-          <div class={twMerge('p-2', classes.contentClass)}>{component.children}</div>
+          <div ref={contentRef} class={twMerge('p-2', classes.contentClass)}>
+            {component.children}
+          </div>
         </OverlayScrollbarsComponent>
       </Motion>
     </Motion.section>

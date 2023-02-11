@@ -1,13 +1,13 @@
+import { Path } from '@kitae/shared/types'
 import { Component } from 'solid-js'
-import ColorForm from './components/theme/ColorForm'
-import FontFamilyForm from './components/theme/FontFamilyForm'
-import ThemeForm from './components/theme/ThemeForm'
-import ThemeLeftPanel from './components/theme/ThemeLeftPanel'
-import ViewsLeftPanel from './components/views/ViewsLeftPanel'
-import ViewsRightPanel from './components/views/ViewsRightPanel'
+import ThemeColorForm from './features/data/forms/ThemeColorForm'
+import ThemeFontFamilyForm from './features/data/forms/ThemeFontFamilyForm'
+import ThemeLeftPanel from './features/pages/theme/ThemeLeftPanel'
+import ViewsLeftPanel from './features/pages/views/ViewsLeftPanel'
+import ViewsRightPanel from './features/pages/views/ViewsRightPanel'
 
 export interface Route {
-  path: string
+  path: Path
   left?: Component
   right?: Component
 }
@@ -16,29 +16,33 @@ export type Routes = Route[]
 
 export const routes: Routes = [
   {
-    path: 'themes',
+    path: ['theme'],
     left: ThemeLeftPanel
   },
   {
-    path: 'pages',
+    path: ['pages'],
     left: ViewsLeftPanel,
     right: ViewsRightPanel
   },
   {
-    path: 'components',
+    path: ['components'],
     left: ViewsLeftPanel,
     right: ViewsRightPanel
   },
   {
-    path: 'themes/$',
-    right: ThemeForm
+    path: ['theme', 'colors', '$'],
+    right: ThemeColorForm
   },
   {
-    path: 'themes/$/colors/$',
-    right: ColorForm
+    path: ['theme', 'extends', '$', 'colors', '$'],
+    right: ThemeColorForm
   },
   {
-    path: 'themes/$/fonts/family/$',
-    right: FontFamilyForm
+    path: ['theme', 'fontFamilies', '$'],
+    right: ThemeFontFamilyForm
+  },
+  {
+    path: ['theme', 'extends', '$', 'fontFamilies', '$'],
+    right: ThemeFontFamilyForm
   }
 ]

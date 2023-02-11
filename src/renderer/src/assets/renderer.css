@@ -1,3 +1,5 @@
+@tailwind base; /* Include tailwind reset */
+
 .selected {
   /* TODO: use CSS custom properties instead of hardcoded values, without including tailwindcss */
   outline-style: dashed;

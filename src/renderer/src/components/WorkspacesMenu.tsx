@@ -1,4 +1,5 @@
 import { openLocalWorkspaceHandler } from '@renderer/features/api'
+import { useDesignerState } from '@renderer/features/designer'
 import { navigate } from '@renderer/features/router'
 import { openWorkspace, workspacesState } from '@renderer/features/workspaces'
 import { Component, createSignal, onMount, Show } from 'solid-js'
@@ -7,6 +8,7 @@ import Button from './Button'
 import Icon from './Icon'
 
 const WorkspacesMenu: Component = () => {
+  const [, { reset }] = useDesignerState()
   const [opened, open] = createSignal(false)
   const [position, setPosition] = createSignal({ x: 0, y: 0 })
   let buttonRef: HTMLButtonElement | undefined
@@ -62,6 +64,7 @@ const WorkspacesMenu: Component = () => {
                   class="w-full"
                   onClick={(): void => {
                     openWorkspace(undefined)
+                    reset()
                     navigate('workspaces')
                   }}
                 >

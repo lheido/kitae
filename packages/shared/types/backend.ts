@@ -1,19 +1,13 @@
-export interface ThemeEntry {
-  name: string
-  value: string
-}
+export type ThemeEntries = Record<string, string>
 
-export interface ThemeFontData {
-  family: ThemeEntry[]
-}
+export type ThemeExtends = Record<keyof Omit<WorkspaceTheme, 'extends'>, ThemeEntries>
 
-export interface ThemeData {
-  id: string
-  name: string
-  colors: ThemeEntry[]
-  fonts: ThemeFontData
-  spacing: ThemeEntry[]
-  rounded: ThemeEntry[]
+export interface WorkspaceTheme {
+  colors: ThemeEntries
+  fontFamilies: ThemeEntries
+  spacing: ThemeEntries
+  rounded: ThemeEntries
+  extends?: Record<string, ThemeExtends>
 }
 
 export interface ComponentData {
@@ -29,7 +23,7 @@ export interface ComponentData {
 export interface WorkspaceData {
   components: ComponentData[]
   pages: ComponentData[]
-  themes: ThemeData[]
+  theme: WorkspaceTheme
 }
 
 export interface BaseBackendSettings {

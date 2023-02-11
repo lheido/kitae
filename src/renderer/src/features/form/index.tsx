@@ -37,6 +37,7 @@ export const createForm = <T extends object>(
   setForm: SetStoreFunction<T>
   FormProvider: Component<FormProviderProps>
   field: FormFieldDirective
+  setShouldSubmit: Setter<boolean>
 } => {
   const FormContext = createContext<[T, SetStoreFunction<T>, Accessor<boolean>, Setter<boolean>]>([
     {} as T,
@@ -91,5 +92,5 @@ export const createForm = <T extends object>(
       elt.removeEventListener('input', onInput)
     })
   }
-  return { form, setForm, FormProvider, field }
+  return { form, setForm, FormProvider, field, setShouldSubmit }
 }

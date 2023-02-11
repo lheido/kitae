@@ -2,7 +2,7 @@ import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import { useHistory } from '@renderer/features/history'
 import { Component, Show } from 'solid-js'
-import { useDesignerState } from '../designer.state'
+import { useDesignerState } from '../features/state/designer.state'
 
 const DesignerToolbar: Component = () => {
   const [state] = useDesignerState()

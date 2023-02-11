@@ -1,8 +1,9 @@
 import { Component, Show } from 'solid-js'
+import iconUrl from './assets/icon.png?url'
 import WorkspacesMenu from './components/WorkspacesMenu'
 import { api } from './features/api'
 import DesignerToolbar from './features/designer/components/DesignerToolbar'
-import { WorkspaceDataProvider } from './features/designer/contexts/WorkspaceDataProvider'
+import { WorkspaceDataProvider } from './features/designer/features/state/WorkspaceDataProvider'
 import { WorkspaceDataHsitoryHandlers } from './features/designer/history-handlers'
 import { registerHistoryChangeHandler } from './features/history'
 import { ShortcutProvider } from './features/keyboard'
@@ -22,10 +23,13 @@ const App: Component = () => {
             height: `${api.windowArgs ? api.windowArgs['title-bar-overlay-height'] : 36}px`,
             '-webkit-app-region': 'drag'
           }}
-          class="box-content bg-base-100 text-base-content flex items-center gap-4 pl-2 pr-36 select-none relative z-10 drop-shadow-lg"
+          class="box-content bg-base-100 text-base-content flex items-center gap-4 pl-4 pr-36 select-none relative z-10 drop-shadow-lg"
         >
-          <p class="text-ellipsis whitespace-nowrap overflow-hidden">Kitae</p>
-          <Show when={routerState.current?.name === 'designer' && workspacesState.current}>
+          <img class="h-auto w-6" src={iconUrl} alt="Kitae logo" />
+          <Show
+            when={routerState.current?.name === 'designer' && workspacesState.current}
+            fallback={<p>Kitae</p>}
+          >
             <WorkspacesMenu />
             <DesignerToolbar />
           </Show>

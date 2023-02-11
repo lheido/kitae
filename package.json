@@ -26,6 +26,7 @@
     "@kitae/shared": "workspace:*",
     "@motionone/solid": "^10.15.5",
     "@solid-primitives/keyboard": "^1.0.6",
+    "@solid-primitives/resize-observer": "^2.0.9",
     "@solid-primitives/scheduled": "^1.2.1",
     "color": "^4.2.3",
     "contactjs": "^2.1.5",

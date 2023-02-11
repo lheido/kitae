@@ -1,34 +1,29 @@
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import PanelSeparator from '@renderer/components/PanelSeparator'
-import { WorkspaceDataContext } from '@renderer/features/designer'
+import { useDesignerState } from '@renderer/features/designer'
 import Preview from '@renderer/features/designer/components/Preview'
 import { routes } from '@renderer/features/designer/routing'
-import { Component, createMemo, For, JSX, Show, useContext } from 'solid-js'
+import { Component, createMemo, For, JSX, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 const Designer: Component = () => {
-  const [state, { navigate }] = useContext(WorkspaceDataContext)
+  const [state, { navigate }] = useDesignerState()
   const panels: { ids: string[]; icon: string; label: string; rightPanel: boolean }[] = [
     { ids: ['settings'], icon: 'settings', label: 'Settings', rightPanel: false },
     { ids: ['pages', 'components'], icon: 'designer-tree', label: 'Views', rightPanel: true },
-    { ids: ['themes'], icon: 'palette', label: 'Theme', rightPanel: true }
+    { ids: ['theme'], icon: 'palette', label: 'Theme', rightPanel: true }
   ]
-  const getCurrentPath = createMemo(() => {
-    return state.current.map((e) => (typeof e === 'number' ? '$' : e)).join('/')
-  })
   const getLeftPanel = createMemo(() => {
-    const currentPath = getCurrentPath()
     const components = routes
-      .filter((r) => currentPath.startsWith(r.path))
+      .filter((r) => r.path.every((e, i) => (e !== '$' ? state.current[i] === e : true)))
       .filter((r) => !!r.left)
       .map((r) => r.left)
     return components[components.length - 1]
   })
   const getRightPanel = createMemo(() => {
-    const currentPath = getCurrentPath()
     const components = routes
-      .filter((r) => currentPath.startsWith(r.path))
+      .filter((r) => r.path.every((e, i) => (e !== '$' ? state.current[i] === e : true)))
       .filter((r) => !!r.right)
       .map((r) => r.right)
     return components[components.length - 1]
@@ -61,7 +56,7 @@ const Designer: Component = () => {
           </For>
         </ul>
       </section>
-      <section id="left-panel" class="bg-base-100 p-2 w-[320px] flex flex-col gap-2 h-full">
+      <section id="left-panel" class="bg-base-100 w-[320px] h-full">
         <Show when={state.data}>
           <Dynamic component={getLeftPanel()} />
         </Show>

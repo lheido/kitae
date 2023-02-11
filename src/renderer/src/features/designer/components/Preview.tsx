@@ -1,5 +1,5 @@
 import { Component } from 'solid-js'
-import Renderer from '../../renderer/Renderer'
+import Renderer from '../features/renderer/Renderer'
 
 const Preview: Component = () => {
   return (

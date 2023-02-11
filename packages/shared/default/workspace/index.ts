@@ -57,88 +57,79 @@ export const defaultWorkspaceData: WorkspaceData = {
       ]
     }
   ],
-  themes: [
-    {
-      id: crypto.randomUUID(),
-      name: 'default',
-      colors: [
-        { name: 'primary', value: 'hsl(158deg, 64%, 32%)' },
-        { name: 'primary-focus', value: 'hsl(158deg, 64%, 28%)' },
-        { name: 'primary-content', value: 'hsl(158deg, 64%, 100%)' },
-        { name: 'secondary', value: 'hsl(198deg, 64%, 32%)' },
-        { name: 'secondary-focus', value: 'hsl(198deg, 64%, 28%)' },
-        { name: 'secondary-content', value: 'hsl(198deg, 64%, 100%)' },
-        { name: 'alert', value: 'hsl(5deg, 91%, 32%)' },
-        { name: 'alert-focus', value: 'hsl(5deg, 91%, 28%)' },
-        { name: 'alert-content', value: 'hsl(5deg, 91%, 100%)' },
-        { name: 'base-100', value: 'hsl(270deg, 10%, 32%)' },
-        { name: 'base-200', value: 'hsl(270deg, 10%, 16%)' },
-        { name: 'base-300', value: 'hsl(270deg, 10%, 12%)' },
-        { name: 'base-content', value: 'hsl(270deg, 10%, 100%)' }
-      ],
-      fonts: {
-        family: [
-          {
-            name: 'sans',
-            value:
-              'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"'
-          },
-          { name: 'serif', value: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif' },
-          {
-            name: 'mono',
-            value:
-              'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'
-          }
-        ]
-      },
-      spacing: [
-        { name: '0', value: '0px' },
-        { name: '0.5', value: '2px' },
-        { name: '1', value: '4px' },
-        { name: '1.5', value: '6px' },
-        { name: '2', value: '8px' },
-        { name: '2.5', value: '10px' },
-        { name: '3', value: '12px' },
-        { name: '3.5', value: '14px' },
-        { name: '4', value: '16px' },
-        { name: '4.5', value: '18px' },
-        { name: '5', value: '20px' },
-        { name: '6', value: '24px' },
-        { name: '7', value: '28px' },
-        { name: '8', value: '32px' },
-        { name: '9', value: '36px' },
-        { name: '10', value: '40px' },
-        { name: '11', value: '44px' },
-        { name: '12', value: '48px' },
-        { name: '14', value: '56px' },
-        { name: '16', value: '64px' },
-        { name: '20', value: '80px' },
-        { name: '24', value: '96px' },
-        { name: '28', value: '112px' },
-        { name: '32', value: '128px' },
-        { name: '36', value: '144px' },
-        { name: '40', value: '160px' },
-        { name: '44', value: '176px' },
-        { name: '48', value: '192px' },
-        { name: '52', value: '208px' },
-        { name: '56', value: '224px' },
-        { name: '60', value: '240px' },
-        { name: '64', value: '256px' },
-        { name: '72', value: '288px' },
-        { name: '80', value: '320px' },
-        { name: '96', value: '384px' }
-      ],
-      rounded: [
-        { name: 'rounded-none', value: '0px' },
-        { name: 'rounded-sm', value: '0.125rem' },
-        { name: 'rounded', value: '0.25rem' },
-        { name: 'rounded-md', value: '0.375rem' },
-        { name: 'rounded-lg', value: '0.5rem' },
-        { name: 'rounded-xl', value: '0.75rem' },
-        { name: 'rounded-2xl', value: '1rem' },
-        { name: 'rounded-3xl', value: '1.5rem' },
-        { name: 'rounded-full', value: '9999px' }
-      ]
-    }
-  ]
+  theme: {
+    colors: {
+      primary: 'hsl(158deg, 64%, 32%)',
+      'primary-focus': 'hsl(158deg, 64%, 28%)',
+      'primary-content': 'hsl(158deg, 64%, 100%)',
+      secondary: 'hsl(198deg, 64%, 32%)',
+      'secondary-focus': 'hsl(198deg, 64%, 28%)',
+      'secondary-content': 'hsl(198deg, 64%, 100%)',
+      alert: 'hsl(5deg, 91%, 32%)',
+      'alert-focus': 'hsl(5deg, 91%, 28%)',
+      'alert-content': 'hsl(5deg, 91%, 100%)',
+      neutral: 'hsl(0deg, 0%, 32%)',
+      'neutral-focus': 'hsl(0deg, 0%, 28%)',
+      'neutral-content': 'hsl(0deg, 0%, 100%)',
+      base: 'hsl(0deg, 0%, 100%)',
+      'base-content': 'hsl(0deg, 0%, 32%)',
+      'base-100': 'hsl(0deg, 0%, 100%)',
+      'base-200': 'hsl(0deg, 0%, 96%)',
+      'base-300': 'hsl(0deg, 0%, 92%)'
+    },
+    fontFamilies: {
+      sans: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+      serif: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
+      mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace'
+    },
+    spacing: {
+      '0': '0px',
+      '0.5': '2px',
+      '1': '4px',
+      '1.5': '6px',
+      '2': '8px',
+      '2.5': '10px',
+      '3': '12px',
+      '3.5': '14px',
+      '4': '16px',
+      '4.5': '18px',
+      '5': '20px',
+      '6': '24px',
+      '7': '28px',
+      '8': '32px',
+      '9': '36px',
+      '10': '40px',
+      '11': '44px',
+      '12': '48px',
+      '14': '56px',
+      '16': '64px',
+      '20': '80px',
+      '24': '96px',
+      '28': '112px',
+      '32': '128px',
+      '36': '144px',
+      '40': '160px',
+      '44': '176px',
+      '48': '192px',
+      '52': '208px',
+      '56': '224px',
+      '60': '240px',
+      '64': '256px',
+      '72': '288px',
+      '80': '320px',
+      '96': '384px'
+    },
+    rounded: {
+      'rounded-none': '0px',
+      'rounded-sm': '0.125rem',
+      rounded: '0.25rem',
+      'rounded-md': '0.375rem',
+      'rounded-lg': '0.5rem',
+      'rounded-xl': '0.75rem',
+      'rounded-2xl': '1rem',
+      'rounded-3xl': '1.5rem',
+      'rounded-full': '9999px'
+    },
+    extends: {}
+  }
 }

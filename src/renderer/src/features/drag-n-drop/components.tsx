@@ -151,7 +151,7 @@ export const DragPlaceholder: Component<DragPlaceholderProps> = (props: DragPlac
     <div
       ref={ref}
       aria-hidden="true"
-      class="absolute z-10 h-1 -translate-y-1/2 right-0 bg-secondary pointer-events-none rounded"
+      class="absolute z-[201] h-1 -translate-y-1/2 right-0 bg-secondary pointer-events-none rounded"
       style={{
         transition: 'left 150ms',
         top: `${props.position.y - props.offsetTop}px`,

@@ -1,24 +1,13 @@
 import { ComponentData, Path, ThemeData, ThemeEntry } from '@kitae/shared/types'
 import { HistoryChangeHandler } from '../history'
-import { useDesignerState } from './designer.state'
-import { DesignerHistoryHandlers, ThemeFormData, WorkspaceDataState } from './types'
-import { samePath, walker } from './utils'
+import { useDesignerState } from './features/state/designer.state'
+import { samePath } from './features/utils/same-path.util'
+import { DesignerHistoryHandlers, ThemeFormData, WorkspaceDataState } from './features/utils/types'
+import { walker } from './features/utils/walker.util'
 
 const [, { updatePath }] = useDesignerState()
 
 export const WorkspaceDataHsitoryHandlers: Record<string, HistoryChangeHandler> = {
-  [DesignerHistoryHandlers.ADD_THEME_ENTRY]: {
-    execute: ({ path, changes }): void => {
-      updatePath(path, (list: ThemeEntry[]) => {
-        list.push(changes as ThemeEntry)
-      })
-    },
-    undo: ({ path }): void => {
-      updatePath(path, (list: ThemeEntry[]) => {
-        list.pop()
-      })
-    }
-  },
   [DesignerHistoryHandlers.UPDATE_THEME_ENTRY]: {
     execute: ({ path, changes }): void => {
       updatePath(path, (current: ThemeEntry): void => {
@@ -30,18 +19,6 @@ export const WorkspaceDataHsitoryHandlers: Record<string, HistoryChangeHandler> 
       updatePath(path, (current: ThemeEntry): void => {
         current.name = (changes as [ThemeEntry, ThemeEntry])[0].name
         current.value = (changes as [ThemeEntry, ThemeEntry])[0].value
-      })
-    }
-  },
-  [DesignerHistoryHandlers.DELETE_THEME_ENTRY]: {
-    execute: ({ path }): void => {
-      updatePath(path, (_, list: ThemeEntry[]) => {
-        list.splice(path[path.length - 1] as number, 1)
-      })
-    },
-    undo: ({ path, changes }): void => {
-      updatePath(path, (_, list: ThemeEntry[]) => {
-        list.splice(path[path.length - 1] as number, 0, changes as ThemeEntry)
       })
     }
   },

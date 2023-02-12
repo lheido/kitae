@@ -107,7 +107,10 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
         <fieldset class="flex flex-col gap-2">
           <For each={colorsRange()}>
             {(color): JSX.Element => (
-              <label class="flex items-center gap-2">
+              <label
+                class="flex items-center gap-2 border border-transparent rounded-xl"
+                classList={{ '!border-secondary': form[props.prefix] === color.name }}
+              >
                 <span
                   class="w-6 h-6 rounded-full border border-base-300"
                   style={{ background: color.value }}

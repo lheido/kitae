@@ -34,6 +34,7 @@ export enum DesignerHistoryHandlers {
   UPDATE_NAME_PROPERTY = 'components:updateNameProperty',
   UPDATE_VALUE_PROPERTY = 'components:updateValueProperty',
   UPDATE_CONFIG_PROPERTY = 'components:updateConfigsProperty',
+  UPDATE_TEXT_CONFIG_PROPERTY = 'components:updateTextConfigProperty',
   ADD_THEME = 'themes:addTheme',
   DELETE_THEME = 'themes:deleteTheme',
   //OLD

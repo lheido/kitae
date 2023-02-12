@@ -3,7 +3,9 @@ import Icon from '@renderer/components/Icon'
 import { componentTypeIconMap } from '@renderer/features/designer/component-icon-map'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import { Component, JSX, Show } from 'solid-js'
+import ComponentColorsProperty from '../../properties/forms/ComponentColorsProperty'
 import ComponentSpacingProperty from '../../properties/forms/ComponentSpacingProperty'
+import ComponentTextProperty from '../../properties/forms/ComponentTextProperty'
 import NameProperty from '../../properties/forms/NameProperty'
 import { useDesignerState } from '../../state/designer.state'
 import { walker } from '../../utils/walker.util'
@@ -17,6 +19,8 @@ const componentProperties: Record<string, { properties: (isPage: boolean) => JSX
         <Show when={!isPage}>
           <ComponentSpacingProperty prefix="margin" />
         </Show>
+        <ComponentColorsProperty maxHeight={320} prefix="backgroundColor" />
+        <ComponentColorsProperty maxHeight={320} prefix="color" />
       </>
     )
   },
@@ -26,13 +30,15 @@ const componentProperties: Record<string, { properties: (isPage: boolean) => JSX
         <NameProperty />
         <ComponentSpacingProperty prefix="padding" />
         <ComponentSpacingProperty prefix="margin" />
+        <ComponentColorsProperty maxHeight={320} prefix="backgroundColor" />
+        <ComponentColorsProperty maxHeight={320} prefix="color" />
       </>
     )
   },
   text: {
     properties: () => (
       <>
-        <NameProperty />
+        <ComponentTextProperty />
       </>
     )
   }

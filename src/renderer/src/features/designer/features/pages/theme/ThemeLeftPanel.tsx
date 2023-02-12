@@ -11,9 +11,9 @@ const ThemeLeftPanel: Component = () => {
       defer
       options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0 } }}
       events={{ scroll: ({ elements }) => setScrollTop(elements().viewport.scrollTop) }}
-      class="h-full p-2"
+      class="h-full"
     >
-      <div class="grid grid-cols-1 gap-2">
+      <div class="grid p-2 grid-cols-1 gap-2">
         <h1 class="sr-only">Workspace Theme - left panel</h1>
         <ThemeManager maxHeight={320} opened />
         <ColorsManager scrollTop={scrollTop()} scrollOffset={130} />

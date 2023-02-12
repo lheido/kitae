@@ -107,11 +107,35 @@ body {
 
 /*** forms */
 
-input,
+input:where(:not([type='checkbox']), :not([type='radio']), :not([type='range'])),
 textarea {
   @apply bg-transparent rounded-lg w-full border border-base-content border-opacity-50 px-2 py-1;
   @apply focus-visible:outline-none focus-visible:border-secondary-focus;
   @apply invalid:border-error invalid:focus-visible:border-error-focus;
+}
+
+input[type='range'] {
+  @apply w-full appearance-none bg-transparent p-0 border-none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  @apply appearance-none transition-all outline-none;
+  @apply bg-base-content w-4 h-4 rounded-full -mt-1.5;
+  @apply active:scale-125;
+  @apply cursor-pointer;
+}
+
+input[type='range']:focus-visible::-webkit-slider-thumb {
+  @apply outline outline-base-content outline-1 outline-offset-2;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  @apply bg-base-content bg-opacity-30 w-full h-1.5 rounded;
+  @apply focus-visible:bg-opacity-50;
+}
+
+input[type='range']:focus-visible::-webkit-slider-runnable-track {
+  @apply bg-base-content bg-opacity-50;
 }
 
 button[role='separator'] {

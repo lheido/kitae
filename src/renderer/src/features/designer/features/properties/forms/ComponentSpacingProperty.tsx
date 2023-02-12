@@ -27,6 +27,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
   const [state] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const {
+    form,
     setForm,
     FormProvider,
     //@ts-ignore - solid directives
@@ -51,16 +52,21 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
       return Number(a) - Number(b)
     })
   })
+  const findIndex = (value: string): number => {
+    const index = spacingRange().findIndex((s) => s === value)
+    return index !== -1 ? index : 0
+  }
   createEffect(() => {
+    // TODO: merge extends + default
     setDataState('spacing', state.data?.theme.spacing ?? {})
   })
   createEffect(() => {
     const data = walker(state.data, state.current) as ComponentData
     setForm({
-      [names().left]: spacingRange().findIndex((s) => s === data.config?.[props.prefix]?.left),
-      [names().right]: spacingRange().findIndex((s) => s === data.config?.[props.prefix]?.right),
-      [names().top]: spacingRange().findIndex((s) => s === data.config?.[props.prefix]?.top),
-      [names().bottom]: spacingRange().findIndex((s) => s === data.config?.[props.prefix]?.bottom)
+      [names().left]: findIndex(data.config?.[props.prefix]?.left),
+      [names().right]: findIndex(data.config?.[props.prefix]?.right),
+      [names().top]: findIndex(data.config?.[props.prefix]?.top),
+      [names().bottom]: findIndex(data.config?.[props.prefix]?.bottom)
     })
   })
   const updateHandler = debounce((data: unknown) => {
@@ -103,7 +109,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
               class="p-2 rounded hover:bg-base-300"
               classList={{ '!bg-secondary !bg-opacity-50': dataState.independent }}
             >
-              <Icon icon="border-radius" class="h-3 w-3" />
+              <Icon icon="spacing" class="h-3 w-3" />
             </div>
           </label>
         </header>
@@ -114,7 +120,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">x</span>
-                    <Icon icon="spacing-x" />
+                    <Icon icon="spacing-x" class="w-5 h-5" />
                   </>
                 }
                 class="items-center"
@@ -130,12 +136,13 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                     range: spacingRange()
                   }}
                 />
+                <span class="basis-8 text-center">{spacingRange()[form[names().left]]}</span>
               </FormField>
               <FormField
                 label={
                   <>
                     <span class="sr-only">y</span>
-                    <Icon icon="spacing-y" />
+                    <Icon icon="spacing-y" class="w-5 h-5" />
                   </>
                 }
                 class="items-center"
@@ -151,6 +158,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                     range: spacingRange()
                   }}
                 />
+                <span class="basis-8 text-center">{spacingRange()[form[names().top]]}</span>
               </FormField>
             </Match>
             <Match when={dataState.independent}>
@@ -158,7 +166,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">left</span>
-                    <Icon icon="spacing-left" />
+                    <Icon icon="spacing-left" class="w-5 h-5" />
                   </>
                 }
                 class="items-center"
@@ -171,12 +179,13 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                   // @ts-ignore - solid directive
                   use:field={{ range: spacingRange() }}
                 />
+                <span class="basis-8 text-center">{spacingRange()[form[names().left]]}</span>
               </FormField>
               <FormField
                 label={
                   <>
                     <span class="sr-only">right</span>
-                    <Icon icon="spacing-right" />
+                    <Icon icon="spacing-right" class="w-5 h-5" />
                   </>
                 }
                 class="items-center"
@@ -189,12 +198,13 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                   // @ts-ignore - solid directive
                   use:field={{ range: spacingRange() }}
                 />
+                <span class="basis-8 text-center">{spacingRange()[form[names().right]]}</span>
               </FormField>
               <FormField
                 label={
                   <>
                     <span class="sr-only">top</span>
-                    <Icon icon="spacing-top" />
+                    <Icon icon="spacing-top" class="w-5 h-5" />
                   </>
                 }
                 class="items-center"
@@ -207,12 +217,13 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                   // @ts-ignore - solid directive
                   use:field={{ range: spacingRange() }}
                 />
+                <span class="basis-8 text-center">{spacingRange()[form[names().top]]}</span>
               </FormField>
               <FormField
                 label={
                   <>
                     <span class="sr-only">bottom</span>
-                    <Icon icon="spacing-bottom" />
+                    <Icon icon="spacing-bottom" class="w-5 h-5" />
                   </>
                 }
                 class="items-center"
@@ -225,6 +236,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                   // @ts-ignore - solid directive
                   use:field={{ range: spacingRange() }}
                 />
+                <span class="basis-8 text-center">{spacingRange()[form[names().bottom]]}</span>
               </FormField>
             </Match>
           </Switch>

@@ -65,13 +65,19 @@ export const createForm = <T extends object>(
     const [form, setForm, , setShouldSubmit] = useContext(FormContext)
     createEffect(() => {
       const acc = accessor()
-      elt.value = form[acc.names ? acc.names[0] : elt.name]
       switch (elt.type) {
         case 'range': {
           elt.min = '0'
           elt.max = acc.range ? `${acc.range.length - 1}` : '0'
+          elt.value = form[acc.names ? acc.names[0] : elt.name]
           break
         }
+        case 'radio':
+        case 'checkbox':
+          break
+        default:
+          elt.value = form[acc.names ? acc.names[0] : elt.name]
+          break
       }
     })
     const onInput = (): void => {

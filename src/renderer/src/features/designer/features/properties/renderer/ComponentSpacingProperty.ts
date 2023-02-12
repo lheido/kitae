@@ -11,10 +11,7 @@ const getValue = (theme: string, name: string): string => {
   )
 }
 
-export const renderProperties = (
-  component: ComponentData,
-  theme: string
-): Record<string, string> => {
+const renderProperties = (component: ComponentData, theme: string): Record<string, string> => {
   const props = {}
   if (component?.config?.padding) {
     props['padding-left'] = getValue(theme, component.config.padding.left ?? '0')

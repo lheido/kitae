@@ -6,76 +6,100 @@ export const defaultComponents: Partial<ComponentData>[] = [
   {
     name: 'Container',
     type: 'container',
-    config: {},
+    config: [],
     children: []
   },
   {
     name: 'Text',
     type: 'text',
-    config: {
-      text: 'Lorem ipsum'
-    }
+    config: [
+      {
+        type: 'text',
+        data: 'Lorem ipsum'
+      }
+    ]
   },
   {
     name: 'Paragraph',
     type: 'container',
-    config: {
-      semantic: 'p'
-    },
+    config: [
+      {
+        type: 'semantic',
+        data: 'p'
+      }
+    ],
     children: []
   },
   {
     name: 'Button',
     type: 'button',
-    config: {},
+    config: [],
     children: []
   },
   {
     name: 'Section',
     type: 'container',
-    config: {
-      semantic: 'section'
-    },
+    config: [
+      {
+        type: 'semantic',
+        data: 'section'
+      }
+    ],
     children: []
   },
   {
     name: 'Article',
     type: 'container',
-    config: {
-      semantic: 'article'
-    },
+    config: [
+      {
+        type: 'semantic',
+        data: 'article'
+      }
+    ],
     children: []
   },
   {
     name: 'Aside',
     type: 'container',
-    config: {
-      semantic: 'aside'
-    },
+    config: [
+      {
+        type: 'semantic',
+        data: 'aside'
+      }
+    ],
     children: []
   },
   {
     name: 'Header',
     type: 'container',
-    config: {
-      semantic: 'header'
-    },
+    config: [
+      {
+        type: 'semantic',
+        data: 'header'
+      }
+    ],
     children: []
   },
   {
     name: 'Footer',
     type: 'container',
-    config: {
-      semantic: 'footer'
-    },
+    config: [
+      {
+        type: 'semantic',
+        data: 'footer'
+      }
+    ],
     children: []
   },
   {
     name: 'Main',
     type: 'container',
-    config: {
-      semantic: 'main'
-    },
+    config: [
+      {
+        type: 'semantic',
+        data: 'main'
+      }
+    ],
     children: []
   }
 ]

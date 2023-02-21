@@ -5,6 +5,7 @@ import { renderProperties } from '../../properties/properties-renderer'
 import Children from '../../renderer/Children'
 import { useIsSelected } from '../../renderer/helpers'
 import { useDesignerState } from '../../state/designer.state'
+import { getConfig } from '../../utils/get-config.util'
 
 type ButtonProps = { data: ComponentData }
 
@@ -14,7 +15,7 @@ const Button: Component<ButtonProps> = (props: ButtonProps) => {
   const style = createMemo(() =>
     renderProperties(
       JSON.parse(JSON.stringify(props.data)),
-      JSON.parse(JSON.stringify(props.data.config?.theme ?? state.theme))
+      JSON.parse(JSON.stringify(getConfig(props.data.config!, 'theme')?.data ?? state.theme))
     )
   )
   return (

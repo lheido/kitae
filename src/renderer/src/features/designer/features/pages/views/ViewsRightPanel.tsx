@@ -1,48 +1,12 @@
 import { ComponentData } from '@kitae/shared/types'
 import Icon from '@renderer/components/Icon'
-import { componentTypeIconMap } from '@renderer/features/designer/component-icon-map'
+import { componentTypeIconMap } from '@renderer/features/designer/icon-map'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
-import { Component, JSX, Show } from 'solid-js'
-import ComponentColorsProperty from '../../properties/forms/ComponentColorsProperty'
-import ComponentSpacingProperty from '../../properties/forms/ComponentSpacingProperty'
-import ComponentTextProperty from '../../properties/forms/ComponentTextProperty'
-import NameProperty from '../../properties/forms/NameProperty'
+import { Component } from 'solid-js'
+import AvailablePropertiesManager from '../../data/manager/AvailablePropertiesManager'
+import PropertiesManager from '../../data/manager/PropertiesManager'
 import { useDesignerState } from '../../state/designer.state'
 import { walker } from '../../utils/walker.util'
-
-const componentProperties: Record<string, { properties: (isPage: boolean) => JSX.Element }> = {
-  container: {
-    properties: (isPage) => (
-      <>
-        <NameProperty />
-        <ComponentSpacingProperty prefix="padding" />
-        <Show when={!isPage}>
-          <ComponentSpacingProperty prefix="margin" />
-        </Show>
-        <ComponentColorsProperty maxHeight={320} prefix="backgroundColor" />
-        <ComponentColorsProperty maxHeight={320} prefix="color" />
-      </>
-    )
-  },
-  button: {
-    properties: () => (
-      <>
-        <NameProperty />
-        <ComponentSpacingProperty prefix="padding" />
-        <ComponentSpacingProperty prefix="margin" />
-        <ComponentColorsProperty maxHeight={320} prefix="backgroundColor" />
-        <ComponentColorsProperty maxHeight={320} prefix="color" />
-      </>
-    )
-  },
-  text: {
-    properties: () => (
-      <>
-        <ComponentTextProperty />
-      </>
-    )
-  }
-}
 
 const ViewsRightPanel: Component = () => {
   const [state] = useDesignerState()
@@ -61,7 +25,8 @@ const ViewsRightPanel: Component = () => {
             {isPageConfig() ? 'Edit Page' : 'Edit Component'}
           </h1>
         </div>
-        <Show when={type() !== ''}>{componentProperties[type()].properties(isPageConfig())}</Show>
+        <PropertiesManager />
+        <AvailablePropertiesManager types={[]} />
       </div>
     </OverlayScrollbarsComponent>
   )

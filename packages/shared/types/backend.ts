@@ -10,6 +10,11 @@ export interface WorkspaceTheme {
   extends?: Record<string, ThemeExtends>
 }
 
+export interface ComponentConfig {
+  type: string
+  data: unknown
+}
+
 export interface ComponentData {
   id: string
   name: string
@@ -17,7 +22,7 @@ export interface ComponentData {
   children?: ComponentData[]
   driver?: string // react | astro | solid | etc
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config?: any
+  config?: ComponentConfig[]
 }
 
 export interface WorkspaceData {

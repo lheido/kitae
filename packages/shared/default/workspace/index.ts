@@ -11,23 +11,33 @@ export const defaultWorkspaceData: WorkspaceData = {
       id: crypto.randomUUID(),
       name: 'Home',
       type: 'container',
+      config: [],
       children: [
         {
           id: crypto.randomUUID(),
           name: 'Header',
           type: 'container',
-          config: {
-            semantic: 'header'
-          },
+          config: [
+            {
+              type: 'semantic',
+              data: 'header'
+            }
+          ],
           children: [
             {
               id: crypto.randomUUID(),
               name: 'Title',
               type: 'text',
-              config: {
-                text: 'Hello World',
-                semantic: 'h1'
-              }
+              config: [
+                {
+                  type: 'text',
+                  data: 'Hello World'
+                },
+                {
+                  type: 'semantic',
+                  data: 'h1'
+                }
+              ]
             }
           ]
         },
@@ -35,20 +45,28 @@ export const defaultWorkspaceData: WorkspaceData = {
           id: crypto.randomUUID(),
           name: 'Main',
           type: 'container',
+          config: [],
           children: [
             {
               id: crypto.randomUUID(),
               name: 'Button',
               type: 'button',
+              config: [],
               children: [
                 {
                   id: crypto.randomUUID(),
                   name: 'Button Text',
                   type: 'text',
-                  config: {
-                    text: 'Click Me',
-                    semantic: 'span'
-                  }
+                  config: [
+                    {
+                      type: 'text',
+                      data: 'Click Me'
+                    },
+                    {
+                      type: 'semantic',
+                      data: 'span'
+                    }
+                  ]
                 }
               ]
             }

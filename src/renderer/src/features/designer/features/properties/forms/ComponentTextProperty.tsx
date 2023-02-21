@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentData } from '@kitae/shared/types'
+import { ComponentConfig, ComponentData } from '@kitae/shared/types'
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
 import { registerHistoryChangeHandler, useHistory } from '@renderer/features/history'
 import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { useDesignerState } from '../../state/designer.state'
-import { DesignerHistoryHandlers } from '../../utils/types'
+import { DesignerHistoryHandlers, WorkspaceDataState } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
+import { PropertyProps } from './types'
 
 interface ComponentTextFormState {
   text: string
 }
 
-interface ComponentTextPropertyProps {
+interface ComponentTextPropertyProps extends PropertyProps {
   labelClass?: string
 }
 
@@ -22,15 +23,17 @@ const [state, { updatePath }] = useDesignerState()
 registerHistoryChangeHandler({
   [DesignerHistoryHandlers.UPDATE_TEXT_CONFIG_PROPERTY]: {
     execute: ({ path, changes }): void => {
-      updatePath(path, (current: any): void => {
-        current.config = { ...current.config, ...(changes as [any, any])[1] }
-        current.name = current.config.text
+      updatePath(path, (current: ComponentConfig, _, s: WorkspaceDataState): void => {
+        current.data = (changes as [any, any])[1].text
+        const parent = walker(s.data, path.slice(0, -2)) as ComponentData
+        parent.name = current.data as string
       })
     },
     undo: ({ path, changes }): void => {
-      updatePath(path, (current: any): void => {
-        current.config = { ...current.config, ...(changes as [any, any])[0] }
-        current.name = current.config.text
+      updatePath(path, (current: ComponentConfig, _, s: WorkspaceDataState): void => {
+        current.data = (changes as [any, any])[0].text
+        const parent = walker(s.data, path.slice(0, -2)) as ComponentData
+        parent.name = current.data as string
       })
     }
   }
@@ -46,19 +49,21 @@ const ComponentTextProperty: Component<ComponentTextPropertyProps> = (
     //@ts-ignore - solid directives
     field
   } = createForm<ComponentTextFormState>()
-  const data = createMemo(() => walker(state.data, state.current) as ComponentData)
+  const path = createMemo(() => [...state.current, 'config', props.index])
+  const config = createMemo(() => walker(state.data, path()) as ComponentConfig)
   createEffect(() => {
     setForm({
-      text: data()?.config?.text ?? ''
+      text: (config()?.data as string) ?? ''
     })
   })
+  // eslint-disable-next-line solid/reactivity
   const updateHandler = debounce((data: unknown) => {
-    const path = JSON.parse(JSON.stringify(state.current))
+    const _path = JSON.parse(JSON.stringify(path()))
     const previous = JSON.parse(
-      JSON.stringify({ text: (walker(state.data, path) as ComponentData).config?.text } ?? {})
+      JSON.stringify({ text: (walker(state.data, _path) as ComponentConfig)?.data } ?? {})
     )
     makeChange({
-      path,
+      path: _path,
       changes: [previous, data],
       handler: DesignerHistoryHandlers.UPDATE_TEXT_CONFIG_PROPERTY
     })

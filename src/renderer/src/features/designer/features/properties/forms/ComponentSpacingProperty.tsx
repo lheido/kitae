@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentData, ThemeEntries } from '@kitae/shared/types'
+import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
 import FormField from '@renderer/components/form/FormField'
 import Icon from '@renderer/components/Icon'
 import { createForm } from '@renderer/features/form'
@@ -11,12 +11,13 @@ import { useDesignerState } from '../../state/designer.state'
 import { DesignerHistoryHandlers } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
 import './helpers/update-config-properties'
+import { PropertyProps } from './types'
 
 type ComponentSpacingFormState = Record<string, number>
 
 type Edges = 'left' | 'right' | 'top' | 'bottom' | 'x' | 'y'
 
-interface ComponentSpacingPropertyProps {
+interface ComponentSpacingPropertyProps extends PropertyProps {
   labelClass?: string
   prefix: 'padding' | 'margin'
 }
@@ -56,27 +57,30 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
     const index = spacingRange().findIndex((s) => s === value)
     return index !== -1 ? index : 0
   }
+  const path = createMemo(() => [...state.current, 'config', props.index])
+  const config = createMemo(() => walker(state.data, path()) as ComponentConfig)
   createEffect(() => {
     // TODO: merge extends + default
     setDataState('spacing', state.data?.theme.spacing ?? {})
   })
   createEffect(() => {
-    const data = walker(state.data, state.current) as ComponentData
+    const c = config()?.data as { left: string; right: string; top: string; bottom: string }
     setForm({
-      [names().left]: findIndex(data.config?.[props.prefix]?.left),
-      [names().right]: findIndex(data.config?.[props.prefix]?.right),
-      [names().top]: findIndex(data.config?.[props.prefix]?.top),
-      [names().bottom]: findIndex(data.config?.[props.prefix]?.bottom)
+      [names().left]: findIndex(c?.left),
+      [names().right]: findIndex(c?.right),
+      [names().top]: findIndex(c?.top),
+      [names().bottom]: findIndex(c?.bottom)
     })
   })
+  // eslint-disable-next-line solid/reactivity
   const updateHandler = debounce((data: unknown) => {
-    const path = JSON.parse(JSON.stringify(state.current))
+    const _path = JSON.parse(JSON.stringify(path()))
     const previous = JSON.parse(
-      JSON.stringify((walker(state.data, path) as ComponentData).config?.[props.prefix] ?? {})
+      JSON.stringify((walker(state.data, _path) as ComponentConfig)?.data ?? {})
     )
     makeChange({
-      path,
-      changes: [{ [props.prefix]: previous }, { [props.prefix]: data }],
+      path: _path,
+      changes: [previous, data],
       handler: DesignerHistoryHandlers.UPDATE_CONFIG_PROPERTY
     })
   }, 250)

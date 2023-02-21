@@ -1,7 +1,7 @@
 import { ComponentData, Path } from '@kitae/shared/types'
 import Badge from '@renderer/components/Badge'
 import Icon from '@renderer/components/Icon'
-import { componentTypeIconMap } from '@renderer/features/designer/component-icon-map'
+import { componentTypeIconMap } from '@renderer/features/designer/icon-map'
 import {
   draggable,
   Draggable,
@@ -75,7 +75,6 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
       classList={{
         'opacity-25': dnd.draggable?.id === component.data.id
       }}
-      data-dnd-index={component.path[component.path.length - 1]}
       // @ts-ignore - directive
       // eslint-disable-next-line solid/jsx-no-undef
       use:droppable={{

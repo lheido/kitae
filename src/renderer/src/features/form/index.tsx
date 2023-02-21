@@ -74,6 +74,7 @@ export const createForm = <T extends object>(
         }
         case 'radio':
         case 'checkbox':
+          elt.checked = form[acc.names ? acc.names[0] : elt.name] === elt.value
           break
         default:
           elt.value = form[acc.names ? acc.names[0] : elt.name]

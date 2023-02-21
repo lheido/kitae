@@ -81,7 +81,16 @@ export const useDesignerState = (): [DesignerState, DesignerStateActions] => {
         return walker(state.data, state.current)
       },
       reset: (): void => {
-        setState(JSON.parse(JSON.stringify(initialState)))
+        setState(
+          produce((s) => {
+            s.page = undefined
+            s.theme = 'default'
+            s.current = ['pages']
+            s.waitForSave = false
+            s.data = undefined
+            s.error = undefined
+          })
+        )
       }
     }
   ]

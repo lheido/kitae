@@ -37,13 +37,14 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
     opened: untrack(() => props.opened ?? false)
   })
   const data = createMemo(() => walker(state.data, state.current) as ComponentData)
+  const dataTheme = createMemo(() => data().config?.theme)
   const colorsRange = createMemo(() => {
     return [
       { name: 'None', value: undefined },
       ...Object.keys(dataState.colors).map((name) => ({
         name,
         value:
-          state.data?.theme.extends?.[data().config?.theme]?.colors?.[name] ??
+          state.data?.theme.extends?.[dataTheme()]?.colors?.[name] ??
           state.data?.theme?.colors[name]
       }))
     ]
@@ -74,7 +75,7 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
     })
   }, 250)
   const onSubmit = (form: ComponentColorsFormState): void => {
-    setDataState('opened', false)
+    // setDataState('opened', false)
     updateHandler.clear()
     updateHandler(form[props.prefix] !== 'None' ? form[props.prefix] : undefined)
   }
@@ -84,9 +85,9 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
         accordionId="workspace-themes"
         opened={dataState.opened}
         label={props.prefix === 'backgroundColor' ? 'Background color' : 'Color'}
-        icon="edit-color"
+        icon={props.prefix === 'backgroundColor' ? 'bg-color' : 'text-color'}
         maxHeight={props.maxHeight ?? 320}
-        minHeight={82}
+        minHeight={130}
         class="bg-base-200 rounded-lg"
         headerSlot={
           <Show when={form[props.prefix] && form[props.prefix] !== 'None'}>
@@ -105,26 +106,33 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
         }
       >
         <fieldset class="flex flex-col gap-2">
+          <legend class="sr-only">Color options</legend>
           <For each={colorsRange()}>
             {(color): JSX.Element => (
-              <label
-                class="flex items-center gap-2 border border-transparent rounded-xl"
+              <div
+                class="border rounded-xl border-transparent focus-within:border-base-300"
                 classList={{ '!border-secondary': form[props.prefix] === color.name }}
               >
-                <span
-                  class="w-6 h-6 rounded-full border border-base-300"
-                  style={{ background: color.value }}
-                />
-                <span>{color.name}</span>
                 <input
                   type="radio"
+                  id={`${props.prefix}-${color.name}`}
                   class="sr-only"
                   name={props.prefix}
                   value={color.name}
                   //@ts-ignore - solid directives
                   use:field
                 />
-              </label>
+                <label
+                  for={`${props.prefix}-${color.name}`}
+                  class="flex items-center gap-2 cursor-pointer"
+                >
+                  <span
+                    class="w-6 h-6 rounded-full border border-base-300"
+                    style={{ background: color.value }}
+                  />
+                  <span>{color.name}</span>
+                </label>
+              </div>
             )}
           </For>
         </fieldset>

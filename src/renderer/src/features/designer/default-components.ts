@@ -27,7 +27,8 @@ export const defaultComponents: Partial<ComponentData>[] = [
   {
     name: 'Button',
     type: 'button',
-    config: {}
+    config: {},
+    children: []
   },
   {
     name: 'Section',

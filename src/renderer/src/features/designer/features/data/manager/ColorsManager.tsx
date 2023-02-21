@@ -70,7 +70,7 @@ const ColorsManager: Component<ManagerProps> = (props: ManagerProps) => {
           'border-top-right-radius': `${rounded()}px`
         }}
       >
-        <Icon icon="edit-color" class="h-4 w-4 opacity-50" />
+        <Icon icon="bg-color" class="h-4 w-4 opacity-50" />
         <h1 class="flex-1">Colors</h1>
         <Badge style={{ opacity: badgeOpacity() }}>{state.theme}</Badge>
       </header>

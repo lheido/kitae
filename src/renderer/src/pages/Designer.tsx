@@ -29,7 +29,7 @@ const Designer: Component = () => {
     return components[components.length - 1]
   })
   return (
-    <section class="flex-1 h-full flex designer-page relative">
+    <section class="flex-1 h-full flex designer-page relative overflow-x-hidden">
       <h1 class="sr-only">Designer</h1>
       <section class="bg-base-300">
         <ul class="flex flex-col designer-nav bg-base-100">

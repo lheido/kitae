@@ -172,10 +172,13 @@ const StructureList: Component = () => {
             const draggable = JSON.parse(data.getData(t)) as Draggable
             const isSamePath = samePath(draggable.path, [...droppable.path, 'children', index])
             if (draggable.id === droppable.id || isSamePath) break
+            const sameContainer = samePath(draggable.path.slice(0, -2), droppable.path)
+            const originalIndex = draggable.path[draggable.path.length - 1]
+            const i = sameContainer && index > 0 && originalIndex < index ? index - 1 : index
             makeChange({
               handler: DesignerHistoryHandlers.MOVE_COMPONENT_DATA,
               path: draggable.path,
-              changes: [draggable.path, [...droppable.path, 'children', index]]
+              changes: [draggable.path, [...droppable.path, 'children', i]]
             })
             break
           }
@@ -204,20 +207,30 @@ const StructureList: Component = () => {
       })
     }
   })
+  const displayDragPlaceholder = createMemo(() => {
+    if (!dnd.draggable) return false
+    if (!dnd.position) return false
+    const rect = containerRef!.getBoundingClientRect()
+    return (
+      dnd.position.eventX >= rect.x &&
+      dnd.position.eventX <= rect.x + rect.width &&
+      dnd.position.y > 0
+    )
+  })
   return (
     <>
+      <Show when={displayDragPlaceholder()}>
+        <DragPlaceholder
+          position={dnd.position!}
+          offsetTop={containerRef?.getBoundingClientRect().top ?? 0}
+        />
+      </Show>
       <ul
         ref={containerRef}
         class="min-w-full relative w-max py-8 flex flex-col gap-0.5"
         // @ts-ignore - directive
         use:droppable={{ enabled: true, id: 'root', path: ['pages', pageIndex()], x: 0 }}
       >
-        <Show when={!!dnd.droppable && dnd.position && dnd.position.y > 0}>
-          <DragPlaceholder
-            position={dnd.position!}
-            offsetTop={containerRef?.getBoundingClientRect().top ?? 0}
-          />
-        </Show>
         <For each={pageChildren()}>
           {(component, i): JSX.Element => (
             <RecursiveComponentItem

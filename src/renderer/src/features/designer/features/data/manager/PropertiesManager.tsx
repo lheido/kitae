@@ -57,10 +57,26 @@ const PropertiesManager: Component = () => {
       })
     }
   })
+  const displayDragPlaceholder = createMemo(() => {
+    if (!dnd.draggable) return false
+    if (!dnd.position) return false
+    const rect = containerRef!.getBoundingClientRect()
+    return (
+      dnd.position.eventX >= rect.x &&
+      dnd.position.eventX <= rect.x + rect.width &&
+      dnd.position.y > 0
+    )
+  })
   return (
     <div class="flex flex-col flex-1 gap-2 h-full">
       <Show when={!['text'].includes(data().type)}>
         <NameProperty />
+      </Show>
+      <Show when={displayDragPlaceholder()}>
+        <DragPlaceholder
+          position={dnd.position!}
+          offsetTop={containerRef?.getBoundingClientRect().top ?? 0}
+        />
       </Show>
       <div
         ref={containerRef}
@@ -68,12 +84,6 @@ const PropertiesManager: Component = () => {
         // @ts-ignore - directive
         use:droppable={{ enabled: true, id: 'root', path: [...state.current, 'config'], x: 0 }}
       >
-        <Show when={!!dnd.droppable && dnd.position && dnd.position.y > 0}>
-          <DragPlaceholder
-            position={dnd.position!}
-            offsetTop={containerRef?.getBoundingClientRect().top ?? 0}
-          />
-        </Show>
         <For each={data().config ?? []}>
           {(config, index): JSX.Element => (
             <Switch>

@@ -6,7 +6,7 @@ export interface DndState {
   droppable?: Droppable
   draggable?: Draggable
   draggableElt?: HTMLElement
-  position?: { x: number; y: number }
+  position?: { x: number; y: number; eventX: number; eventY: number }
   index?: number
 }
 
@@ -105,10 +105,20 @@ export const droppable = (elt: HTMLElement, accessor: () => Droppable): void => 
             const rect = closest.elt.getBoundingClientRect()
             if (e.clientY < rect.top + rect.height / 2) {
               s.index = children.indexOf(closest.elt)
-              s.position = { x: acc.x ?? e.clientX, y: rect.top }
+              s.position = {
+                x: acc.x ?? e.clientX,
+                y: rect.top,
+                eventX: e.clientX,
+                eventY: e.clientY
+              }
             } else {
               s.index = children.indexOf(closest.elt) + 1
-              s.position = { x: acc.x ?? e.clientX, y: rect.bottom }
+              s.position = {
+                x: acc.x ?? e.clientX,
+                y: rect.bottom,
+                eventX: e.clientX,
+                eventY: e.clientY
+              }
             }
           }
         })
@@ -118,7 +128,7 @@ export const droppable = (elt: HTMLElement, accessor: () => Droppable): void => 
         produce((s) => {
           s.index = 0
           const rect = container.getBoundingClientRect()
-          s.position = { x: acc.x ?? e.clientX, y: rect.top }
+          s.position = { x: acc.x ?? e.clientX, y: rect.top, eventX: e.clientX, eventY: e.clientY }
         })
       )
     }

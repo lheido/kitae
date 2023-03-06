@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ComponentConfig } from '@kitae/shared/types'
 import Accordion from '@renderer/components/Accordion'
 import Icon from '@renderer/components/Icon'
 import { defaultProperties } from '@renderer/features/designer/default-properties'
 import { propertyTypeIconMap } from '@renderer/features/designer/icon-map'
 import { Draggable, draggable, droppable } from '@renderer/features/drag-n-drop'
-import { Component, For, JSX } from 'solid-js'
+import { Component, createMemo, For, JSX } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 import { useDesignerState } from '../../state/designer.state'
+import { walker } from '../../utils/walker.util'
 import { ManagerProps } from './types'
 
 !!droppable && false
@@ -20,14 +22,17 @@ const AvailableComponentsManager: Component<AvailableComponentsManagerProps> = (
   props: AvailableComponentsManagerProps
 ) => {
   const [state] = useDesignerState()
-  const makeProp = (config: any): Draggable => {
+  const path = createMemo(() => [...state.current, 'config'])
+  const config = createMemo(() => (walker(state.data, path()) as ComponentConfig[]) || [])
+  const makeProp = (property: any): Draggable => {
     return JSON.parse(
       JSON.stringify({
         format: 'kitae/add-config',
         effect: 'copy',
-        id: config.type,
+        id: property.type,
         path: [...state.current, 'config'],
-        data: config
+        data: property,
+        enabled: !config().find((c) => c.type === property.type)
       })
     )
   }
@@ -50,8 +55,10 @@ const AvailableComponentsManager: Component<AvailableComponentsManagerProps> = (
                   'flex px-2 gap-2 py-1 w-full rounded items-center whitespace-nowrap',
                   'border border-transparent',
                   'hover:bg-secondary-focus hover:bg-opacity-30',
-                  'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30'
+                  'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30',
+                  'disabled:opacity-50 disabled:cursor-not-allowed'
                 )}
+                disabled={!!config().find((c) => c.type === property.type)}
                 // @ts-ignore - directive
                 // eslint-disable-next-line solid/jsx-no-undef
                 use:draggable={(): Draggable => makeProp(property)}

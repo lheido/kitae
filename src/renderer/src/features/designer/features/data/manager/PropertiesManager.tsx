@@ -1,4 +1,4 @@
-import { ComponentData } from '@kitae/shared/types'
+import { ComponentConfig, ComponentData, Path } from '@kitae/shared/types'
 import {
   Draggable,
   draggable,
@@ -6,23 +6,97 @@ import {
   droppable,
   useDnD
 } from '@renderer/features/drag-n-drop'
-import { useHistory } from '@renderer/features/history'
+import { registerHistoryChangeHandler, useHistory } from '@renderer/features/history'
 import { Component, createEffect, createMemo, For, JSX, Match, Show, Switch } from 'solid-js'
 import ComponentSpacingProperty from '../../properties/forms/ComponentSpacingProperty'
 import ComponentTextProperty from '../../properties/forms/ComponentTextProperty'
 import NameProperty from '../../properties/forms/NameProperty'
 import { useDesignerState } from '../../state/designer.state'
 import { samePath } from '../../utils/same-path.util'
+import { DesignerHistoryHandlers, WorkspaceDataState } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
 
 !!droppable && false
 !!draggable && false
 
+const [state, { updatePath }] = useDesignerState()
+
+registerHistoryChangeHandler({
+  [DesignerHistoryHandlers.ADD_CONFIG_DATA]: {
+    execute: ({ path, changes }): void => {
+      const target = [...path]
+      const index = target.pop() as number
+      updatePath(target, (list: ComponentConfig[], parent: ComponentData) => {
+        if (list) {
+          list.splice(index, 0, changes as ComponentConfig)
+        } else {
+          parent.config = [changes as ComponentConfig]
+        }
+      })
+    },
+    undo: ({ path }): void => {
+      const target = [...path]
+      const index = target.pop() as number
+      updatePath(target, (list: ComponentData[]) => {
+        list.splice(index, 1)
+      })
+    }
+  },
+  [DesignerHistoryHandlers.MOVE_CONFIG_DATA]: {
+    execute: ({ path, changes }): void => {
+      updatePath(
+        path,
+        (current: ComponentConfig, parent: ComponentConfig[], state: WorkspaceDataState): void => {
+          const target = [...(changes as Path[])[1]]
+          const index = target.pop() as number
+          const container = walker<ComponentData>(state.data, target.slice(0, -1))
+          const isSameParent = samePath(target, path.slice(0, -1))
+          if (isSameParent) {
+            const currentIndex = path[path.length - 1] as number
+            if (currentIndex < index) {
+              container?.config?.splice(index + 1, 0, current)
+              container?.config?.splice(currentIndex, 1)
+            } else {
+              container?.config?.splice(currentIndex, 1)
+              container?.config?.splice(index, 0, current)
+            }
+          } else {
+            container?.config?.splice(index, 0, current)
+            parent.splice(path[path.length - 1] as number, 1)
+          }
+        }
+      )
+    },
+    undo: ({ path, changes }): void => {
+      const currentTargetPath = [...(changes as Path[])[1]]
+      const currentContainerPath = currentTargetPath.slice(0, -2)
+      updatePath(
+        currentContainerPath,
+        (container: ComponentData, parent: ComponentData[], state: WorkspaceDataState) => {
+          const index = currentTargetPath[currentTargetPath.length - 1] as number
+          const configs = container
+            ? container.config?.splice(index, 1)
+            : parent[parent.length - 1].config?.splice(index, 1)
+          if (configs && configs.length > 0) {
+            const config = configs[0]
+            const oldIndex = path[path.length - 1] as number
+            const oldContainer = walker<ComponentData>(state.data, path.slice(0, -2))
+            if (oldIndex === oldContainer?.config?.length) {
+              oldContainer?.config?.push(config)
+            } else {
+              oldContainer?.config?.splice(oldIndex, 0, config)
+            }
+          }
+        }
+      )
+    }
+  }
+})
+
 const PropertiesManager: Component = () => {
   let containerRef!: HTMLDivElement
-  const [state] = useDesignerState()
   const [dnd, , dropped] = useDnD()
-  const [history] = useHistory()
+  const [history, { makeChange }] = useHistory()
   const data = createMemo(() => walker(state.data, state.current) as ComponentData)
   createEffect(() => {
     const event = dropped()
@@ -33,24 +107,24 @@ const PropertiesManager: Component = () => {
         switch (t) {
           case 'kitae/move-config': {
             const draggable = JSON.parse(data.getData(t)) as Draggable
-            const isSamePath = samePath(draggable.path, [...droppable.path, 'children', index])
+            const isSamePath = samePath(draggable.path, [...droppable.path, index])
             if (draggable.id === droppable.id || isSamePath) break
-            console.log(draggable)
-            // makeChange({
-            //   handler: DesignerHistoryHandlers.MOVE_COMPONENT_DATA,
-            //   path: draggable.path,
-            //   changes: [draggable.path, [...droppable.path, 'children', index]]
-            // })
+            makeChange({
+              handler: DesignerHistoryHandlers.MOVE_CONFIG_DATA,
+              path: draggable.path,
+              changes: [draggable.path, [...droppable.path, index]]
+            })
             break
           }
           case 'kitae/add-config': {
             const draggable = JSON.parse(data.getData(t)) as Draggable
-            console.log(draggable)
-            // makeChange({
-            //   handler: DesignerHistoryHandlers.ADD_COMPONENT_DATA,
-            //   path: [...droppable.path, 'children', index],
-            //   changes: JSON.parse(JSON.stringify(draggable.data))
-            // })
+            const config = walker<ComponentConfig[]>(state.data, droppable.path)
+            if (config!.find((c) => c.type === (draggable.data as ComponentConfig).type)) break
+            makeChange({
+              handler: DesignerHistoryHandlers.ADD_CONFIG_DATA,
+              path: [...droppable.path, index],
+              changes: JSON.parse(JSON.stringify(draggable.data))
+            })
             break
           }
         }
@@ -72,33 +146,35 @@ const PropertiesManager: Component = () => {
       <Show when={!['text'].includes(data().type)}>
         <NameProperty />
       </Show>
-      <Show when={displayDragPlaceholder()}>
-        <DragPlaceholder
-          position={dnd.position!}
-          offsetTop={containerRef?.getBoundingClientRect().top ?? 0}
-        />
-      </Show>
-      <div
-        ref={containerRef}
-        class="flex flex-col flex-1 gap-2"
-        // @ts-ignore - directive
-        use:droppable={{ enabled: true, id: 'root', path: [...state.current, 'config'], x: 0 }}
-      >
-        <For each={data().config ?? []}>
-          {(config, index): JSX.Element => (
-            <Switch>
-              <Match when={config.type === 'text'}>
-                <ComponentTextProperty index={index()} />
-              </Match>
-              <Match when={config.type === 'padding'}>
-                <ComponentSpacingProperty prefix="padding" index={index()} />
-              </Match>
-              <Match when={config.type === 'margin'}>
-                <ComponentSpacingProperty prefix="margin" index={index()} />
-              </Match>
-            </Switch>
-          )}
-        </For>
+      <div class="flex flex-col flex-1 relative">
+        <Show when={displayDragPlaceholder()}>
+          <DragPlaceholder
+            position={dnd.position!}
+            offsetTop={containerRef?.getBoundingClientRect().top ?? 0}
+          />
+        </Show>
+        <div
+          ref={containerRef}
+          class="flex flex-col flex-1 gap-2"
+          // @ts-ignore - directive
+          use:droppable={{ enabled: true, id: 'root', path: [...state.current, 'config'], x: 0 }}
+        >
+          <For each={data().config ?? []}>
+            {(config, index): JSX.Element => (
+              <Switch>
+                <Match when={config.type === 'text'}>
+                  <ComponentTextProperty index={index()} />
+                </Match>
+                <Match when={config.type === 'padding'}>
+                  <ComponentSpacingProperty prefix="padding" index={index()} />
+                </Match>
+                <Match when={config.type === 'margin'}>
+                  <ComponentSpacingProperty prefix="margin" index={index()} />
+                </Match>
+              </Switch>
+            )}
+          </For>
+        </div>
       </div>
     </div>
   )

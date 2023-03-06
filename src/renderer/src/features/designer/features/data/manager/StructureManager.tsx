@@ -108,7 +108,8 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
           format: 'kitae/move-component',
           effect: 'move',
           id: component.data.id,
-          path: component.path
+          path: component.path,
+          enabled: true
         }}
       >
         <Icon icon={componentTypeIconMap[component.data.type]} class="w-3 h-3 opacity-50" />

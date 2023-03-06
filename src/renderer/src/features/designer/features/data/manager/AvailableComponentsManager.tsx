@@ -20,7 +20,8 @@ const AvailableComponentsManager: Component<ManagerProps> = (props: ManagerProps
         effect: 'copy',
         id,
         path: [],
-        data: { ...component, id }
+        data: { ...component, id },
+        enabled: true
       })
     )
   }

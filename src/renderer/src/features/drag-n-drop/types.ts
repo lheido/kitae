@@ -6,6 +6,7 @@ export interface Draggable {
   id: string
   path: Path
   data?: unknown
+  enabled?: boolean
 }
 
 export interface Droppable {

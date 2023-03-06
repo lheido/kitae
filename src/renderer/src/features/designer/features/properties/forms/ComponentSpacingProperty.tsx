@@ -2,6 +2,7 @@
 import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
 import FormField from '@renderer/components/form/FormField'
 import Icon from '@renderer/components/Icon'
+import { draggable } from '@renderer/features/drag-n-drop'
 import { createForm } from '@renderer/features/form'
 import { useHistory } from '@renderer/features/history'
 import { debounce } from '@solid-primitives/scheduled'
@@ -12,6 +13,8 @@ import { DesignerHistoryHandlers } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
 import './helpers/update-config-properties'
 import { PropertyProps } from './types'
+
+!!draggable && false
 
 type ComponentSpacingFormState = Record<string, number>
 
@@ -97,7 +100,19 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
     <FormProvider onSubmit={onSubmit}>
       <section class="bg-base-200 rounded-lg">
         <header class="px-2 flex items-center">
-          <h1 class="flex-1">{props.prefix === 'padding' ? 'Padding' : 'Margin'}</h1>
+          <h1
+            class="flex-1 cursor-move"
+            // @ts-ignore - directive
+            // eslint-disable-next-line solid/jsx-no-undef
+            use:draggable={{
+              format: 'kitae/move-config',
+              effect: 'move',
+              id: crypto.randomUUID(),
+              path: path()
+            }}
+          >
+            {props.prefix === 'padding' ? 'Padding' : 'Margin'}
+          </h1>
           <label>
             <span class="sr-only">
               {props.prefix === 'padding' ? 'Independent paddings' : 'Independent margins'}

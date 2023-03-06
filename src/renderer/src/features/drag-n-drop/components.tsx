@@ -1,4 +1,4 @@
-import { Accessor, Component, createSignal, onCleanup } from 'solid-js'
+import { Accessor, Component, createEffect, createSignal, onCleanup } from 'solid-js'
 import { createStore, produce, SetStoreFunction } from 'solid-js/store'
 import { Draggable, Droppable } from './types'
 
@@ -55,7 +55,11 @@ export const draggable = (
     setState('draggable', undefined)
     setState('droppable', undefined)
   }
-  elt.setAttribute('draggable', 'true')
+  createEffect(() => {
+    const acc = accessor()
+    const draggable = typeof acc === 'function' ? acc() : acc
+    elt.setAttribute('draggable', draggable.enabled ? 'true' : 'false')
+  })
   elt.addEventListener('dragstart', dragStartHandler)
   elt.addEventListener('dragend', dragEndHandler)
   onCleanup(() => {
@@ -90,7 +94,7 @@ export const droppable = (elt: HTMLElement, accessor: () => Droppable): void => 
     const children = Array.from(container.children) as HTMLElement[]
     if (children.length > 0) {
       const closest = children
-        .filter((c) => c instanceof HTMLLIElement)
+        .filter((c) => c instanceof HTMLElement)
         .reduce(
           (acc: { dist: number; elt: HTMLElement | undefined }, elt: HTMLElement) => {
             const rect = elt.getBoundingClientRect()

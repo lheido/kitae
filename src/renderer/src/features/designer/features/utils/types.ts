@@ -31,6 +31,8 @@ export enum DesignerHistoryHandlers {
   DELETE_COMPONENT_DATA = 'components:deleteComponentData',
   UPDATE_TEXT_COMPONENT_DATA = 'components:updateTextComponentData',
   MOVE_COMPONENT_DATA = 'components:moveComponentData',
+  ADD_CONFIG_DATA = 'components:addConfigData',
+  MOVE_CONFIG_DATA = 'components:moveConfigData',
   UPDATE_NAME_PROPERTY = 'components:updateNameProperty',
   UPDATE_VALUE_PROPERTY = 'components:updateValueProperty',
   UPDATE_CONFIG_PROPERTY = 'components:updateConfigsProperty',

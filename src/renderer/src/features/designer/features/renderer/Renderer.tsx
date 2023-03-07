@@ -5,6 +5,7 @@ import { customElement } from 'solid-element'
 import { Component, createMemo, Show } from 'solid-js'
 import rendererCSS from '../../../../assets/renderer.css?inline'
 import Children from './Children'
+import Style from './Style'
 
 declare module 'solid-js' {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -46,6 +47,7 @@ customElement('kitae-renderer', () => {
   return (
     <>
       <style>{rendererCSS}</style>
+      <Style />
       <Children data={page() as ComponentData} />
     </>
   )

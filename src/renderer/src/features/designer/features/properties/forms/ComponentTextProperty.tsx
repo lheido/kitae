@@ -49,7 +49,9 @@ const ComponentTextProperty: Component<ComponentTextPropertyProps> = (
     //@ts-ignore - solid directives
     field
   } = createForm<ComponentTextFormState>()
-  const path = createMemo(() => [...state.current, 'config', props.index])
+  const path = createMemo(() =>
+    props.index ? [...state.current, 'config', props.index] : props.path!
+  )
   const config = createMemo(() => walker(state.data, path()) as ComponentConfig)
   createEffect(() => {
     setForm({

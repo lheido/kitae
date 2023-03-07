@@ -60,7 +60,9 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
     const index = spacingRange().findIndex((s) => s === value)
     return index !== -1 ? index : 0
   }
-  const path = createMemo(() => [...state.current, 'config', props.index])
+  const path = createMemo(() =>
+    props.index ? [...state.current, 'config', props.index] : props.path!
+  )
   const config = createMemo(() => walker(state.data, path()) as ComponentConfig)
   createEffect(() => {
     // TODO: merge extends + default
@@ -101,14 +103,15 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
       <section class="bg-base-200 rounded-lg">
         <header class="px-2 flex items-center">
           <h1
-            class="flex-1 cursor-move"
+            class="flex-1 cursor-move select-none"
             // @ts-ignore - directive
             // eslint-disable-next-line solid/jsx-no-undef
             use:draggable={{
               format: 'kitae/move-config',
               effect: 'move',
               id: crypto.randomUUID(),
-              path: path()
+              path: path(),
+              enabled: true
             }}
           >
             {props.prefix === 'padding' ? 'Padding' : 'Margin'}

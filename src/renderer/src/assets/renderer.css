@@ -7,3 +7,7 @@
   outline-offset: 2px;
   outline-color: hsl(198deg, 64%, 32%);
 }
+
+* {
+  transition: all 0.3s ease-in-out;
+}

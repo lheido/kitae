@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
+import { labelMap } from '@renderer/features/designer/label-map'
 import { draggable } from '@renderer/features/drag-n-drop'
 import { createForm } from '@renderer/features/form'
 import { useHistory } from '@renderer/features/history'
@@ -89,7 +90,7 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
       <section class="group bg-base-200 rounded-lg relative">
         <header class="px-2 py-2 flex items-center">
           <h1
-            class="flex-1 cursor-move select-none"
+            class="flex-1 cursor-move select-none capitalize"
             // @ts-ignore - directive
             // eslint-disable-next-line solid/jsx-no-undef
             use:draggable={{
@@ -100,7 +101,7 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
               enabled: true
             }}
           >
-            {props.prefix === 'color' ? 'Color' : 'Background color'}
+            {labelMap[config().type as string] ?? config().type}
           </h1>
         </header>
         <fieldset class="group-hover:flex hidden flex-col gap-2 px-1 py-2 absolute top-2 right-8 z-[300] bg-base-200 shadow h-[320px]">

@@ -7,6 +7,7 @@ import {
   defaultStateProperties
 } from '@renderer/features/designer/default-properties'
 import { propertyTypeIconMap } from '@renderer/features/designer/icon-map'
+import { labelMap } from '@renderer/features/designer/label-map'
 import { Draggable, draggable, droppable } from '@renderer/features/drag-n-drop'
 import { Component, For, JSX } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
@@ -55,7 +56,7 @@ const AvailablePropertyItem: Component<AvailablePropertyItemProps> = (
           class="w-3 h-3 opacity-50"
         />
         <span class="flex-1 text-left text-ellipsis whitespace-nowrap overflow-hidden capitalize">
-          {props.property.type}
+          {labelMap[props.property.type as string] ?? props.property.type}
         </span>
       </button>
     </li>
@@ -75,7 +76,7 @@ const AvailablePropertiesManager: Component<AvailableComponentsManagerProps> = (
       opened={true}
       label="Props"
       icon="components"
-      maxHeight={props.maxHeight ?? 320}
+      maxHeight={props.maxHeight ?? 200}
       minHeight={82}
       class="bg-base-300 rounded-lg sticky bottom-0 z-[201]"
     >

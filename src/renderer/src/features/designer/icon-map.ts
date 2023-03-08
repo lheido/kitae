@@ -9,6 +9,7 @@ export const propertyTypeIconMap: Record<string, string> = {
   margin: 'spacing',
   backgroundColor: 'bg-color',
   color: 'text-color',
+  rounded: 'border-radius',
   hover: 'element-state',
   active: 'element-state',
   focus: 'element-state',

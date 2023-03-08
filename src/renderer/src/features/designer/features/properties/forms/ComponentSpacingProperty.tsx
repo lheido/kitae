@@ -143,10 +143,10 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">x</span>
-                    <Icon icon="spacing-x" class="w-5 h-5" />
+                    <Icon icon="spacing-y" class="w-5 h-5 rotate-90" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input
@@ -168,7 +168,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                     <Icon icon="spacing-y" class="w-5 h-5" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input
@@ -189,10 +189,10 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">left</span>
-                    <Icon icon="spacing-left" class="w-5 h-5" />
+                    <Icon icon="spacing-top" class="w-5 h-5 -rotate-90" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input
@@ -208,10 +208,10 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">right</span>
-                    <Icon icon="spacing-right" class="w-5 h-5" />
+                    <Icon icon="spacing-top" class="w-5 h-5 rotate-90" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input
@@ -230,7 +230,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                     <Icon icon="spacing-top" class="w-5 h-5" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input
@@ -246,10 +246,10 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">bottom</span>
-                    <Icon icon="spacing-bottom" class="w-5 h-5" />
+                    <Icon icon="spacing-top" class="w-5 h-5 rotate-180" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input

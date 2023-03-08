@@ -31,7 +31,7 @@ const AvailableComponentsManager: Component<ManagerProps> = (props: ManagerProps
       opened={true}
       label="Components"
       icon="components"
-      maxHeight={props.maxHeight ?? 320}
+      maxHeight={props.maxHeight ?? 200}
       minHeight={82}
       class="bg-base-300 rounded-lg sticky bottom-2 z-[201]"
     >

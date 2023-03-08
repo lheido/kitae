@@ -74,7 +74,7 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
       [names().tl]: findIndex(c?.tl),
       [names().tr]: findIndex(c?.tr)
     })
-    setDataState('independent', c.bl !== c.br || c.tl !== c.tr)
+    setDataState('independent', ![c.bl, c.br, c.tl, c.tr].every((v) => v === c.bl))
   })
   // eslint-disable-next-line solid/reactivity
   const updateHandler = debounce((data: unknown) => {
@@ -131,7 +131,7 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
               class="p-2 rounded hover:bg-base-300"
               classList={{ '!bg-secondary !bg-opacity-50': dataState.independent }}
             >
-              <Icon icon="spacing" class="h-3 w-3" />
+              <Icon icon="border-radius" class="h-3 w-3" />
             </div>
           </label>
         </header>
@@ -142,10 +142,10 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">x</span>
-                    <Icon icon="spacing-x" class="w-5 h-5" />
+                    <Icon icon="border-radius" class="w-5 h-5" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input
@@ -168,10 +168,10 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">tl</span>
-                    <Icon icon="spacing-left" class="w-5 h-5" />
+                    <Icon icon="border-radius-bottom-left" class="w-5 h-5 rotate-90" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input
@@ -189,10 +189,10 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">tr</span>
-                    <Icon icon="spacing-right" class="w-5 h-5" />
+                    <Icon icon="border-radius-bottom-left" class="w-5 h-5 rotate-180" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input
@@ -210,10 +210,10 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">bl</span>
-                    <Icon icon="spacing-top" class="w-5 h-5" />
+                    <Icon icon="border-radius-bottom-left" class="w-5 h-5" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input
@@ -231,10 +231,10 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
                 label={
                   <>
                     <span class="sr-only">br</span>
-                    <Icon icon="spacing-bottom" class="w-5 h-5" />
+                    <Icon icon="border-radius-bottom-left" class="w-5 h-5 -rotate-90" />
                   </>
                 }
-                class="items-center"
+                class="items-center pl-1"
                 labelClass="basis-0"
               >
                 <input

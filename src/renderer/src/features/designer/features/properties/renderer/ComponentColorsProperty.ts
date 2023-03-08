@@ -1,23 +1,65 @@
-import { ComponentData } from '@kitae/shared/types'
-import { useDesignerState } from '../../state/designer.state'
-import { registerPropertyRenderer } from '../properties-renderer'
+import { ComponentConfig, ComponentData, WorkspaceTheme } from '@kitae/shared/types'
+import { defaultStateProperties } from '@renderer/features/designer/default-properties'
+import {
+  PropertyRendererResult,
+  registerClassRenderer,
+  registerPropertyRenderer
+} from '../properties-renderer'
 
-const [state] = useDesignerState()
-const getValue = (theme: string, name: string): string => {
-  return (
-    state.data?.theme?.extends?.[theme]?.colors?.[name] ?? state.data?.theme?.colors?.[name] ?? '0'
-  )
+type ColorType = 'backgroundColor' | 'color'
+interface ColorConfig extends ComponentConfig {
+  type: ColorType
+  data: string
 }
 
-const renderProperties = (component: ComponentData, theme: string): Record<string, string> => {
-  const props = {}
-  if (component?.config?.backgroundColor) {
-    props['background-color'] = getValue(theme, component.config.backgroundColor)
+const colorTypeMap = {
+  backgroundColor: 'bg',
+  color: 'text'
+}
+
+const dataToClass = (
+  config: ColorConfig,
+  classes: Record<string, boolean>,
+  modifier = ''
+): void => {
+  const { type, data } = config
+  if (data) {
+    classes[`${modifier}${colorTypeMap[type]}-${data}`] = true
   }
-  if (component?.config?.color) {
-    props['color'] = getValue(theme, component.config.color)
-  }
-  return props
+}
+
+const renderProperties = (component: ComponentData): PropertyRendererResult => {
+  const result: PropertyRendererResult = { class: {} }
+  // console.log(component)
+  component.config
+    ?.filter((config) => ['backgroundColor', 'color'].includes(config.type))
+    .forEach((config) => dataToClass(config as ColorConfig, result.class))
+  component.config
+    ?.filter((config) => defaultStateProperties.map((s) => s.type).includes(config.type))
+    .forEach((config) => {
+      ;(config.data as { config: ComponentConfig[] })?.config
+        ?.filter((c) => ['backgroundColor', 'color'].includes(c.type))
+        .forEach((c) => dataToClass(c as ColorConfig, result.class, `${config.type}:`))
+    })
+  return result
 }
 
 registerPropertyRenderer(renderProperties)
+
+const renderClass = (theme: WorkspaceTheme): Record<string, string> => {
+  const { colors } = theme
+  const result: Record<string, string> = {}
+  Object.keys(colors).forEach((key) => {
+    result[`bg-${key}`] = `background-color: ${colors[key]}`
+    result[`text-${key}`] = `color: ${colors[key]}`
+    result[`hover:bg-${key}`] = `background-color: ${colors[key]}`
+    result[`hover:text-${key}`] = `color: ${colors[key]}`
+    defaultStateProperties.forEach((state) => {
+      result[`${state.type}:bg-${key}`] = `background-color: ${colors[key]}`
+      result[`${state.type}:text-${key}`] = `color: ${colors[key]}`
+    })
+  })
+  return result
+}
+
+registerClassRenderer(renderClass)

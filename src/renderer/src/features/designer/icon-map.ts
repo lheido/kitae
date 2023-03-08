@@ -7,7 +7,7 @@ export const componentTypeIconMap: Record<string, string> = {
 export const propertyTypeIconMap: Record<string, string> = {
   padding: 'spacing',
   margin: 'spacing',
-  'bg-color': 'bg-color',
+  backgroundColor: 'bg-color',
   color: 'text-color',
   hover: 'element-state',
   active: 'element-state',

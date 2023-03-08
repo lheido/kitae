@@ -14,7 +14,7 @@ export class LocalBackend extends Backend {
       return JSON.parse(await fs.readFile(dataPath, 'utf-8'))
     } catch (error) {
       const workspaceData = defaultWorkspaceData
-      await fs.writeFile(dataPath, JSON.stringify(workspaceData))
+      await fs.writeFile(dataPath, JSON.stringify(workspaceData, null, 2))
       return workspaceData
     }
   }
@@ -22,7 +22,8 @@ export class LocalBackend extends Backend {
   async setWorkspaceData(data: WorkspaceData): Promise<boolean | Error> {
     const dataPath = join(this.settings.path, this.settings.dataPath)
     try {
-      await fs.writeFile(dataPath, JSON.stringify(data))
+      // TODO: remove stringify indentation on production build ?
+      await fs.writeFile(dataPath, JSON.stringify(data, null, 2))
       return true
     } catch (error) {
       return error as Error

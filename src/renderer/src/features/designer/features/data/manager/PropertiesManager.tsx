@@ -9,6 +9,7 @@ import {
 } from '@renderer/features/drag-n-drop'
 import { registerHistoryChangeHandler, useHistory } from '@renderer/features/history'
 import { Component, createEffect, createMemo, For, JSX, Match, Show, Switch } from 'solid-js'
+import ComponentColorsProperty from '../../properties/forms/ComponentColorsProperty'
 import ComponentSpacingProperty from '../../properties/forms/ComponentSpacingProperty'
 import ComponentTextProperty from '../../properties/forms/ComponentTextProperty'
 import NameProperty from '../../properties/forms/NameProperty'
@@ -112,9 +113,15 @@ const PropertyRenderer: Component<PropertyRendererProps> = (props: PropertyRende
       <Match when={props.config.type === 'margin'}>
         <ComponentSpacingProperty prefix="margin" path={props.path} />
       </Match>
+      <Match when={props.config.type === 'backgroundColor'}>
+        <ComponentColorsProperty prefix="backgroundColor" path={props.path} />
+      </Match>
+      <Match when={props.config.type === 'color'}>
+        <ComponentColorsProperty prefix="color" path={props.path} />
+      </Match>
       <Match when={defaultStateProperties.map((p) => p.type).includes(props.config.type)}>
-        <section class="flex flex-col bg-base-200 rounded-lg min-h-[100px]">
-          <header class="px-2 flex items-center">
+        <section class="flex flex-col bg-base-200 rounded-lg min-h-[42px]">
+          <header class="px-2 flex items-center mb-1">
             <h1
               class="flex-1 cursor-move select-none italic text-lg flex gap-2 items-center capitalize"
               // @ts-ignore - directive

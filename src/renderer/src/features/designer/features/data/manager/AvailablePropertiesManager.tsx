@@ -66,7 +66,7 @@ export interface AvailableComponentsManagerProps extends ManagerProps {
   types: string[]
 }
 
-const AvailableComponentsManager: Component<AvailableComponentsManagerProps> = (
+const AvailablePropertiesManager: Component<AvailableComponentsManagerProps> = (
   props: AvailableComponentsManagerProps
 ) => {
   return (
@@ -101,4 +101,4 @@ const AvailableComponentsManager: Component<AvailableComponentsManagerProps> = (
   )
 }
 
-export default AvailableComponentsManager
+export default AvailablePropertiesManager

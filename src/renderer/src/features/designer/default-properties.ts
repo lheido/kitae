@@ -12,12 +12,12 @@ export const defaultProperties: Partial<ComponentConfig>[] = [
     data: {}
   },
   {
-    type: 'bg-color',
-    data: {}
+    type: 'backgroundColor',
+    data: 'None'
   },
   {
     type: 'color',
-    data: {}
+    data: 'None'
   }
 ]
 

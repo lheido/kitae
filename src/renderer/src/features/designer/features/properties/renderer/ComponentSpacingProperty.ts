@@ -54,14 +54,16 @@ const renderClass = (theme: WorkspaceTheme): Record<string, string> => {
     result[`mr-${key}`] = `margin-right: ${spacing[key]}`
     result[`mt-${key}`] = `margin-top: ${spacing[key]}`
     result[`mb-${key}`] = `margin-bottom: ${spacing[key]}`
-    result[`hover:pl-${key}`] = `padding-left: ${spacing[key]}`
-    result[`hover:pr-${key}`] = `padding-right: ${spacing[key]}`
-    result[`hover:pt-${key}`] = `padding-top: ${spacing[key]}`
-    result[`hover:pb-${key}`] = `padding-bottom: ${spacing[key]}`
-    result[`hover:ml-${key}`] = `margin-left: ${spacing[key]}`
-    result[`hover:mr-${key}`] = `margin-right: ${spacing[key]}`
-    result[`hover:mt-${key}`] = `margin-top: ${spacing[key]}`
-    result[`hover:mb-${key}`] = `margin-bottom: ${spacing[key]}`
+    defaultStateProperties.forEach((state) => {
+      result[`${state.type}:pl-${key}`] = `padding-left: ${spacing[key]}`
+      result[`${state.type}:pr-${key}`] = `padding-right: ${spacing[key]}`
+      result[`${state.type}:pt-${key}`] = `padding-top: ${spacing[key]}`
+      result[`${state.type}:pb-${key}`] = `padding-bottom: ${spacing[key]}`
+      result[`${state.type}:ml-${key}`] = `margin-left: ${spacing[key]}`
+      result[`${state.type}:mr-${key}`] = `margin-right: ${spacing[key]}`
+      result[`${state.type}:mt-${key}`] = `margin-top: ${spacing[key]}`
+      result[`${state.type}:mb-${key}`] = `margin-bottom: ${spacing[key]}`
+    })
   })
   return result
 }

@@ -18,7 +18,7 @@ const ViewsRightPanel: Component = () => {
       options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 0 } }}
       class="h-full px-2"
     >
-      <div class="flex flex-col gap-2 h-[200vh]">
+      <div class="min-h-full flex flex-col gap-2">
         <div class="flex items-center gap-2 pb-1 sticky top-0 z-20 bg-base-100">
           <Icon icon={isPageConfig() ? 'pages' : componentTypeIconMap[type()]} />
           <h1 class="text-lg text-ellipsis whitespace-nowrap overflow-hidden">

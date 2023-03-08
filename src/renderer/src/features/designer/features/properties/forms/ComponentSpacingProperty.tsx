@@ -76,6 +76,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
       [names().top]: findIndex(c?.top),
       [names().bottom]: findIndex(c?.bottom)
     })
+    setDataState('independent', c.left !== c.right || c.top !== c.bottom)
   })
   // eslint-disable-next-line solid/reactivity
   const updateHandler = debounce((data: unknown) => {

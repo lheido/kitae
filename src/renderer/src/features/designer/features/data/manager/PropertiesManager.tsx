@@ -10,6 +10,7 @@ import {
 import { registerHistoryChangeHandler, useHistory } from '@renderer/features/history'
 import { Component, createEffect, createMemo, For, JSX, Match, Show, Switch } from 'solid-js'
 import ComponentColorsProperty from '../../properties/forms/ComponentColorsProperty'
+import ComponentRoundedProperty from '../../properties/forms/ComponentRoundedProperty'
 import ComponentSpacingProperty from '../../properties/forms/ComponentSpacingProperty'
 import ComponentTextProperty from '../../properties/forms/ComponentTextProperty'
 import NameProperty from '../../properties/forms/NameProperty'
@@ -118,6 +119,9 @@ const PropertyRenderer: Component<PropertyRendererProps> = (props: PropertyRende
       </Match>
       <Match when={props.config.type === 'color'}>
         <ComponentColorsProperty prefix="color" path={props.path} />
+      </Match>
+      <Match when={props.config.type === 'rounded'}>
+        <ComponentRoundedProperty path={props.path} />
       </Match>
       <Match when={defaultStateProperties.map((p) => p.type).includes(props.config.type)}>
         <section class="flex flex-col bg-base-200 rounded-lg min-h-[42px]">

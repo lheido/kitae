@@ -87,7 +87,7 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
   return (
     <FormProvider onSubmit={onSubmit}>
       <section class="group bg-base-200 rounded-lg relative">
-        <header class="px-4 py-2 flex items-center">
+        <header class="px-2 py-2 flex items-center">
           <h1
             class="flex-1 cursor-move select-none"
             // @ts-ignore - directive

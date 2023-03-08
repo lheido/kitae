@@ -18,6 +18,10 @@ export const defaultProperties: Partial<ComponentConfig>[] = [
   {
     type: 'color',
     data: 'None'
+  },
+  {
+    type: 'rounded',
+    data: {}
   }
 ]
 

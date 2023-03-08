@@ -8,6 +8,7 @@
   outline-color: hsl(198deg, 64%, 32%);
 }
 
-* {
-  transition: all 0.3s ease-in-out;
+[class*='hover:'] {
+  transition: padding 0.2s, margin 0.2s, background-color 0.2s, border-top-left-radius 0.2s,
+    border-top-right-radius 0.2s, border-bottom-left-radius 0.2s, border-bottom-right-radius 0.2s;
 }

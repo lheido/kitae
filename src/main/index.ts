@@ -56,7 +56,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-    mainWindow.webContents.openDevTools({ mode: 'left' })
+    mainWindow.webContents.openDevTools()
     if (settings.window?.maximized) {
       mainWindow.maximize()
     }

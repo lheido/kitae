@@ -1,0 +1,14 @@
+@tailwind base; /* Include tailwind reset */
+
+.selected {
+  /* TODO: use CSS custom properties instead of hardcoded values, without including tailwindcss */
+  outline-style: dashed;
+  outline-width: 1px;
+  outline-offset: 2px;
+  outline-color: hsl(198deg, 64%, 32%);
+}
+
+[class*='hover:'] {
+  transition: padding 0.2s, margin 0.2s, background-color 0.2s, border-top-left-radius 0.2s,
+    border-top-right-radius 0.2s, border-bottom-left-radius 0.2s, border-bottom-right-radius 0.2s;
+}

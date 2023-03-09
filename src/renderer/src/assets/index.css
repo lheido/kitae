@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @apply bg-base-300 text-base-content h-screen flex flex-col;
+}
+
+#root {
+  @apply contents;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+@layer components {
+  .btn {
+    @apply px-3 py-2 rounded-lg text-left scale-100 transition-all transform-gpu flex gap-2 outline-none;
+    @apply hover:bg-base-300 hover:bg-opacity-25;
+    @apply focus-visible:outline-none focus-visible:bg-base-300 focus-visible:bg-opacity-20;
+    @apply active:bg-opacity-100 active:scale-95;
+    @apply disabled:opacity-30 disabled:cursor-default disabled:hover:bg-transparent;
+  }
+
+  .btn.btn-icon {
+    @apply p-3 justify-center items-center;
+    @apply active:scale-90;
+  }
+
+  .btn.btn-primary {
+    @apply hover:bg-primary hover:bg-opacity-25 hover:text-primary-content;
+    @apply focus-visible:outline-none focus-visible:bg-primary-focus focus-visible:bg-opacity-20;
+    @apply active:bg-opacity-100;
+    @apply disabled:hover:bg-transparent disabled:hover:text-base-content;
+  }
+  .btn.btn-secondary {
+    @apply hover:bg-secondary hover:bg-opacity-25 hover:text-secondary-content;
+    @apply focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-20;
+    @apply active:bg-opacity-100;
+    @apply disabled:hover:bg-transparent disabled:hover:text-base-content;
+  }
+  .btn.btn-error {
+    @apply hover:bg-error hover:bg-opacity-25 hover:text-base-content;
+    @apply focus-visible:outline-none focus-visible:bg-error-focus focus-visible:bg-opacity-20;
+    @apply active:bg-opacity-100 active:text-error-content;
+    @apply disabled:hover:bg-transparent disabled:hover:text-base-content;
+  }
+  .btn.btn-designer-nav {
+    @apply w-16 px-2 py-3 rounded-none scale-100 transition-all transform-gpu flex flex-col items-center outline-none;
+    @apply hover:bg-base-300 hover:bg-opacity-25;
+    @apply focus-visible:outline-none focus-visible:bg-base-300 focus-visible:bg-opacity-20;
+    @apply active:bg-opacity-100 active:scale-90 active:rounded-lg;
+  }
+  .btn.btn-list-item {
+    @apply w-full;
+  }
+  .btn.btn-list-item.active {
+    @apply bg-primary bg-opacity-40 text-primary-content;
+  }
+  .btn.btn-list-item.border-active {
+    @apply border border-secondary bg-opacity-40 text-base-content;
+  }
+}
+
+.btn.btn-designer-nav:not(.active) {
+  @apply bg-base-300;
+}
+.btn.btn-designer-nav.active {
+  @apply bg-base-100;
+}
+
+.designer-nav li.active + li .btn-designer-nav {
+  @apply rounded-tr-lg;
+}
+
+.designer-nav li.before-active .btn-designer-nav {
+  @apply rounded-br-lg;
+}
+
+.designer-nav li:last-of-type.active::after {
+  content: '';
+  @apply bg-base-300 block rounded-tr-lg h-4 w-full;
+}
+
+/*** animated icons */
+
+.nc-int-sorting {
+  --transition-duration: 0.3s;
+}
+.nc-int-sorting * {
+  transform-origin: 16px 22px;
+  transition: transform var(--transition-duration) cubic-bezier(0.86, 0, 0.07, 1);
+}
+.nc-int-sorting.nc-int-icon-state-b :nth-child(1) {
+  transform: translateY(-12px) rotate(-90deg);
+}
+.nc-int-sorting.nc-int-icon-state-b :nth-child(2) {
+  transform: translateY(-12px) rotate(90deg);
+}
+
+/*** forms */
+
+input:where(:not([type='checkbox']), :not([type='radio']), :not([type='range'])),
+textarea {
+  @apply bg-transparent rounded-lg w-full border border-base-content border-opacity-50 px-2 py-1;
+  @apply focus-visible:outline-none focus-visible:border-secondary-focus;
+  @apply invalid:border-error invalid:focus-visible:border-error-focus;
+}
+
+input[type='range'] {
+  @apply w-full appearance-none bg-transparent p-0 border-none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  @apply appearance-none transition-all outline-none;
+  @apply bg-base-content w-4 h-4 rounded-full -mt-1.5;
+  @apply active:scale-125;
+  @apply cursor-pointer;
+}
+
+input[type='range']:focus-visible::-webkit-slider-thumb {
+  @apply outline outline-base-content outline-1 outline-offset-2;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  @apply bg-base-content bg-opacity-30 w-full h-1.5 rounded;
+  @apply focus-visible:bg-opacity-50;
+}
+
+input[type='range']:focus-visible::-webkit-slider-runnable-track {
+  @apply bg-base-content bg-opacity-50;
+}
+
+button[role='separator'] {
+  @apply h-full w-0;
+}
+
+button[role='separator'] .separator-handler {
+  @apply absolute top-0 bottom-0 left-0.5 w-1 transition-all cursor-col-resize rounded;
+}
+
+button[role='separator']:is(:hover, :active) .separator-handler {
+  @apply -left-1 w-2 bg-secondary bg-opacity-50;
+}
+
+/* [draggable='true'] {
+  @apply border !border-error;
+} */
+
+/* [droppable='true'].dragover {
+  @apply bg-secondary bg-opacity-25;
+} */
+
+/* .dragover *:not(.dragover) {
+  @apply pointer-events-none;
+} */

@@ -1,10 +1,11 @@
 # Kitae
 
+![](https://badgen.net/github/licence/lheido/kitae?label=licence)
 ![](https://badgen.net/github/release/lheido/kitae)
-![](https://badgen.net/github/stars/lheido/kitae)
+![](https://badgen.net/github/stars/lheido/kitae?label=★)
 ![](https://badgen.net/github/open-issues/lheido/kitae)
-![](https://badgen.net/github/licence/lheido/kitae)
-![](https://badgen.net/github/dependabot/lheido/kitae)
+![](https://badgen.net/github/dependabot/lheido/kitae?label=&icon=dependabot)
+![](https://badgen.net/npm/v/electron?label=electron)
 
 Kitae is a desktop app to build website, app, design system with low-code or no code (depending to your needs).
 

@@ -4,15 +4,48 @@ import PanelSeparator from '@renderer/components/PanelSeparator'
 import { useDesignerState } from '@renderer/features/designer'
 import Preview from '@renderer/features/designer/components/Preview'
 import { routes } from '@renderer/features/designer/routing'
+import { registerGlobalShortcut, Shortcut } from '@renderer/features/keyboard'
 import { Component, createMemo, For, JSX, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
+interface Panel {
+  ids: string[]
+  icon: string
+  label: string
+  rightPanel: boolean
+  shortcut: Shortcut
+}
+
 const Designer: Component = () => {
   const [state, { navigate }] = useDesignerState()
-  const panels: { ids: string[]; icon: string; label: string; rightPanel: boolean }[] = [
-    { ids: ['settings'], icon: 'settings', label: 'Settings', rightPanel: false },
-    { ids: ['pages', 'components'], icon: 'designer-tree', label: 'Views', rightPanel: true },
-    { ids: ['theme'], icon: 'palette', label: 'Theme', rightPanel: true }
+
+  const shortcutGoToSettings = new Shortcut(['Alt', 's'], (): void => navigate(['settings']))
+  const shortcutGoToTheme = new Shortcut(['Alt', 't'], (): void => navigate(['theme']))
+  const shortcutGoToPages = new Shortcut(['Alt', 'v'], (): void => navigate(['pages']))
+  registerGlobalShortcut(shortcutGoToSettings, shortcutGoToTheme, shortcutGoToPages)
+
+  const panels: Panel[] = [
+    {
+      ids: ['settings'],
+      icon: 'settings',
+      label: 'Settings',
+      rightPanel: false,
+      shortcut: shortcutGoToSettings
+    },
+    {
+      ids: ['pages', 'components'],
+      icon: 'designer-tree',
+      label: 'Views',
+      rightPanel: true,
+      shortcut: shortcutGoToPages
+    },
+    {
+      ids: ['theme'],
+      icon: 'palette',
+      label: 'Theme',
+      rightPanel: true,
+      shortcut: shortcutGoToTheme
+    }
   ]
   const getLeftPanel = createMemo(() => {
     const components = routes
@@ -47,6 +80,7 @@ const Designer: Component = () => {
                   class="btn-designer-nav"
                   classList={{ active: panel.ids.includes(state.current[0] as string) }}
                   onClick={(): void => navigate([panel.ids[0]])}
+                  title={panel.shortcut.toString()}
                 >
                   <Icon icon={panel.icon} />
                   <span class="text-xs">{panel.label}</span>

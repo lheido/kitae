@@ -16,7 +16,7 @@ const Style: Component = () => {
   const [state] = useDesignerState()
   return (
     <style>
-      <Show when="state.data?.theme">
+      <Show when={state.data?.theme}>
         <For each={Object.entries(renderClasses(state.data!.theme))}>
           {([className, content]): any => (
             <>{`.${cleanClassName(className)}${getModifier(className)} { ${content} }`}</>

@@ -1,6 +1,6 @@
-# kitae
+# Kitae
 
-An Electron application with Solid and TypeScript
+Kitae is a desktop app to build website, app, design system with low-code or no code (depending to your needs).
 
 ## Recommended IDE Setup
 
@@ -11,7 +11,7 @@ An Electron application with Solid and TypeScript
 ### Install
 
 ```bash
-$ npm install
+$ pnpm install
 ```
 
 ### Development

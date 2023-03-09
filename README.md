@@ -7,7 +7,7 @@
 ![](https://badgen.net/github/dependabot/lheido/kitae?label=&icon=dependabot)
 ![](https://badgen.net/https/leonard-treille.npkn.net/kitae-electron-v)
 
-Kitae is a desktop app to build website, app, design system with low-code or no code (depending to your needs).
+Kitae is a desktop app to build website, app, design system with low-code or no code (depending on your needs).
 
 ## Recommended IDE Setup
 

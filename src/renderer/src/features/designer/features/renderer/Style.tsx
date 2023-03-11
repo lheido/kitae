@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Component, For, Show } from 'solid-js'
+import { Component, createMemo, Show } from 'solid-js'
 import { renderClasses } from '../properties/properties-renderer'
 import { useDesignerState } from '../state/designer.state'
 
@@ -14,15 +14,17 @@ const getModifier = (className: string): string => {
 
 const Style: Component = () => {
   const [state] = useDesignerState()
+  const stringStyle = createMemo(() =>
+    Object.entries(renderClasses(state.data!.theme))
+      .map(
+        ([className, content]) =>
+          `.${cleanClassName(className)}${getModifier(className)} { ${content} }`
+      )
+      .join('')
+  )
   return (
     <style>
-      <Show when={state.data?.theme}>
-        <For each={Object.entries(renderClasses(state.data!.theme))}>
-          {([className, content]): any => (
-            <>{`.${cleanClassName(className)}${getModifier(className)} { ${content} }`}</>
-          )}
-        </For>
-      </Show>
+      <Show when={state.data?.theme}>{stringStyle()}</Show>
     </style>
   )
 }

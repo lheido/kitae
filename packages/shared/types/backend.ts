@@ -1,52 +1,30 @@
-export type ThemeEntries = Record<string, string>
+import { z } from 'zod'
+import { WorkspaceDataSchema } from './workspace-data'
 
-export type ThemeExtends = Record<keyof Omit<WorkspaceTheme, 'extends'>, ThemeEntries>
+export const BaseBackendSettingsSchema = z.object({
+  data: WorkspaceDataSchema
+})
 
-export interface WorkspaceTheme {
-  colors: ThemeEntries
-  fontFamilies: ThemeEntries
-  spacing: ThemeEntries
-  rounded: ThemeEntries
-  extends?: Record<string, ThemeExtends>
-}
+export type BaseBackendSettings = z.infer<typeof BaseBackendSettingsSchema>
 
-export interface ComponentConfig {
-  type: string
-  data: unknown
-}
+export const LocalBackendSettingsSchema = BaseBackendSettingsSchema.extend({
+  name: z.literal('local'),
+  workspaceId: z.string(),
+  dataPath: z.string(),
+  path: z.string()
+})
 
-export interface ComponentData {
-  id: string
-  name: string
-  type: string // container | button | etc
-  children?: ComponentData[]
-  driver?: string // react | astro | solid | etc
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  config?: ComponentConfig[]
-}
+export type LocalBackendSettings = z.infer<typeof LocalBackendSettingsSchema>
 
-export interface WorkspaceData {
-  components: ComponentData[]
-  pages: ComponentData[]
-  theme: WorkspaceTheme
-}
+export const SshBackendSettingsSchema = BaseBackendSettingsSchema.extend({
+  name: z.literal('ssh'),
+  workspaceId: z.string(),
+  user: z.string(),
+  destination: z.string()
+})
 
-export interface BaseBackendSettings {
-  data: WorkspaceData
-}
+export type SshBackendSettings = z.infer<typeof SshBackendSettingsSchema>
 
-export interface LocalBackendSettings extends BaseBackendSettings {
-  name: 'local'
-  workspaceId: string
-  dataPath: string
-  path: string
-}
+export const BackendSettingsSchema = z.union([LocalBackendSettingsSchema, SshBackendSettingsSchema])
 
-export interface SshBackendSettings extends BaseBackendSettings {
-  name: 'ssh'
-  workspaceId: string
-  user: string
-  destination: string
-}
-
-export type BackendSettings = LocalBackendSettings | SshBackendSettings
+export type BackendSettings = z.infer<typeof BackendSettingsSchema>

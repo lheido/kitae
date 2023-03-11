@@ -1,18 +1,42 @@
-import { WorkspaceData } from './backend'
-import { Workspace } from './workspace'
+import { z } from 'zod'
+import { WorkspaceSchema } from './workspace'
+import { WorkspaceDataSchema } from './workspace-data'
 
-export type WindowArgumentsKeys = 'title-bar-overlay-height' | 'kitae-preview-url'
+export const WindowArgumentsKeysSchema = z.union([
+  z.literal('title-bar-overlay-height'),
+  z.literal('kitae-preview-url')
+])
 
-export type WindowArgs = Record<WindowArgumentsKeys, string>
+export type WindowArgumentsKeys = z.infer<typeof WindowArgumentsKeysSchema>
 
-export interface UiApi {
-  windowArgs?: WindowArgs
+export const WindowArgsSchema = z.record(WindowArgumentsKeysSchema, z.string())
 
-  getWorkspaces(): Promise<Workspace[]>
-  updateWorkspaces(workspaces: Workspace[]): Promise<boolean | Error>
-  openLocalWorkspace(): Promise<[string] | boolean | Error>
-  getWorkspaceData(workspace: Workspace): Promise<WorkspaceData | Error>
-  setWorkspaceData(workspace: Workspace, data: WorkspaceData): Promise<boolean | Error>
-}
+export type WindowArgs = z.infer<typeof WindowArgsSchema>
+
+export const UiApiSchema = z.object({
+  windowArgs: WindowArgsSchema.optional(),
+  getWorkspaces: z
+    .function()
+    .args()
+    .returns(z.promise(z.array(WorkspaceSchema))),
+  updateWorkspaces: z
+    .function()
+    .args(z.array(WorkspaceSchema))
+    .returns(z.promise(z.union([z.boolean(), z.instanceof(Error)]))),
+  openLocalWorkspace: z
+    .function()
+    .args()
+    .returns(z.promise(z.union([z.tuple([z.string()]), z.boolean(), z.instanceof(Error)]))),
+  getWorkspaceData: z
+    .function()
+    .args(WorkspaceSchema)
+    .returns(z.promise(z.union([WorkspaceDataSchema, z.instanceof(Error)]))),
+  setWorkspaceData: z
+    .function()
+    .args(WorkspaceSchema, WorkspaceDataSchema)
+    .returns(z.promise(z.union([z.boolean(), z.instanceof(Error)])))
+})
+
+export type UiApi = z.infer<typeof UiApiSchema>
 
 export type Path = (string | number)[]

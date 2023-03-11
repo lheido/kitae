@@ -29,12 +29,12 @@ const ColorsManager: Component<ManagerProps> = (props: ManagerProps) => {
   const badgeOpacity = (): number => {
     return Math.max(0, Math.min(1, (props.scrollTop - props.scrollOffset) * 0.02))
   }
-  const colors = createMemo(() =>
-    Object.entries(state.data?.theme?.colors ?? {}).map(([name, value]) => ({
+  const colors = createMemo(() => {
+    return Object.entries(state.data?.theme?.colors ?? {}).map(([name, value]) => ({
       name,
       value: state.data?.theme?.extends?.[state.theme]?.colors?.[name] ?? value
     }))
-  )
+  })
   const [pattern, setPattern] = createSignal('[a-zA-Z_-]{1,}')
   createEffect(() => {
     setPattern(

@@ -1,9 +1,15 @@
-export interface WindowSettings {
-  maximized: boolean
-  height: number
-  width: number
-}
+import { z } from 'zod'
 
-export interface KitaeSettings {
-  window: WindowSettings
-}
+export const WindowSettingsSchema = z.object({
+  maximized: z.boolean(),
+  height: z.number(),
+  width: z.number()
+})
+
+export type WindowSettings = z.infer<typeof WindowSettingsSchema>
+
+export const KitaeSettingsSchema = z.object({
+  window: WindowSettingsSchema
+})
+
+export type KitaeSettings = z.infer<typeof KitaeSettingsSchema>

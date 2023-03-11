@@ -41,6 +41,7 @@ const AvailableComponentsManager: Component<ManagerProps> = (props: ManagerProps
             <li>
               <button
                 class={twMerge(
+                  'cursor-grab',
                   'flex px-2 gap-2 py-1 w-full rounded items-center whitespace-nowrap',
                   'border border-transparent',
                   'hover:bg-secondary-focus hover:bg-opacity-30',

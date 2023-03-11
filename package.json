@@ -14,8 +14,10 @@
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
     "build": "npm run typecheck && electron-vite build",
+    "_build": "electron-vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:win": "npm run build && electron-builder --win --config",
+    "_build:win": "npm run _build && electron-builder --win --config",
     "build:mac": "electron-vite build && electron-builder --mac --config",
     "build:linux": "electron-vite build && electron-builder --linux --config"
   },
@@ -38,7 +40,8 @@
     "solid-element": "^1.6.3",
     "tailwind-merge": "^1.8.1",
     "tailwindcss": "^3.2.4",
-    "vanilla-colorful": "^0.7.2"
+    "vanilla-colorful": "^0.7.2",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",

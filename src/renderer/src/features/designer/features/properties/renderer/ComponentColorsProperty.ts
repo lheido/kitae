@@ -30,7 +30,6 @@ const dataToClass = (
 
 const renderProperties = (component: ComponentData): PropertyRendererResult => {
   const result: PropertyRendererResult = { class: {} }
-  // console.log(component)
   component.config
     ?.filter((config) => ['backgroundColor', 'color'].includes(config.type))
     .forEach((config) => dataToClass(config as ColorConfig, result.class))

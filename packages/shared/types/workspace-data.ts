@@ -30,21 +30,20 @@ export type ComponentConfig = z.infer<typeof ComponentConfigSchema>
 
 export const ComponentDataSchema = z.object({
   id: z.string(),
+  ref: z.string().optional(), // ref to the custom component
   name: z.string(),
   type: z.string(), // container | button | etc
   driver: z.string().optional(), // react | astro | solid | etc
   config: z.array(ComponentConfigSchema).optional()
 })
 
-export const ComponentDataWithChildrenSchema = ComponentDataSchema.extend({
-  children: z.array(z.unknown()).optional()
-})
+export type ComponentData = z.infer<typeof ComponentDataSchema> & {
+  children?: ComponentData[]
+}
 
-export const ExtendedComponentDataSchema = ComponentDataSchema.extend({
-  children: z.array(ComponentDataWithChildrenSchema).optional()
+export const ExtendedComponentDataSchema: z.ZodType<ComponentData> = ComponentDataSchema.extend({
+  children: z.lazy(() => ComponentDataSchema.array())
 })
-
-export type ComponentData = z.infer<typeof ExtendedComponentDataSchema>
 
 export const WorkspaceDataSchema = z.object({
   components: z.array(ExtendedComponentDataSchema),

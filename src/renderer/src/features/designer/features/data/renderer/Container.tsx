@@ -1,6 +1,6 @@
 import { ComponentData } from '@kitae/shared/types'
 import { registerComponent } from '@renderer/features/designer/available-component'
-import { Component, createMemo } from 'solid-js'
+import { Component, createMemo, For, JSX } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import { renderProperties } from '../../properties/properties-renderer'
 import Children from '../../renderer/Children'
@@ -18,9 +18,7 @@ const Container: Component<ContainerProps> = (props: ContainerProps) => {
       id={props.data.id}
       classList={{ selected: isSelected(props.data.id), ...style().class }}
     >
-      {props.data?.children?.map((child) => (
-        <Children data={child} />
-      ))}
+      <For each={props.data?.children}>{(child): JSX.Element => <Children data={child} />}</For>
     </Dynamic>
   )
 }

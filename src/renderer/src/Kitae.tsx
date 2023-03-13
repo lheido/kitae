@@ -2,6 +2,7 @@ import { Component, Show } from 'solid-js'
 import iconUrl from './assets/icon.png?url'
 import WorkspacesMenu from './components/WorkspacesMenu'
 import { api } from './features/api'
+import ContextMenu from './features/context-menu/ContextMenu'
 import DesignerToolbar from './features/designer/components/DesignerToolbar'
 import { WorkspaceDataProvider } from './features/designer/features/state/WorkspaceDataProvider'
 import { WorkspaceDataHsitoryHandlers } from './features/designer/history-handlers'
@@ -44,6 +45,7 @@ const App: Component = () => {
         >
           <Routes routes={routes} initialRoute={routes[0]} />
         </main>
+        <ContextMenu />
       </WorkspaceDataProvider>
     </ShortcutProvider>
   )

@@ -216,7 +216,7 @@ const PropertiesManager: Component = () => {
   })
   return (
     <div class="flex flex-col flex-1 gap-2 h-full">
-      <Show when={!['text'].includes(data().type)}>
+      <Show when={!['text'].includes(data()?.type)}>
         <NameProperty />
       </Show>
       <div class="flex flex-col flex-1 relative">
@@ -232,7 +232,7 @@ const PropertiesManager: Component = () => {
           // @ts-ignore - directive
           use:droppable={{ enabled: true, id: 'root', path: [...state.current, 'config'], x: 0 }}
         >
-          <For each={data().config ?? []}>
+          <For each={data()?.config ?? []}>
             {(config, index): JSX.Element => (
               <PropertyRenderer
                 config={config}

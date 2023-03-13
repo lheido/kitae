@@ -4,14 +4,16 @@ import Icon from '@renderer/components/Icon'
 import { defaultComponents } from '@renderer/features/designer/default-components'
 import { componentTypeIconMap } from '@renderer/features/designer/icon-map'
 import { Draggable, draggable, droppable } from '@renderer/features/drag-n-drop'
-import { Component, For, JSX } from 'solid-js'
+import { Component, For, JSX, Show } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
+import { useDesignerState } from '../../state/designer.state'
 import { ManagerProps } from './types'
 
 !!droppable && false
 !!draggable && false
 
 const AvailableComponentsManager: Component<ManagerProps> = (props: ManagerProps) => {
+  const [state, { navigate }] = useDesignerState()
   const makeComponent = (component: Partial<ComponentData>): Draggable => {
     const id = crypto.randomUUID()
     return JSON.parse(
@@ -20,7 +22,12 @@ const AvailableComponentsManager: Component<ManagerProps> = (props: ManagerProps
         effect: 'copy',
         id,
         path: [],
-        data: { ...component, id },
+        data: {
+          ...component,
+          id,
+          ref: component.type === 'custom' ? component.id : undefined,
+          children: component.type === 'custom' ? [] : component.children
+        },
         enabled: true
       })
     )
@@ -35,33 +42,73 @@ const AvailableComponentsManager: Component<ManagerProps> = (props: ManagerProps
       minHeight={82}
       class="bg-base-300 rounded-lg sticky bottom-2 z-[201]"
     >
-      <ul class="grid grid-cols-2">
-        <For each={defaultComponents}>
-          {(component): JSX.Element => (
-            <li>
-              <button
-                class={twMerge(
-                  'cursor-grab',
-                  'flex px-2 gap-2 py-1 w-full rounded items-center whitespace-nowrap',
-                  'border border-transparent',
-                  'hover:bg-secondary-focus hover:bg-opacity-30',
-                  'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30'
+      <ul>
+        <li>
+          <p class="italic">Native</p>
+          <ul class="grid grid-cols-2">
+            <For each={defaultComponents}>
+              {(component): JSX.Element => (
+                <li>
+                  <button
+                    class={twMerge(
+                      'cursor-grab',
+                      'flex px-2 gap-2 py-1 w-full rounded items-center whitespace-nowrap',
+                      'border border-transparent',
+                      'hover:bg-secondary-focus hover:bg-opacity-30',
+                      'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30'
+                    )}
+                    // @ts-ignore - directive
+                    // eslint-disable-next-line solid/jsx-no-undef
+                    use:draggable={(): Draggable => makeComponent(component)}
+                  >
+                    <Icon
+                      icon={componentTypeIconMap[component.type as string]}
+                      class="w-3 h-3 opacity-50"
+                    />
+                    <span class="flex-1 text-left text-ellipsis whitespace-nowrap overflow-hidden">
+                      {component.name}
+                    </span>
+                  </button>
+                </li>
+              )}
+            </For>
+          </ul>
+        </li>
+        <Show when={state.data && state.data.components.length > 0}>
+          <li>
+            <p class="italic">Yours</p>
+            <ul class="grid grid-cols-2">
+              <For each={state.data!.components}>
+                {(component, index): JSX.Element => (
+                  <li>
+                    <button
+                      class={twMerge(
+                        'flex px-2 gap-2 py-1 w-full rounded items-center whitespace-nowrap',
+                        'border border-transparent',
+                        'hover:bg-secondary-focus hover:bg-opacity-30',
+                        'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30'
+                      )}
+                      onClick={(): void => {
+                        navigate(['components', index()])
+                      }}
+                      // @ts-ignore - directive
+                      // eslint-disable-next-line solid/jsx-no-undef
+                      use:draggable={(): Draggable => makeComponent(component)}
+                    >
+                      <Icon
+                        icon={componentTypeIconMap[component.type as string]}
+                        class="w-3 h-3 opacity-50"
+                      />
+                      <span class="flex-1 text-left text-ellipsis whitespace-nowrap overflow-hidden">
+                        {component.name}
+                      </span>
+                    </button>
+                  </li>
                 )}
-                // @ts-ignore - directive
-                // eslint-disable-next-line solid/jsx-no-undef
-                use:draggable={(): Draggable => makeComponent(component)}
-              >
-                <Icon
-                  icon={componentTypeIconMap[component.type as string]}
-                  class="w-3 h-3 opacity-50"
-                />
-                <span class="flex-1 text-left text-ellipsis whitespace-nowrap overflow-hidden">
-                  {component.name}
-                </span>
-              </button>
-            </li>
-          )}
-        </For>
+              </For>
+            </ul>
+          </li>
+        </Show>
       </ul>
     </Accordion>
   )

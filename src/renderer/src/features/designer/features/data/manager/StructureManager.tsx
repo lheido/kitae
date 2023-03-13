@@ -1,6 +1,7 @@
 import { ComponentData, Path } from '@kitae/shared/types'
 import Badge from '@renderer/components/Badge'
 import Icon from '@renderer/components/Icon'
+import { contextmenu } from '@renderer/features/context-menu'
 import { componentTypeIconMap } from '@renderer/features/designer/icon-map'
 import {
   draggable,
@@ -9,7 +10,7 @@ import {
   droppable,
   useDnD
 } from '@renderer/features/drag-n-drop'
-import { useHistory } from '@renderer/features/history'
+import { registerHistoryChangeHandler, useHistory } from '@renderer/features/history'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import {
   Component,
@@ -25,9 +26,31 @@ import { twMerge } from 'tailwind-merge'
 import { useDesignerState } from '../../state/designer.state'
 import { samePath } from '../../utils/same-path.util'
 import { DesignerHistoryHandlers } from '../../utils/types'
+import { walker } from '../../utils/walker.util'
+import './helpers/create-custom-component'
 
 !!droppable && false
 !!draggable && false
+!!contextmenu && false
+
+const [state, { navigate, updatePath }] = useDesignerState()
+
+registerHistoryChangeHandler({
+  [DesignerHistoryHandlers.DELETE_COMPONENT_DATA]: {
+    execute: ({ path }): void => {
+      const index = path[path.length - 1] as number
+      updatePath(path.slice(0, -1), (list: ComponentData[]) => {
+        list.splice(index, 1)
+      })
+    },
+    undo: ({ path, changes }): void => {
+      const index = path[path.length - 1] as number
+      updatePath(path.slice(0, -1), (list: ComponentData[]) => {
+        list.splice(index, 0, changes as ComponentData)
+      })
+    }
+  }
+})
 
 interface RecursiveComponentItemProps extends ComponentProps<'button'> {
   path: Path
@@ -45,7 +68,6 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
     ['path', 'data', 'depth', 'disableDrop'],
     ['class']
   )
-  const [state, { navigate }] = useDesignerState()
   const [dnd] = useDnD()
   const isActive = createMemo(() => samePath(state.current, component.path))
   const leftPadding = createMemo(() => {
@@ -57,19 +79,59 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
       dnd.draggable?.id !== component.data.id &&
       component.data.children !== undefined
   )
-  // const [, { makeChange }] = useHistory()
-  // const deleteComponent = (): void => {
-  //   const p: Path = JSON.parse(JSON.stringify(component.path))
-  //   const previous = JSON.parse(JSON.stringify(walker(state.data, p)))
-  //   makeChange({
-  //     path: p,
-  //     changes: previous,
-  //     handler: DesignerHistoryHandlers.DELETE_COMPONENT_DATA
-  //   })
-  // }
+  const [, { makeChange }] = useHistory()
+  const deleteComponent = (): void => {
+    const p: Path = JSON.parse(JSON.stringify(component.path))
+    const previous = JSON.parse(JSON.stringify(walker(state.data, p)))
+    const isSelected = JSON.parse(JSON.stringify(isActive()))
+    makeChange({
+      path: p,
+      changes: previous,
+      handler: DesignerHistoryHandlers.DELETE_COMPONENT_DATA,
+      additionalHandler: {
+        execute: (): void => {
+          if (isSelected) {
+            navigate(p.slice(0, -2))
+          }
+        },
+        undo: (): void => {
+          if (isSelected) {
+            navigate(p)
+          }
+        }
+      }
+    })
+  }
+  const createComponentFromThis = (): void => {
+    const p: Path = JSON.parse(JSON.stringify(component.path))
+    const componentData = JSON.parse(JSON.stringify(walker(state.data, p)))
+    makeChange({
+      path: p,
+      changes: componentData,
+      handler: DesignerHistoryHandlers.CREATE_CUSTOM_COMPONENT
+    })
+  }
   const clickHandler = (): void => {
     navigate(component.path)
   }
+  const contextMenuEntries = createMemo(() => {
+    return [
+      {
+        label: 'Delete',
+        action: deleteComponent
+      },
+      {
+        label: 'Create component from this',
+        action: createComponentFromThis
+      }
+    ]
+  })
+  const componentName = createMemo(() => {
+    if (component.data.type !== 'custom') return component.data.name
+    const sourceCmp = state.data?.components?.find((c) => c.id === component.data.ref)
+    if (!sourceCmp) return component.data.name
+    return sourceCmp.name !== component.data.name ? component.data.name : sourceCmp.name
+  })
   return (
     <li
       classList={{
@@ -111,10 +173,25 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
           path: component.path,
           enabled: true
         }}
+        use:contextmenu={{
+          entries: contextMenuEntries(),
+          onOpen: (elt: HTMLElement): void => {
+            if (!isActive()) {
+              elt.classList.add('!border-secondary')
+            }
+            elt.classList.add('!border-opacity-25')
+          },
+          onClose: (elt: HTMLElement): void => {
+            if (!isActive()) {
+              elt.classList.remove('!border-secondary')
+            }
+            elt.classList.remove('!border-opacity-25')
+          }
+        }}
       >
         <Icon icon={componentTypeIconMap[component.data.type]} class="w-3 h-3 opacity-50" />
         <span class="flex-1 max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
-          {component.data.name}
+          {componentName()}
         </span>
       </button>
       <Show when={component.data.children}>
@@ -131,20 +208,6 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
               )}
             </For>
           </Show>
-          {/* <li>
-            <button
-              class={twMerge(
-                'flex px-2 gap-2 py-1 w-full rounded items-center text-left whitespace-nowrap',
-                'border border-transparent',
-                'hover:bg-secondary-focus hover:bg-opacity-30',
-                'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30'
-              )}
-              style={{ 'padding-left': `${leftPadding()}px` }}
-            >
-              <Icon icon="add" class="w-3 h-3 opacity-50" />
-              Add item
-            </button>
-          </li> */}
         </ul>
       </Show>
     </li>
@@ -153,15 +216,14 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
 
 const StructureList: Component = () => {
   let containerRef: HTMLUListElement | undefined
-  const [state] = useDesignerState()
   const [, { makeChange }] = useHistory()
   const [dnd, , dropped] = useDnD()
-  const pageIndex = createMemo(() => {
-    return state.data?.pages.findIndex((p) => p.id === state.page) ?? 0
+  const basePath = createMemo(() => {
+    return state?.current?.slice(0, 2) ?? ['pages', 0]
   })
-  const pageChildren = (): ComponentData[] => {
-    return state.data?.pages.find((p) => p.id === state.page)?.children ?? []
-  }
+  const children = createMemo(() => {
+    return walker<ComponentData>(state.data, basePath())?.children ?? []
+  })
   createEffect(() => {
     const event = dropped()
     if (!event) return
@@ -230,12 +292,12 @@ const StructureList: Component = () => {
         ref={containerRef}
         class="min-w-full relative w-max py-8 flex flex-col gap-0.5"
         // @ts-ignore - directive
-        use:droppable={{ enabled: true, id: 'root', path: ['pages', pageIndex()], x: 0 }}
+        use:droppable={{ enabled: true, id: 'root', path: basePath(), x: 0 }}
       >
-        <For each={pageChildren()}>
+        <For each={children()}>
           {(component, i): JSX.Element => (
             <RecursiveComponentItem
-              path={['pages', pageIndex(), 'children', i()]}
+              path={[...basePath(), 'children', i()]}
               data={component}
               depth={0}
             />
@@ -252,14 +314,15 @@ interface StructureManagerProps {
 
 const StructureManager: Component<StructureManagerProps> = (props: StructureManagerProps) => {
   const [state] = useDesignerState()
-  const pageName = createMemo(() => {
-    return state.data?.pages.find((p) => p.id === state.page)?.name ?? ''
+  const currentStructureName = createMemo(() => {
+    if (!state.current) return ''
+    if (state.current[0] === 'pages') {
+      return state.data?.pages.find((p) => p.id === state.page)?.name ?? ''
+    }
+    return state.data?.components.find((_, i) => i === state!.current[1])?.name ?? ''
   })
   const rounded = (): number => {
     return 8 - Math.max(0, Math.min(8, props.scrollTop * 0.1))
-  }
-  const badgeOpacity = (): number => {
-    return Math.max(0, Math.min(1, (props.scrollTop - 130) * 0.02))
   }
   return (
     <section class="relative bg-base-200 rounded-lg min-h-screen">
@@ -272,7 +335,7 @@ const StructureManager: Component<StructureManagerProps> = (props: StructureMana
       >
         <Icon icon="structure" class="h-4 w-4 opacity-50" />
         <h1 class="flex-1">Structure</h1>
-        <Badge style={{ opacity: badgeOpacity() }}>{pageName()}</Badge>
+        <Badge>{currentStructureName()}</Badge>
       </header>
       <OverlayScrollbarsComponent
         defer

@@ -17,7 +17,7 @@ const ViewsLeftPanel: Component = () => {
         <h1 class="sr-only">Workspace views - left panel</h1>
         <PagesManager maxHeight={320} opened />
         <StructureManager scrollTop={scrollTop()} />
-        <AvailableComponentsManager maxHeight={320} opened />
+        <AvailableComponentsManager opened />
       </div>
     </OverlayScrollbarsComponent>
   )

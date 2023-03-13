@@ -126,12 +126,6 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
       }
     ]
   })
-  const componentName = createMemo(() => {
-    if (component.data.type !== 'custom') return component.data.name
-    const sourceCmp = state.data?.components?.find((c) => c.id === component.data.ref)
-    if (!sourceCmp) return component.data.name
-    return sourceCmp.name !== component.data.name ? component.data.name : sourceCmp.name
-  })
   return (
     <li
       classList={{
@@ -191,7 +185,7 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
       >
         <Icon icon={componentTypeIconMap[component.data.type]} class="w-3 h-3 opacity-50" />
         <span class="flex-1 max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
-          {componentName()}
+          {component.data.name}
         </span>
       </button>
       <Show when={component.data.children}>

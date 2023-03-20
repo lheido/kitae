@@ -47,7 +47,7 @@
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@electron/notarize": "^1.2.3",
     "@types/color": "^3.0.3",
-    "@types/dompurify": "^2.4.0",
+    "@types/dompurify": "^3.0.0",
     "@types/node": "18.14.6",
     "@typescript-eslint/eslint-plugin": "^5.48.0",
     "@typescript-eslint/parser": "^5.48.0",

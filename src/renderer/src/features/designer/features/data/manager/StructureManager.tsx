@@ -249,15 +249,15 @@ const StructureList: Component = () => {
             break
           }
           case 'Files':
-            // @TODO: Handle files (create a new Image component for each file, also what to do with the files? added to the project? I don't now yet)
+            // TODO: Handle files (create a new Image component for each file, also what to do with the files? added to the project? I don't now yet)
             console.log(data.files)
             break
           case 'text/html':
-            // @TODO: Try to parse the html and create a new component for each element
+            // TODO: Try to parse the html and create a new component for each element
             break
           case 'text/plain':
           case 'text/uri-list':
-            // @TODO: Handle text (could a text component, a link component, or a external kitae component)
+            // TODO: Handle text (could a text component, a link component, or a external kitae component)
             console.log(data.getData(t))
             break
         }

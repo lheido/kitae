@@ -31,7 +31,7 @@ interface AccordionProps extends ComponentProps<'section'> {
 }
 
 export interface AccordionsState {
-  // @TODO: remove the any type
+  // TODO: remove the any type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   accordions: any[]
 }
@@ -44,7 +44,7 @@ export interface AccordionsProviderProps {
   children: JSX.Element
 }
 
-// @TODO: do something with this
+// TODO: do something with this
 export const AccordionsProvider: Component<AccordionsProviderProps> = (
   props: AccordionsProviderProps
 ) => {

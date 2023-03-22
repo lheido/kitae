@@ -177,7 +177,7 @@ export const DragPlaceholder: Component<DragPlaceholderProps> = (props: DragPlac
 
 if (document.body) {
   // Make sure to reset the dnd state for global drag and drop events (from outside the app)
-  // @TODO: For now, we can't use dropEffect 'none' because it prevent the drop event
+  // TODO: For now, we can't use dropEffect 'none' because it prevent the drop event
   document.body.addEventListener('dragover', (e) => {
     e.preventDefault()
     e.stopPropagation()

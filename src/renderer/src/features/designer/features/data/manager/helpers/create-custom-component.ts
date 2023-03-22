@@ -11,6 +11,7 @@ registerHistoryChangeHandler({
       const customComponentData: ComponentData = {
         id: crypto.randomUUID(),
         type: 'custom',
+        // TODO: Initialize with a more useful name
         name: 'Custom',
         children: [changes as ComponentData],
         config: []

@@ -4,9 +4,10 @@ import Icon from '@renderer/components/Icon'
 import { defaultComponents } from '@renderer/features/designer/default-components'
 import { componentTypeIconMap } from '@renderer/features/designer/icon-map'
 import { Draggable, draggable, droppable } from '@renderer/features/drag-n-drop'
-import { Component, For, JSX, Show } from 'solid-js'
+import { Component, createMemo, For, JSX, Show } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 import { useDesignerState } from '../../state/designer.state'
+import { getSlots } from '../../utils/slot.util'
 import { ManagerProps } from './types'
 
 !!droppable && false
@@ -16,22 +17,30 @@ const AvailableComponentsManager: Component<ManagerProps> = (props: ManagerProps
   const [state, { navigate }] = useDesignerState()
   const makeComponent = (component: Partial<ComponentData>): Draggable => {
     const id = crypto.randomUUID()
+    const data = JSON.parse(JSON.stringify(component))
+    data.id = id
+    if (data.type === 'custom') {
+      data.ref = component.id
+      data.children = []
+      data.slots = {}
+      const slots = getSlots(component as ComponentData)
+      for (const slot of slots) {
+        data.slots[slot.id] = []
+      }
+    }
+
     return JSON.parse(
       JSON.stringify({
         format: 'kitae/add-component',
         effect: 'copy',
         id,
         path: [],
-        data: {
-          ...component,
-          id,
-          ref: component.type === 'custom' ? component.id : undefined,
-          children: component.type === 'custom' ? [] : component.children
-        },
+        data,
         enabled: true
       })
     )
   }
+  const isPage = createMemo((): boolean => state.current[0] === 'pages')
   return (
     <Accordion
       accordionId="workspace-views-components"
@@ -54,9 +63,11 @@ const AvailableComponentsManager: Component<ManagerProps> = (props: ManagerProps
                       'cursor-grab',
                       'flex px-2 gap-2 py-1 w-full rounded items-center whitespace-nowrap',
                       'border border-transparent',
+                      'disabled:opacity-25 disabled:cursor-not-allowed',
                       'hover:bg-secondary-focus hover:bg-opacity-30',
                       'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30'
                     )}
+                    disabled={['slot', 'children'].includes(component.type!) && isPage()}
                     // @ts-ignore - directive
                     // eslint-disable-next-line solid/jsx-no-undef
                     use:draggable={(): Draggable => makeComponent(component)}

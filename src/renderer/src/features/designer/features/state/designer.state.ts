@@ -1,5 +1,5 @@
 import { Path, WorkspaceData } from '@kitae/shared/types'
-import { createStore, produce } from 'solid-js/store'
+import { createStore, produce, SetStoreFunction } from 'solid-js/store'
 import { walker } from '../utils/walker.util'
 
 export interface DesignerState {
@@ -25,6 +25,7 @@ export interface DesignerState {
 
 export interface DesignerStateActions {
   navigate: (path: Path) => void
+  setState: SetStoreFunction<DesignerState>
   updatePath: (path: Path, updateFn: (data: never, parent: never, state: never) => void) => void
   waitForSave: (value: boolean) => void
   setData: (data?: WorkspaceData) => void
@@ -53,6 +54,7 @@ export const useDesignerState = (): [DesignerState, DesignerStateActions] => {
       navigate: (path): void => {
         setState('current', path)
       },
+      setState,
       updatePath: (path, updateFn): void => {
         setState(
           produce((s) => {

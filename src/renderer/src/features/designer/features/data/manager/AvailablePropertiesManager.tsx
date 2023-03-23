@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentConfig } from '@kitae/shared/types'
+import { ComponentConfig, ComponentData } from '@kitae/shared/types'
 import Accordion from '@renderer/components/Accordion'
 import Icon from '@renderer/components/Icon'
 import {
@@ -9,9 +9,10 @@ import {
 import { propertyTypeIconMap } from '@renderer/features/designer/icon-map'
 import { labelMap } from '@renderer/features/designer/label-map'
 import { Draggable, draggable, droppable } from '@renderer/features/drag-n-drop'
-import { Component, For, JSX } from 'solid-js'
+import { Component, createMemo, For, JSX } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 import { useDesignerState } from '../../state/designer.state'
+import { getComponentData } from '../../utils/component-data.util'
 import { ManagerProps } from './types'
 
 !!droppable && false
@@ -25,6 +26,13 @@ const AvailablePropertyItem: Component<AvailablePropertyItemProps> = (
   props: AvailablePropertyItemProps
 ) => {
   const [state] = useDesignerState()
+  const selectedComponent = createMemo(() => {
+    if (!state.current || !state.data) return null
+    if (state.current.length < 2) return null
+    const currentPath = state.current.slice(2)
+    const currentPage = state.data?.[state.current[0]][state.current[1]]
+    return getComponentData<ComponentData>(currentPath, currentPage)
+  })
   const makeProp = (property: Partial<ComponentConfig>): Draggable => {
     return JSON.parse(
       JSON.stringify({
@@ -47,8 +55,9 @@ const AvailablePropertyItem: Component<AvailablePropertyItemProps> = (
           'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30',
           'disabled:opacity-50 disabled:cursor-not-allowed'
         )}
+        disabled={['slot', 'children'].includes(selectedComponent()?.type ?? '')}
         // @ts-ignore - directive
-        // eslint-disable-next-line solid/jsx-no-undef
+        // eslint-disable-next-line solid/reactivity
         use:draggable={(): Draggable => makeProp(props.property)}
       >
         <Icon

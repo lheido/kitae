@@ -22,9 +22,16 @@ import {
   Show,
   splitProps
 } from 'solid-js'
+import { produce } from 'solid-js/store'
 import { twMerge } from 'tailwind-merge'
 import { useDesignerState } from '../../state/designer.state'
+import {
+  insertComponentData,
+  moveComponentData,
+  removeComponentData
+} from '../../utils/component-data.util'
 import { samePath } from '../../utils/same-path.util'
+import { getSlots } from '../../utils/slot.util'
 import { DesignerHistoryHandlers } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
 import './helpers/create-custom-component'
@@ -33,21 +40,65 @@ import './helpers/create-custom-component'
 !!draggable && false
 !!contextmenu && false
 
-const [state, { navigate, updatePath }] = useDesignerState()
+const [state, { navigate, setState }] = useDesignerState()
 
 registerHistoryChangeHandler({
-  [DesignerHistoryHandlers.DELETE_COMPONENT_DATA]: {
-    execute: ({ path }): void => {
-      const index = path[path.length - 1] as number
-      updatePath(path.slice(0, -1), (list: ComponentData[]) => {
-        list.splice(index, 1)
-      })
+  [DesignerHistoryHandlers.MOVE_COMPONENT_DATA]: {
+    execute: ({ path, changes }): void => {
+      setState(
+        produce((state): void => {
+          const to = path.slice(2)
+          const from = (changes as Path[])[1].slice(2)
+          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
+          moveComponentData(to, from, currentPage)
+        })
+      )
     },
     undo: ({ path, changes }): void => {
-      const index = path[path.length - 1] as number
-      updatePath(path.slice(0, -1), (list: ComponentData[]) => {
-        list.splice(index, 0, changes as ComponentData)
-      })
+      setState(
+        produce((state): void => {
+          const to = path.slice(2)
+          const from = (changes as Path[])[1].slice(2)
+          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
+          moveComponentData(from, to, currentPage)
+        })
+      )
+    }
+  },
+  [DesignerHistoryHandlers.ADD_COMPONENT_DATA]: {
+    execute: ({ path, changes }): void => {
+      setState(
+        produce((state): void => {
+          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
+          insertComponentData(path.slice(2), currentPage, changes)
+        })
+      )
+    },
+    undo: ({ path }): void => {
+      setState(
+        produce((state): void => {
+          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
+          removeComponentData(path.slice(2), currentPage)
+        })
+      )
+    }
+  },
+  [DesignerHistoryHandlers.DELETE_COMPONENT_DATA]: {
+    execute: ({ path }): void => {
+      setState(
+        produce((s): void => {
+          const target = path.slice(2)
+          removeComponentData(target, s.data?.[path[0]][path[1]])
+        })
+      )
+    },
+    undo: ({ path, changes }): void => {
+      setState(
+        produce((s): void => {
+          const target = path.slice(2)
+          insertComponentData(target, s.data?.[path[0]][path[1]], changes as ComponentData)
+        })
+      )
     }
   }
 })
@@ -63,6 +114,7 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
   props: RecursiveComponentItemProps
 ) => {
   let containerRef: HTMLUListElement | undefined
+  let slotContainerRef: HTMLUListElement | undefined
   const [component, classes, button] = splitProps(
     props,
     ['path', 'data', 'depth', 'disableDrop'],
@@ -126,6 +178,12 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
       }
     ]
   })
+  const slots = createMemo(() => {
+    if (component.data.type !== 'custom') return []
+    const originalComponent = state.data?.components?.find((c) => c.id === component.data.ref)
+    if (!originalComponent) return []
+    return getSlots(originalComponent)
+  })
   return (
     <li
       classList={{
@@ -188,6 +246,50 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
           {component.data.name}
         </span>
       </button>
+      <Show when={slots().length > 0}>
+        <ul class="relative flex flex-col gap-0.5 pb-1">
+          <For each={slots()}>
+            {(slot): JSX.Element => (
+              <li>
+                <div
+                  class="flex items-center px-2 gap-2 py-1 w-full opacity-70"
+                  style={{
+                    'padding-left': `${leftPadding() + 16}px`
+                  }}
+                >
+                  <Icon icon={componentTypeIconMap['slot']} class="w-3 h-3 opacity-50" />
+                  <span class="flex-1 text-sm max-w-[200px] text-ellipsis whitespace-nowrap overflow-hidden">
+                    {slot.name}
+                  </span>
+                </div>
+                <ul
+                  class="relative flex flex-col gap-0.5 pb-1"
+                  // @ts-ignore - directive
+                  use:droppable={{
+                    enabled: isDropEnabled(),
+                    id: slot.id,
+                    path: [...component.path, 'slots', slot.id],
+                    root: false,
+                    x: leftPadding() + 32,
+                    container: slotContainerRef
+                  }}
+                >
+                  <For each={component.data.slots?.[slot.id] ?? []}>
+                    {(child, index): JSX.Element => (
+                      <RecursiveComponentItem
+                        path={[...component.path, 'slots', slot.id, index()]}
+                        data={child}
+                        depth={component.depth + 2}
+                        disableDrop={!isDropEnabled()}
+                      />
+                    )}
+                  </For>
+                </ul>
+              </li>
+            )}
+          </For>
+        </ul>
+      </Show>
       <Show when={component.data.children}>
         <ul ref={containerRef} class="relative flex flex-col gap-0.5 pb-1">
           <Show when={component.data.children!.length > 0}>
@@ -227,23 +329,36 @@ const StructureList: Component = () => {
         switch (t) {
           case 'kitae/move-component': {
             const draggable = JSON.parse(data.getData(t)) as Draggable
-            const isSamePath = samePath(draggable.path, [...droppable.path, 'children', index])
+            const newPath = [...droppable.path]
+            if (newPath[newPath.length - 2] === 'slots') {
+              newPath.push(index)
+            } else {
+              newPath.push('children', index)
+            }
+            const isSamePath = samePath(draggable.path, newPath)
             if (draggable.id === droppable.id || isSamePath) break
             const sameContainer = samePath(draggable.path.slice(0, -2), droppable.path)
             const originalIndex = draggable.path[draggable.path.length - 1]
             const i = sameContainer && index > 0 && originalIndex < index ? index - 1 : index
+            newPath[newPath.length - 1] = i
             makeChange({
               handler: DesignerHistoryHandlers.MOVE_COMPONENT_DATA,
               path: draggable.path,
-              changes: [draggable.path, [...droppable.path, 'children', i]]
+              changes: [draggable.path, newPath]
             })
             break
           }
           case 'kitae/add-component': {
             const draggable = JSON.parse(data.getData(t)) as Draggable
+            const path = [...droppable.path]
+            if (path[path.length - 2] === 'slots') {
+              path.push(index)
+            } else {
+              path.push('children', index)
+            }
             makeChange({
               handler: DesignerHistoryHandlers.ADD_COMPONENT_DATA,
-              path: [...droppable.path, 'children', index],
+              path,
               changes: JSON.parse(JSON.stringify(draggable.data))
             })
             break

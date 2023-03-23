@@ -24,6 +24,7 @@ registerHistoryChangeHandler({
         list[indexToReplace] = {
           ...customComponentData,
           children: [],
+          slots: {},
           ref: customComponentData.id,
           id: crypto.randomUUID()
         }

@@ -37,6 +37,11 @@ export const draggable = (
   accessor: () => Draggable | (() => Draggable)
 ): void => {
   const dragStartHandler = (e: DragEvent): void => {
+    const isDisabled = elt.hasAttribute('disabled') && elt.getAttribute('disabled') !== 'false'
+    if (isDisabled) {
+      e.preventDefault()
+      return
+    }
     const acc = accessor()
     const draggable = typeof acc === 'function' ? acc() : acc
     if (draggable !== undefined) {

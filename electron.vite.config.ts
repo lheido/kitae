@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import { resolve } from 'path'
 import solid from 'vite-plugin-solid'

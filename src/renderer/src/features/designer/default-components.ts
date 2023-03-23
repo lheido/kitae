@@ -101,5 +101,17 @@ export const defaultComponents: Partial<ComponentData>[] = [
       }
     ],
     children: []
+  },
+  {
+    name: 'Slot',
+    type: 'slot',
+    config: [],
+    children: []
+  },
+  {
+    name: 'Children',
+    type: 'children',
+    config: [],
+    children: []
   }
 ]

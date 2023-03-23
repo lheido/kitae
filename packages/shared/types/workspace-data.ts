@@ -39,10 +39,12 @@ export const ComponentDataSchema = z.object({
 
 export type ComponentData = z.infer<typeof ComponentDataSchema> & {
   children?: ComponentData[]
+  slots?: Record<string, ComponentData[]>
 }
 
 export const ExtendedComponentDataSchema: z.ZodType<ComponentData> = ComponentDataSchema.extend({
-  children: z.lazy(() => ComponentDataSchema.array())
+  children: z.lazy(() => ComponentDataSchema.array()),
+  slots: z.record(z.lazy(() => ComponentDataSchema.array()))
 })
 
 export const WorkspaceDataSchema = z.object({

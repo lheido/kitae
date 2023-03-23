@@ -2,7 +2,9 @@ export const componentTypeIconMap: Record<string, string> = {
   container: 'box',
   custom: 'box',
   text: 'font-family',
-  button: 'tap'
+  button: 'tap',
+  slot: 'slot',
+  children: 'slot'
 }
 
 export const propertyTypeIconMap: Record<string, string> = {

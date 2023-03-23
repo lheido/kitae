@@ -1,7 +1,7 @@
 import { Path } from '@kitae/shared/types'
 import { createSignal } from 'solid-js'
 import { createStore, produce } from 'solid-js/store'
-import { registerGlobalShortcut, Shortcut } from '../keyboard'
+import { Shortcut } from '../keyboard'
 
 export interface HistoryChange {
   path: Path
@@ -58,7 +58,7 @@ const makeChange = (change: HistoryChange): void => {
   )
 }
 
-const undo = new Shortcut(
+export const undo = new Shortcut(
   ['Control', 'z'],
   (): void => {
     if (isUndoable()) {
@@ -79,7 +79,7 @@ const undo = new Shortcut(
   },
   { preventDefault: true }
 )
-const redo = new Shortcut(
+export const redo = new Shortcut(
   ['Control', 'y'],
   (): void => {
     if (isRedoable()) {
@@ -119,8 +119,6 @@ const actions: HistoryChangesActions = {
 }
 
 export const useHistory = (): [HistoryChangesState, HistoryChangesActions] => {
-  registerGlobalShortcut(undo)
-  registerGlobalShortcut(redo)
   return [state, actions]
 }
 

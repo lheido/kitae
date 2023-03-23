@@ -56,7 +56,9 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-    mainWindow.webContents.openDevTools({ mode: 'left' })
+    if (is.dev) {
+      mainWindow.webContents.openDevTools({ mode: 'left' })
+    }
     if (settings.window?.maximized) {
       mainWindow.maximize()
     }
@@ -70,11 +72,6 @@ function createWindow(): void {
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   mainWindow.loadURL(appUrl)
-  // if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-  //   mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  // } else {
-  //   mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  // }
 }
 
 // This method will be called when Electron has finished

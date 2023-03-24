@@ -1,11 +1,11 @@
 import { ComponentData } from '@kitae/shared/types'
-import { registerHistoryChangeHandler } from '@renderer/features/history'
+import { registerHistoryEvents } from '@renderer/features/history'
 import { useDesignerState } from '../../../state/designer.state'
 import { DesignerHistoryHandlers } from '../../../utils/types'
 
 const [, { updatePath }] = useDesignerState()
 
-registerHistoryChangeHandler({
+registerHistoryEvents({
   [DesignerHistoryHandlers.CREATE_CUSTOM_COMPONENT]: {
     execute: ({ path, changes }): void => {
       const customComponentData: ComponentData = {

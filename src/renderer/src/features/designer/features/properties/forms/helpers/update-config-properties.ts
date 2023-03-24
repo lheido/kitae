@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig } from '@kitae/shared/types'
-import { registerHistoryChangeHandler } from '@renderer/features/history'
+import { registerHistoryEvents } from '@renderer/features/history'
 import { useDesignerState } from '../../../state/designer.state'
 import { DesignerHistoryHandlers } from '../../../utils/types'
 
 const [, { updatePath }] = useDesignerState()
 
-registerHistoryChangeHandler({
+registerHistoryEvents({
   [DesignerHistoryHandlers.UPDATE_CONFIG_PROPERTY]: {
     execute: ({ path, changes }): void => {
       updatePath(path, (current: ComponentConfig): void => {

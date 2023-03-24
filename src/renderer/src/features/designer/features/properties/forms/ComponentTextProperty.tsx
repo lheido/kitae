@@ -2,7 +2,7 @@
 import { ComponentConfig, ComponentData } from '@kitae/shared/types'
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
-import { registerHistoryChangeHandler, useHistory } from '@renderer/features/history'
+import { registerHistoryEvents, useHistory } from '@renderer/features/history'
 import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { useDesignerState } from '../../state/designer.state'
@@ -20,7 +20,7 @@ interface ComponentTextPropertyProps extends PropertyProps {
 
 const [state, { updatePath }] = useDesignerState()
 
-registerHistoryChangeHandler({
+registerHistoryEvents({
   [DesignerHistoryHandlers.UPDATE_TEXT_CONFIG_PROPERTY]: {
     execute: ({ path, changes }): void => {
       updatePath(path, (current: ComponentConfig, _, s: WorkspaceDataState): void => {

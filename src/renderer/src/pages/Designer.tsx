@@ -4,7 +4,7 @@ import PanelSeparator from '@renderer/components/PanelSeparator'
 import { useDesignerState } from '@renderer/features/designer'
 import Preview from '@renderer/features/designer/components/Preview'
 import { routes } from '@renderer/features/designer/routing'
-import { redo, undo } from '@renderer/features/history'
+import { redoShortcut, undoShortcut } from '@renderer/features/history'
 import { registerGlobalShortcut, Shortcut } from '@renderer/features/keyboard'
 import { Component, createMemo, For, JSX, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
@@ -23,7 +23,13 @@ const Designer: Component = () => {
   const shortcutGoToSettings = new Shortcut(['Alt', 's'], (): void => navigate(['settings']))
   const shortcutGoToTheme = new Shortcut(['Alt', 't'], (): void => navigate(['theme']))
   const shortcutGoToPages = new Shortcut(['Alt', 'v'], (): void => navigate(['pages']))
-  registerGlobalShortcut(shortcutGoToSettings, shortcutGoToTheme, shortcutGoToPages, undo, redo)
+  registerGlobalShortcut(
+    shortcutGoToSettings,
+    shortcutGoToTheme,
+    shortcutGoToPages,
+    undoShortcut,
+    redoShortcut
+  )
 
   const panels: Panel[] = [
     {

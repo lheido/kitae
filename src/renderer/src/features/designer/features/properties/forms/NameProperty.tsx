@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
-import { registerHistoryChangeHandler, useHistory } from '@renderer/features/history'
+import { registerHistoryEvents, useHistory } from '@renderer/features/history'
 import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect } from 'solid-js'
 import { useDesignerState } from '../../state/designer.state'
@@ -18,7 +18,7 @@ interface NamePropertyProps {
 
 const [state, { updatePath }] = useDesignerState()
 
-registerHistoryChangeHandler({
+registerHistoryEvents({
   [DesignerHistoryHandlers.UPDATE_NAME_PROPERTY]: {
     execute: ({ path, changes }): void => {
       updatePath(path, (current: any): void => {

@@ -7,7 +7,8 @@ import {
   droppable,
   useDnD
 } from '@renderer/features/drag-n-drop'
-import { registerHistoryChangeHandler, useHistory } from '@renderer/features/history'
+import { useHistory } from '@renderer/features/history'
+import { registerHistoryEvents } from '@renderer/features/history/event'
 import { Component, createEffect, createMemo, For, JSX, Match, Show, Switch } from 'solid-js'
 import ComponentColorsProperty from '../../properties/forms/ComponentColorsProperty'
 import ComponentRoundedProperty from '../../properties/forms/ComponentRoundedProperty'
@@ -24,7 +25,7 @@ import { walker } from '../../utils/walker.util'
 
 const [state, { updatePath }] = useDesignerState()
 
-registerHistoryChangeHandler({
+registerHistoryEvents({
   [DesignerHistoryHandlers.ADD_CONFIG_DATA]: {
     execute: ({ path, changes }): void => {
       const target = [...path]

@@ -5,7 +5,8 @@ import Badge from '@renderer/components/Badge'
 import Button from '@renderer/components/Button'
 import AddInput from '@renderer/components/form/AddInput'
 import Icon from '@renderer/components/Icon'
-import { registerHistoryChangeHandler, useHistory } from '@renderer/features/history'
+import { useHistory } from '@renderer/features/history'
+import { registerHistoryEvents } from '@renderer/features/history/event'
 import { Component, createEffect, createMemo, createSignal, For, JSX, Show } from 'solid-js'
 import { useDesignerState } from '../../state/designer.state'
 import { DesignerHistoryHandlers } from '../../utils/types'
@@ -18,7 +19,7 @@ interface NewThemeChanges {
   value: ThemeExtends
 }
 
-registerHistoryChangeHandler({
+registerHistoryEvents({
   [DesignerHistoryHandlers.ADD_THEME]: {
     execute: ({ path, changes }): void => {
       const { name, value } = changes as NewThemeChanges

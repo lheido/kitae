@@ -10,7 +10,8 @@ import {
   droppable,
   useDnD
 } from '@renderer/features/drag-n-drop'
-import { registerHistoryChangeHandler, useHistory } from '@renderer/features/history'
+import { useHistory } from '@renderer/features/history'
+import { registerHistoryEvents } from '@renderer/features/history/event'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import {
   Component,
@@ -42,7 +43,7 @@ import './helpers/create-custom-component'
 
 const [state, { navigate, setState }] = useDesignerState()
 
-registerHistoryChangeHandler({
+registerHistoryEvents({
   [DesignerHistoryHandlers.MOVE_COMPONENT_DATA]: {
     execute: ({ path, changes }): void => {
       setState(

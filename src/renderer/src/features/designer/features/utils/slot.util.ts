@@ -1,4 +1,4 @@
-import { ComponentData } from '@kitae/shared/types'
+import { ComponentData, WorkspaceData } from '@kitae/shared/types'
 import { walkComponentData } from './component-data.util'
 
 /**
@@ -31,4 +31,26 @@ export const replaceSlots = (data: ComponentData, tree: ComponentData): Componen
     })
   })
   return tree
+}
+
+export const cleanAndUpdateSlots = (custom: ComponentData, workspace: WorkspaceData): void => {
+  // Remove old slot in the workspace pages according to the given custom component.
+  // Also update the slots object with the new slot ids.
+  ;[...workspace.pages, ...workspace.components].forEach((page) => {
+    walkComponentData(page, (node) => {
+      if (node.type === 'custom' && node.ref === custom.id) {
+        const slots = getSlots(custom)
+        Object.keys(node.slots ?? {}).forEach((id) => {
+          if (!slots.find((slot) => slot.id === id)) {
+            delete node.slots![id]
+          }
+        })
+        slots.forEach((slot) => {
+          if (!node.slots?.[slot.id]) {
+            node.slots![slot.id] = []
+          }
+        })
+      }
+    })
+  })
 }

@@ -7,11 +7,13 @@ import {
 import { produce } from 'solid-js/store'
 import { useDesignerState } from '../state/designer.state'
 import {
+  getComponentData,
   insertComponentData,
   moveComponentData,
   removeComponentData,
   replaceComponentData
 } from '../utils/component-data.util'
+import { cleanAndUpdateSlots } from '../utils/slot.util'
 
 export enum DesignerComponentBaseHistoryEvents {
   MOVE_COMPONENT_DATA = 'component:moveComponentData',
@@ -54,17 +56,33 @@ registerHistoryEvents<Path[], DesignerComponentBaseHistoryEvents>({
   [DesignerComponentBaseHistoryEvents.ADD_COMPONENT_DATA]: {
     execute: ({ path, changes }): void => {
       setState(
-        produce((state): void => {
-          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
+        produce((s): void => {
+          const currentPage = s.data?.[path[0]][path[1]] as ComponentData
           insertComponentData(path.slice(2), currentPage, changes)
+          if (path.includes('components')) {
+            const component = getComponentData<ComponentData>(
+              path.slice(2),
+              s.data?.components[path[1]]
+            )
+            if (component?.type === 'slot') {
+              cleanAndUpdateSlots(s.data?.components[path[1]], s.data!)
+            }
+          }
         })
       )
     },
     undo: ({ path }): void => {
       setState(
-        produce((state): void => {
-          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
+        produce((s): void => {
+          let component: ComponentData | undefined
+          if (path.includes('components')) {
+            component = getComponentData<ComponentData>(path.slice(2), s.data?.components[path[1]])
+          }
+          const currentPage = s.data?.[path[0]][path[1]] as ComponentData
           removeComponentData(path.slice(2), currentPage)
+          if (component && component.type === 'slot') {
+            cleanAndUpdateSlots(s.data?.components[path[1]], s.data!)
+          }
         })
       )
     }
@@ -77,7 +95,14 @@ registerHistoryEvents<ComponentData, DesignerComponentDeleteHistoryEvents>({
       setState(
         produce((s): void => {
           const target = path.slice(2)
+          let component: ComponentData | undefined
+          if (path.includes('components')) {
+            component = getComponentData<ComponentData>(path.slice(2), s.data?.components[path[1]])
+          }
           removeComponentData(target, s.data?.[path[0]][path[1]])
+          if (component && component.type === 'slot') {
+            cleanAndUpdateSlots(s.data?.components[path[1]], s.data!)
+          }
         })
       )
     },
@@ -86,6 +111,15 @@ registerHistoryEvents<ComponentData, DesignerComponentDeleteHistoryEvents>({
         produce((s): void => {
           const target = path.slice(2)
           insertComponentData(target, s.data?.[path[0]][path[1]], changes)
+          if (path.includes('components')) {
+            const component = getComponentData<ComponentData>(
+              path.slice(2),
+              s.data?.components[path[1]]
+            )
+            if (component?.type === 'slot') {
+              cleanAndUpdateSlots(s.data?.components[path[1]], s.data!)
+            }
+          }
         })
       )
     }

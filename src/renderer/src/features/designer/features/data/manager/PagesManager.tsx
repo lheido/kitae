@@ -2,7 +2,6 @@ import Accordion from '@renderer/components/Accordion'
 import Badge from '@renderer/components/Badge'
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
-import { useHistory } from '@renderer/features/history'
 import { ComponentData, Path } from 'packages/shared/types'
 import {
   Component,
@@ -14,10 +13,13 @@ import {
   Show,
   splitProps
 } from 'solid-js'
+import '../../history/page.events'
+import { makeAddPageChange, makeDeletePageChange } from '../../history/page.events'
 import { useDesignerState } from '../../state/designer.state'
-import { DesignerHistoryHandlers } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
 import { ManagerProps } from './types'
+
+// TODO: Use the same behavior as the color manager to add a new page
 
 interface PageItemProps extends ComponentProps<'button'> {
   page: Pick<ComponentData, 'id' | 'name'>
@@ -27,7 +29,6 @@ interface PageItemProps extends ComponentProps<'button'> {
 const PageItem: Component<PageItemProps> = (props: PageItemProps) => {
   const [component, button] = splitProps(props, ['page', 'active'])
   const [state, { navigate, setPage }] = useDesignerState()
-  const [, { makeChange }] = useHistory()
   const deletePage = (): void => {
     const p: Path = JSON.parse(
       JSON.stringify(['pages', state.data!.pages.findIndex((t) => t.id === component.page.id)])
@@ -35,22 +36,19 @@ const PageItem: Component<PageItemProps> = (props: PageItemProps) => {
     const previous = JSON.parse(JSON.stringify(walker(state.data, p)))
     const isActive = JSON.parse(JSON.stringify(component.active))
     const newIndex = Math.max(Math.min((p[1] as number) - 1, state.data!.pages.length - 1), 0)
-    makeChange({
+    makeDeletePageChange({
       path: p,
       changes: previous,
-      handler: DesignerHistoryHandlers.DELETE_PAGE_DATA,
-      additionalHandler: {
-        execute: (): void => {
-          if (isActive) {
-            navigate(['pages', newIndex])
-            setPage(state.data!.pages[newIndex].id)
-          }
-        },
-        undo: (): void => {
-          if (isActive) {
-            navigate(['pages', p[1]])
-            setPage(state.data!.pages[p[1] as number].id)
-          }
+      afterExecute: (): void => {
+        if (isActive) {
+          navigate(['pages', newIndex])
+          setPage(state.data!.pages[newIndex].id)
+        }
+      },
+      afterUndo: (): void => {
+        if (isActive) {
+          navigate(['pages', p[1]])
+          setPage(state.data!.pages[p[1] as number].id)
         }
       }
     })
@@ -78,7 +76,6 @@ const PageItem: Component<PageItemProps> = (props: PageItemProps) => {
 
 const PagesManager: Component<ManagerProps> = (props: ManagerProps) => {
   const [state, { navigate, setPage }] = useDesignerState()
-  const [, { makeChange }] = useHistory()
   const pageName = createMemo(() => {
     return state.data?.pages.find((p) => p.id === state.page)?.name ?? ''
   })
@@ -134,19 +131,16 @@ const PagesManager: Component<ManagerProps> = (props: ManagerProps) => {
                 type: 'container',
                 children: []
               }
-              makeChange({
+              makeAddPageChange({
                 path: ['pages'],
                 changes,
-                handler: DesignerHistoryHandlers.ADD_PAGE_DATA,
-                additionalHandler: {
-                  execute: (): void => {
-                    navigate(['pages', state.data!.pages.length - 1])
-                    setPage(changes.id)
-                  },
-                  undo: (): void => {
-                    navigate(['pages', state.data!.pages.length - 1])
-                    setPage(state.data!.pages[state.data!.pages.length - 1]?.id)
-                  }
+                afterExecute: (): void => {
+                  navigate(['pages', state.data!.pages.length - 1])
+                  setPage(changes.id)
+                },
+                afterUndo: (): void => {
+                  navigate(['pages', state.data!.pages.length - 1])
+                  setPage(state.data!.pages[state.data!.pages.length - 1]?.id)
                 }
               })
             }}

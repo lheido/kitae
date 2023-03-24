@@ -2,14 +2,12 @@
 import ColorPicker from '@renderer/components/form/ColorPicker'
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
-import { useHistory } from '@renderer/features/history'
 import { debounce } from '@solid-primitives/scheduled'
 import Color from 'color'
 import { Component, createEffect } from 'solid-js'
+import { makeUpdateValuePropertyChange } from '../../history/theme.events'
 import { useDesignerState } from '../../state/designer.state'
-import { DesignerHistoryHandlers } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
-import './helpers/update-value-property'
 
 interface ValueFormState {
   value: string
@@ -22,7 +20,6 @@ interface ValuePropertyProps {
 
 const ValueProperty: Component<ValuePropertyProps> = (props: ValuePropertyProps) => {
   const [state] = useDesignerState()
-  const [, { makeChange }] = useHistory()
   const {
     form,
     setForm,
@@ -41,10 +38,9 @@ const ValueProperty: Component<ValuePropertyProps> = (props: ValuePropertyProps)
   })
   const updateHandler = debounce((data: unknown) => {
     const path = JSON.parse(JSON.stringify(state.current))
-    makeChange({
+    makeUpdateValuePropertyChange({
       path,
-      changes: [walker(state.data, path) as any, data],
-      handler: DesignerHistoryHandlers.UPDATE_VALUE_PROPERTY
+      changes: [walker(state.data, path) as any, data]
     })
   }, 250)
   const onSubmit = (form: ValueFormState): void => {

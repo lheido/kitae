@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { historyEvents, registerHistoryEvents } from './event'
 import { isUndoable, makeChange, redo, setState, state, undo } from './state'
-import { HistoryEventChange } from './types'
+import { HistoryEventChangeWithAdditionalHandler } from './types'
 
 describe('history/state', () => {
   describe('isUndoable', () => {
@@ -36,7 +36,11 @@ describe('history/state', () => {
           execute: vi.fn()
         }
       })
-      const event: HistoryEventChange = { handler: 'test', path: [], changes: {} }
+      const event: HistoryEventChangeWithAdditionalHandler<unknown> = {
+        handler: 'test',
+        path: [],
+        changes: {}
+      }
       setState({ history: [event], position: 0 })
       undo()
       expect(historyEvents.test.undo).toBeCalled()
@@ -49,17 +53,15 @@ describe('history/state', () => {
           execute: vi.fn()
         }
       })
-      const event: HistoryEventChange = {
+      const event: HistoryEventChangeWithAdditionalHandler<unknown> = {
         handler: 'test',
         path: [],
         changes: {},
-        additionalHandler: {
-          undo: vi.fn()
-        }
+        afterUndo: vi.fn()
       }
       setState({ history: [event], position: 0 })
       undo()
-      expect(event.additionalHandler?.undo).toBeCalled()
+      expect(event.afterUndo).toBeCalled()
     })
 
     it('should decrement the position', () => {
@@ -69,7 +71,11 @@ describe('history/state', () => {
           execute: vi.fn()
         }
       })
-      const event: HistoryEventChange = { handler: 'test', path: [], changes: {} }
+      const event: HistoryEventChangeWithAdditionalHandler<unknown> = {
+        handler: 'test',
+        path: [],
+        changes: {}
+      }
       setState({ history: [event], position: 0 })
       undo()
       expect(state.position).toBe(-1)
@@ -90,7 +96,11 @@ describe('history/state', () => {
           execute: vi.fn()
         }
       })
-      const event: HistoryEventChange = { handler: 'test', path: [], changes: {} }
+      const event: HistoryEventChangeWithAdditionalHandler<unknown> = {
+        handler: 'test',
+        path: [],
+        changes: {}
+      }
       setState({ history: [event], position: -1 })
       redo()
       expect(historyEvents.test.execute).toBeCalled()
@@ -103,17 +113,15 @@ describe('history/state', () => {
           execute: vi.fn()
         }
       })
-      const event: HistoryEventChange = {
+      const event: HistoryEventChangeWithAdditionalHandler<unknown> = {
         handler: 'test',
         path: [],
         changes: {},
-        additionalHandler: {
-          execute: vi.fn()
-        }
+        afterExecute: vi.fn()
       }
       setState({ history: [event], position: -1 })
       redo()
-      expect(event.additionalHandler?.execute).toBeCalled()
+      expect(event.afterExecute!).toBeCalled()
     })
 
     it('should increment the position', () => {
@@ -123,7 +131,11 @@ describe('history/state', () => {
           execute: vi.fn()
         }
       })
-      const event: HistoryEventChange = { handler: 'test', path: [], changes: {} }
+      const event: HistoryEventChangeWithAdditionalHandler<unknown> = {
+        handler: 'test',
+        path: [],
+        changes: {}
+      }
       setState({ history: [event], position: -1 })
       redo()
       expect(state.position).toBe(0)
@@ -140,7 +152,11 @@ describe('history/state', () => {
 
   describe('makeChange', () => {
     it('should add the change to the history', () => {
-      const event: HistoryEventChange = { handler: 'test', path: [], changes: {} }
+      const event: HistoryEventChangeWithAdditionalHandler<unknown> = {
+        handler: 'test',
+        path: [],
+        changes: {}
+      }
       setState({ history: [], position: -1 })
       expect(state.history).toEqual([])
       makeChange(event)
@@ -149,7 +165,11 @@ describe('history/state', () => {
 
     it('should reset the history after the position', () => {
       // TODO: improve this test
-      const event: HistoryEventChange = { handler: 'test', path: [], changes: {} }
+      const event: HistoryEventChangeWithAdditionalHandler<unknown> = {
+        handler: 'test',
+        path: [],
+        changes: {}
+      }
       setState({ history: [event], position: 0 })
       expect(state.history).toEqual([event])
       makeChange(event)
@@ -157,7 +177,11 @@ describe('history/state', () => {
     })
 
     it('should increment the position', () => {
-      const event: HistoryEventChange = { handler: 'test', path: [], changes: {} }
+      const event: HistoryEventChangeWithAdditionalHandler<unknown> = {
+        handler: 'test',
+        path: [],
+        changes: {}
+      }
       setState({ history: [], position: -1 })
       expect(state.position).toBe(-1)
       makeChange(event)

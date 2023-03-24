@@ -3,15 +3,13 @@ import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
 import { labelMap } from '@renderer/features/designer/label-map'
 import { draggable } from '@renderer/features/drag-n-drop'
 import { createForm } from '@renderer/features/form'
-import { useHistory } from '@renderer/features/history'
 import { debounce } from '@solid-primitives/scheduled'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import { Component, createEffect, createMemo, For, JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { makeUpdateConfigPropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
-import { DesignerHistoryHandlers } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
-import './helpers/update-config-properties'
 import { PropertyProps } from './types'
 
 !!draggable && false
@@ -27,7 +25,6 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
   props: ComponentColorsPropertyProps
 ) => {
   const [state] = useDesignerState()
-  const [, { makeChange }] = useHistory()
   const {
     form,
     setForm,
@@ -71,13 +68,13 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
       [inputName()]: (config().data as string) ?? undefined
     })
   })
+  // eslint-disable-next-line solid/reactivity
   const updateHandler = debounce((data: unknown) => {
     const _path = JSON.parse(JSON.stringify(path()))
     const previous = (walker(state.data, _path) as ComponentConfig).data ?? undefined
-    makeChange({
+    makeUpdateConfigPropertyChange({
       path: _path,
-      changes: [previous, data],
-      handler: DesignerHistoryHandlers.UPDATE_CONFIG_PROPERTY
+      changes: [previous, data]
     })
   }, 250)
   const onSubmit = (form: ComponentColorsFormState): void => {

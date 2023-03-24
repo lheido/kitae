@@ -9,6 +9,7 @@ import {
   insertComponentData,
   moveComponentData,
   removeComponentData,
+  replaceComponentData,
   walkComponentData
 } from './component-data.util'
 
@@ -207,6 +208,23 @@ describe('component-data.util', () => {
         originalLength - 1
       )
       expect(page.children!.length).toEqual(originalTargetLength + 1)
+    })
+  })
+
+  describe('replaceComponentData', () => {
+    it('should replace the component data for the given path [children, 0, children, 0]', () => {
+      const path = ['children', 0, 'children', 0]
+      const page = JSON.parse(JSON.stringify(mockWorkspaceDataWithPage.pages[0]))
+      const newComponent = {
+        id: crypto.randomUUID(),
+        name: 'New Component',
+        type: 'container',
+        children: [],
+        config: []
+      }
+      const result = replaceComponentData(path, page, newComponent)
+      expect(result).toBe(true)
+      expect(page.children![0].children![0]).toEqual(newComponent)
     })
   })
 })

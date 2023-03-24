@@ -62,6 +62,16 @@ export const insertComponentData = <T>(path: Path, tree: ComponentData, data: T)
   return false
 }
 
+export const replaceComponentData = <T>(path: Path, tree: ComponentData, data: T): boolean => {
+  const index = path[path.length - 1] as number
+  const parent = getComponentData<T[]>(path.slice(0, -1), tree) ?? ([] as T[])
+  if (parent) {
+    parent?.splice(index, 1, data)
+    return true
+  }
+  return false
+}
+
 /**
  * Move a component data at the given path to a new path.
  */

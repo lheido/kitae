@@ -4,14 +4,12 @@ import FormField from '@renderer/components/form/FormField'
 import Icon from '@renderer/components/Icon'
 import { draggable } from '@renderer/features/drag-n-drop'
 import { createForm } from '@renderer/features/form'
-import { useHistory } from '@renderer/features/history'
 import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect, createMemo, Match, Switch } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { makeUpdateConfigPropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
-import { DesignerHistoryHandlers } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
-import './helpers/update-config-properties'
 import { PropertyProps } from './types'
 
 !!draggable && false
@@ -29,7 +27,6 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
   props: ComponentSpacingPropertyProps
 ) => {
   const [state] = useDesignerState()
-  const [, { makeChange }] = useHistory()
   const {
     form,
     setForm,
@@ -84,10 +81,9 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
     const previous = JSON.parse(
       JSON.stringify((walker(state.data, _path) as ComponentConfig)?.data ?? {})
     )
-    makeChange({
+    makeUpdateConfigPropertyChange({
       path: _path,
-      changes: [previous, data],
-      handler: DesignerHistoryHandlers.UPDATE_CONFIG_PROPERTY
+      changes: [previous, data]
     })
   }, 250)
   const onSubmit = (form: ComponentSpacingFormState): void => {

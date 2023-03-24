@@ -1,22 +1,28 @@
 import { createStore, produce } from 'solid-js/store'
 import { historyEvents } from './event'
-import { HistoryChangesState, HistoryEventChange } from './types'
+import {
+  HistoryChangesState,
+  HistoryEventChange,
+  HistoryEventChangeWithAdditionalHandler
+} from './types'
 
 export const initialState: HistoryChangesState = { history: [], position: -1 }
 
 export const [state, setState] = createStore<HistoryChangesState>(initialState)
 
-export const makeChange = (change: HistoryEventChange): void => {
+export const makeChange = <C = unknown>(
+  change: HistoryEventChangeWithAdditionalHandler<C>
+): void => {
   setState(
     produce((s) => {
       s.position += 1
       s.history.splice(s.position, s.position + 1)
-      s.history.push(change)
+      s.history.push(change as HistoryEventChange<unknown>)
       if (historyEvents[change.handler]) {
         historyEvents[change.handler].execute(change)
       }
-      if (change.additionalHandler && change.additionalHandler.execute) {
-        change.additionalHandler.execute(change)
+      if (change.afterExecute) {
+        change.afterExecute(change)
       }
     })
   )
@@ -33,8 +39,8 @@ export const undo = (): void => {
       if (historyEvents[change.handler]) {
         historyEvents[change.handler].undo(change)
       }
-      if (change.additionalHandler && change.additionalHandler.undo) {
-        change.additionalHandler.undo(change)
+      if (change.afterUndo) {
+        change.afterUndo(change)
       }
       u.position -= 1
     })
@@ -50,8 +56,8 @@ export const redo = (): void => {
         if (historyEvents[change.handler]) {
           historyEvents[change.handler].execute(change)
         }
-        if (change.additionalHandler && change.additionalHandler.execute) {
-          change.additionalHandler.execute(change)
+        if (change.afterExecute) {
+          change.afterExecute(change)
         }
       }
     })

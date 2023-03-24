@@ -5,15 +5,11 @@ import { api } from './features/api'
 import ContextMenu from './features/context-menu/ContextMenu'
 import DesignerToolbar from './features/designer/components/DesignerToolbar'
 import { WorkspaceDataProvider } from './features/designer/features/state/WorkspaceDataProvider'
-import { WorkspaceDataHsitoryHandlers } from './features/designer/history-handlers'
-import { registerHistoryEvents } from './features/history'
 import { ShortcutProvider } from './features/keyboard'
 import { routerState } from './features/router'
 import Routes from './features/router/Routes'
 import { workspacesState } from './features/workspaces'
 import { routes } from './kitae.routing'
-
-registerHistoryEvents(WorkspaceDataHsitoryHandlers)
 
 const App: Component = () => {
   return (

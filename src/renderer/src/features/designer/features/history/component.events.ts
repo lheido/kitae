@@ -1,0 +1,150 @@
+import { ComponentData, Path } from '@kitae/shared/types'
+import {
+  HistoryEventChangeWithAdditionalHandler,
+  makeChange,
+  registerHistoryEvents
+} from '@renderer/features/history'
+import { produce } from 'solid-js/store'
+import { useDesignerState } from '../state/designer.state'
+import {
+  insertComponentData,
+  moveComponentData,
+  removeComponentData,
+  replaceComponentData
+} from '../utils/component-data.util'
+
+export enum DesignerComponentBaseHistoryEvents {
+  MOVE_COMPONENT_DATA = 'component:moveComponentData',
+  ADD_COMPONENT_DATA = 'component:addComponentData'
+}
+
+export enum DesignerComponentDeleteHistoryEvents {
+  DELETE_COMPONENT_DATA = 'component:deleteComponentData'
+}
+
+export enum DesignerComponentCreateCustomHistoryEvents {
+  CREATE_CUSTOM_COMPONENT = 'component:createCustomComponent'
+}
+
+const [, { setState }] = useDesignerState()
+
+registerHistoryEvents<Path[], DesignerComponentBaseHistoryEvents>({
+  [DesignerComponentBaseHistoryEvents.MOVE_COMPONENT_DATA]: {
+    execute: ({ path, changes }): void => {
+      setState(
+        produce((state): void => {
+          const to = path.slice(2)
+          const from = changes[1].slice(2)
+          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
+          moveComponentData(to, from, currentPage)
+        })
+      )
+    },
+    undo: ({ path, changes }): void => {
+      setState(
+        produce((state): void => {
+          const to = path.slice(2)
+          const from = changes[1].slice(2)
+          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
+          moveComponentData(from, to, currentPage)
+        })
+      )
+    }
+  },
+  [DesignerComponentBaseHistoryEvents.ADD_COMPONENT_DATA]: {
+    execute: ({ path, changes }): void => {
+      setState(
+        produce((state): void => {
+          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
+          insertComponentData(path.slice(2), currentPage, changes)
+        })
+      )
+    },
+    undo: ({ path }): void => {
+      setState(
+        produce((state): void => {
+          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
+          removeComponentData(path.slice(2), currentPage)
+        })
+      )
+    }
+  }
+})
+
+registerHistoryEvents<ComponentData, DesignerComponentDeleteHistoryEvents>({
+  [DesignerComponentDeleteHistoryEvents.DELETE_COMPONENT_DATA]: {
+    execute: ({ path }): void => {
+      setState(
+        produce((s): void => {
+          const target = path.slice(2)
+          removeComponentData(target, s.data?.[path[0]][path[1]])
+        })
+      )
+    },
+    undo: ({ path, changes }): void => {
+      setState(
+        produce((s): void => {
+          const target = path.slice(2)
+          insertComponentData(target, s.data?.[path[0]][path[1]], changes)
+        })
+      )
+    }
+  }
+})
+
+registerHistoryEvents<ComponentData, DesignerComponentCreateCustomHistoryEvents>({
+  [DesignerComponentCreateCustomHistoryEvents.CREATE_CUSTOM_COMPONENT]: {
+    execute: ({ path, changes }): void => {
+      const customComponentData: ComponentData = {
+        id: crypto.randomUUID(),
+        type: 'custom',
+        // TODO: Initialize with a more useful name
+        name: 'Custom',
+        children: [changes as ComponentData],
+        config: []
+      }
+      setState(
+        produce((s): void => {
+          s.data!.components.push(customComponentData)
+          replaceComponentData(path.slice(2), s.data?.[path[0]][path[1]], {
+            ...customComponentData,
+            children: [],
+            slots: {},
+            ref: customComponentData.id,
+            id: crypto.randomUUID()
+          })
+        })
+      )
+    },
+    undo: ({ path, changes }): void => {
+      setState(
+        produce((s): void => {
+          s.data!.components.pop()
+          replaceComponentData(path.slice(2), s.data?.[path[0]][path[1]], changes)
+        })
+      )
+    }
+  }
+})
+
+export const makeMoveComponentChange = (
+  change: Omit<HistoryEventChangeWithAdditionalHandler<Path[]>, 'handler'>
+): void =>
+  makeChange({ ...change, handler: DesignerComponentBaseHistoryEvents.MOVE_COMPONENT_DATA })
+
+export const makeAddComponentChange = (
+  change: Omit<HistoryEventChangeWithAdditionalHandler<ComponentData>, 'handler'>
+): void => makeChange({ ...change, handler: DesignerComponentBaseHistoryEvents.ADD_COMPONENT_DATA })
+
+export const makeDeleteComponentChange = (
+  change: Omit<HistoryEventChangeWithAdditionalHandler<ComponentData>, 'handler'>
+): void =>
+  makeChange({ ...change, handler: DesignerComponentDeleteHistoryEvents.DELETE_COMPONENT_DATA })
+
+export const makeCreateCustomComponentChange = (
+  change: Omit<HistoryEventChangeWithAdditionalHandler<ComponentData>, 'handler'>
+): void =>
+  makeChange({
+    ...change,
+    handler: DesignerComponentCreateCustomHistoryEvents.CREATE_CUSTOM_COMPONENT
+  })

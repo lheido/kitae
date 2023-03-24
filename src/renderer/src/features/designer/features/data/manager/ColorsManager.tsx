@@ -3,12 +3,10 @@ import Badge from '@renderer/components/Badge'
 import Button from '@renderer/components/Button'
 import AddInput from '@renderer/components/form/AddInput'
 import Icon from '@renderer/components/Icon'
-import { useHistory } from '@renderer/features/history'
 import { Component, createEffect, createMemo, createSignal, For, JSX } from 'solid-js'
+import { makeAddThemeEntryChange } from '../../history/theme.events'
 import { useDesignerState } from '../../state/designer.state'
 import { samePath } from '../../utils/same-path.util'
-import { DesignerHistoryHandlers } from '../../utils/types'
-import './helpers/add-remove-theme-entry'
 
 interface ManagerProps {
   scrollTop: number
@@ -17,7 +15,6 @@ interface ManagerProps {
 
 const ColorsManager: Component<ManagerProps> = (props: ManagerProps) => {
   const [state, { navigate }] = useDesignerState()
-  const [, { makeChange }] = useHistory()
   const isActive = (path: Path): boolean => samePath(state.current, path)
   const path = (color: string): Path =>
     state.theme === 'default'
@@ -46,17 +43,14 @@ const ColorsManager: Component<ManagerProps> = (props: ManagerProps) => {
   const addColor = (name: string): boolean => {
     const path =
       state.theme === 'default' ? ['theme', 'colors'] : ['theme', 'extends', state.theme, 'colors']
-    makeChange({
+    makeAddThemeEntryChange({
       path,
       changes: { name, value: '#000000' },
-      handler: DesignerHistoryHandlers.ADD_THEME_ENTRY,
-      additionalHandler: {
-        execute: (): void => {
-          navigate([...path, name])
-        },
-        undo: (): void => {
-          navigate(path)
-        }
+      afterExecute: (): void => {
+        navigate([...path, name])
+      },
+      afterUndo: (): void => {
+        navigate(path)
       }
     })
     return true

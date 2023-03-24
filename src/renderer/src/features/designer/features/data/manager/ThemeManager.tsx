@@ -1,57 +1,21 @@
 // import { ThemeData } from '@kitae/shared/types'
-import { ThemeExtends } from '@kitae/shared/types'
 import Accordion from '@renderer/components/Accordion'
 import Badge from '@renderer/components/Badge'
 import Button from '@renderer/components/Button'
 import AddInput from '@renderer/components/form/AddInput'
 import Icon from '@renderer/components/Icon'
-import { useHistory } from '@renderer/features/history'
-import { registerHistoryEvents } from '@renderer/features/history/event'
 import { Component, createEffect, createMemo, createSignal, For, JSX, Show } from 'solid-js'
+import {
+  makeAddThemeChange,
+  makeDeleteThemeChange,
+  NewThemeChanges
+} from '../../history/theme.events'
 import { useDesignerState } from '../../state/designer.state'
-import { DesignerHistoryHandlers } from '../../utils/types'
 import { ManagerProps } from './types'
 
-const [state, { navigate, setTheme, updatePath }] = useDesignerState()
-
-interface NewThemeChanges {
-  name: string
-  value: ThemeExtends
-}
-
-registerHistoryEvents({
-  [DesignerHistoryHandlers.ADD_THEME]: {
-    execute: ({ path, changes }): void => {
-      const { name, value } = changes as NewThemeChanges
-      updatePath(path, (current: Record<string, ThemeExtends>) => {
-        current[name] = value
-      })
-    },
-    undo: ({ path, changes }): void => {
-      const { name } = changes as NewThemeChanges
-      updatePath(path, (current: Record<string, ThemeExtends>) => {
-        delete current[name]
-      })
-    }
-  },
-  [DesignerHistoryHandlers.DELETE_THEME]: {
-    execute: ({ path, changes }): void => {
-      const { name } = changes as NewThemeChanges
-      updatePath(path, (current: Record<string, ThemeExtends>) => {
-        delete current[name]
-      })
-    },
-    undo: ({ path, changes }): void => {
-      const { name, value } = changes as NewThemeChanges
-      updatePath(path, (current: Record<string, ThemeExtends>) => {
-        current[name] = value
-      })
-    }
-  }
-})
+const [state, { navigate, setTheme }] = useDesignerState()
 
 const ThemeManager: Component<ManagerProps> = (props: ManagerProps) => {
-  const [, { makeChange }] = useHistory()
   const [pattern, setPattern] = createSignal('[a-zA-Z_-]{1,}')
   const themes = createMemo(() => [
     { name: 'default', path: ['theme'] },
@@ -68,7 +32,7 @@ const ThemeManager: Component<ManagerProps> = (props: ManagerProps) => {
     )
   })
   const addTheme = (name: string): boolean => {
-    makeChange({
+    makeAddThemeChange({
       path: ['theme', 'extends'],
       changes: {
         name,
@@ -79,41 +43,35 @@ const ThemeManager: Component<ManagerProps> = (props: ManagerProps) => {
           spacing: {}
         }
       } as NewThemeChanges,
-      handler: DesignerHistoryHandlers.ADD_THEME,
-      additionalHandler: {
-        execute: (): void => {
-          setTheme(name)
-          navigate(['theme', 'extends', name])
-        },
-        undo: (): void => {
-          setTheme('default')
-          navigate(['theme'])
-        }
+      afterExecute: (): void => {
+        setTheme(name)
+        navigate(['theme', 'extends', name])
+      },
+      afterUndo: (): void => {
+        setTheme('default')
+        navigate(['theme'])
       }
     })
     return true
   }
   const deleteTheme = (theme: string): void => {
     const previous = JSON.parse(JSON.stringify(state.data!.theme.extends![theme]))
-    makeChange({
+    makeDeleteThemeChange({
       path: ['theme', 'extends'],
       changes: {
         name: theme,
         value: previous
       },
-      handler: DesignerHistoryHandlers.DELETE_THEME,
-      additionalHandler: {
-        execute: (): void => {
-          if (state.theme === theme) {
-            setTheme('default')
-            navigate(['theme'])
-          }
-        },
-        undo: (): void => {
-          if (state.theme === 'default') {
-            setTheme(theme)
-            navigate(['theme', 'extends', theme])
-          }
+      afterExecute: (): void => {
+        if (state.theme === theme) {
+          setTheme('default')
+          navigate(['theme'])
+        }
+      },
+      afterUndo: (): void => {
+        if (state.theme === 'default') {
+          setTheme(theme)
+          navigate(['theme', 'extends', theme])
         }
       }
     })

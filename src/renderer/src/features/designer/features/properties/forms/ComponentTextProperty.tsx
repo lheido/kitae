@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentConfig, ComponentData } from '@kitae/shared/types'
+import { ComponentConfig } from '@kitae/shared/types'
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
-import { registerHistoryEvents, useHistory } from '@renderer/features/history'
 import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect, createMemo } from 'solid-js'
+import { makeUpdateTextConfigPropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
-import { DesignerHistoryHandlers, WorkspaceDataState } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
 import { PropertyProps } from './types'
 
@@ -18,31 +17,11 @@ interface ComponentTextPropertyProps extends PropertyProps {
   labelClass?: string
 }
 
-const [state, { updatePath }] = useDesignerState()
-
-registerHistoryEvents({
-  [DesignerHistoryHandlers.UPDATE_TEXT_CONFIG_PROPERTY]: {
-    execute: ({ path, changes }): void => {
-      updatePath(path, (current: ComponentConfig, _, s: WorkspaceDataState): void => {
-        current.data = (changes as [any, any])[1].text
-        const parent = walker(s.data, path.slice(0, -2)) as ComponentData
-        parent.name = current.data as string
-      })
-    },
-    undo: ({ path, changes }): void => {
-      updatePath(path, (current: ComponentConfig, _, s: WorkspaceDataState): void => {
-        current.data = (changes as [any, any])[0].text
-        const parent = walker(s.data, path.slice(0, -2)) as ComponentData
-        parent.name = current.data as string
-      })
-    }
-  }
-})
+const [state] = useDesignerState()
 
 const ComponentTextProperty: Component<ComponentTextPropertyProps> = (
   props: ComponentTextPropertyProps
 ) => {
-  const [, { makeChange }] = useHistory()
   const {
     setForm,
     FormProvider,
@@ -64,10 +43,9 @@ const ComponentTextProperty: Component<ComponentTextPropertyProps> = (
     const previous = JSON.parse(
       JSON.stringify({ text: (walker(state.data, _path) as ComponentConfig)?.data } ?? {})
     )
-    makeChange({
+    makeUpdateTextConfigPropertyChange({
       path: _path,
-      changes: [previous, data],
-      handler: DesignerHistoryHandlers.UPDATE_TEXT_CONFIG_PROPERTY
+      changes: [previous, data]
     })
   }, 250)
   const onSubmit = (form: ComponentTextFormState): void => {

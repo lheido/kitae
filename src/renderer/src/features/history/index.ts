@@ -3,6 +3,8 @@ import { isRedoable, isUndoable, makeChange, redo, reset, state, undo } from './
 import { HistoryActions, HistoryChangesState } from './types'
 
 export * from './event'
+export * from './state'
+export * from './types'
 
 export const undoShortcut = new Shortcut(
   ['Control', 'z'],

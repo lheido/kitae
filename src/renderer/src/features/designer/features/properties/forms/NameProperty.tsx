@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
-import { registerHistoryEvents, useHistory } from '@renderer/features/history'
 import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect } from 'solid-js'
+import { makeUpdateNamePropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
-import { DesignerHistoryHandlers } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
 
 interface NameFormState {
@@ -16,25 +15,9 @@ interface NamePropertyProps {
   labelClass?: string
 }
 
-const [state, { updatePath }] = useDesignerState()
-
-registerHistoryEvents({
-  [DesignerHistoryHandlers.UPDATE_NAME_PROPERTY]: {
-    execute: ({ path, changes }): void => {
-      updatePath(path, (current: any): void => {
-        current.name = (changes as [any, any])[1]
-      })
-    },
-    undo: ({ path, changes }): void => {
-      updatePath(path, (current: any): void => {
-        current.name = (changes as [any, any])[0]
-      })
-    }
-  }
-})
+const [state] = useDesignerState()
 
 const NameProperty: Component<NamePropertyProps> = (props: NamePropertyProps) => {
-  const [, { makeChange }] = useHistory()
   const {
     setForm,
     FormProvider,
@@ -49,10 +32,9 @@ const NameProperty: Component<NamePropertyProps> = (props: NamePropertyProps) =>
   })
   const updateHandler = debounce((data: unknown) => {
     const path = JSON.parse(JSON.stringify(state.current))
-    makeChange({
+    makeUpdateNamePropertyChange({
       path,
-      changes: [(walker(state.data, path) as any).name, data],
-      handler: DesignerHistoryHandlers.UPDATE_NAME_PROPERTY
+      changes: [(walker(state.data, path) as any).name, data]
     })
   }, 250)
   const onSubmit = (form: NameFormState): void => {

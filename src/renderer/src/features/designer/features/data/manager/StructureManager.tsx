@@ -10,8 +10,6 @@ import {
   droppable,
   useDnD
 } from '@renderer/features/drag-n-drop'
-import { useHistory } from '@renderer/features/history'
-import { registerHistoryEvents } from '@renderer/features/history/event'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import {
   Component,
@@ -23,86 +21,23 @@ import {
   Show,
   splitProps
 } from 'solid-js'
-import { produce } from 'solid-js/store'
 import { twMerge } from 'tailwind-merge'
-import { useDesignerState } from '../../state/designer.state'
 import {
-  insertComponentData,
-  moveComponentData,
-  removeComponentData
-} from '../../utils/component-data.util'
+  makeAddComponentChange,
+  makeCreateCustomComponentChange,
+  makeDeleteComponentChange,
+  makeMoveComponentChange
+} from '../../history/component.events'
+import { useDesignerState } from '../../state/designer.state'
 import { samePath } from '../../utils/same-path.util'
 import { getSlots } from '../../utils/slot.util'
-import { DesignerHistoryHandlers } from '../../utils/types'
 import { walker } from '../../utils/walker.util'
-import './helpers/create-custom-component'
 
 !!droppable && false
 !!draggable && false
 !!contextmenu && false
 
-const [state, { navigate, setState }] = useDesignerState()
-
-registerHistoryEvents({
-  [DesignerHistoryHandlers.MOVE_COMPONENT_DATA]: {
-    execute: ({ path, changes }): void => {
-      setState(
-        produce((state): void => {
-          const to = path.slice(2)
-          const from = (changes as Path[])[1].slice(2)
-          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
-          moveComponentData(to, from, currentPage)
-        })
-      )
-    },
-    undo: ({ path, changes }): void => {
-      setState(
-        produce((state): void => {
-          const to = path.slice(2)
-          const from = (changes as Path[])[1].slice(2)
-          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
-          moveComponentData(from, to, currentPage)
-        })
-      )
-    }
-  },
-  [DesignerHistoryHandlers.ADD_COMPONENT_DATA]: {
-    execute: ({ path, changes }): void => {
-      setState(
-        produce((state): void => {
-          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
-          insertComponentData(path.slice(2), currentPage, changes)
-        })
-      )
-    },
-    undo: ({ path }): void => {
-      setState(
-        produce((state): void => {
-          const currentPage = state.data?.[path[0]][path[1]] as ComponentData
-          removeComponentData(path.slice(2), currentPage)
-        })
-      )
-    }
-  },
-  [DesignerHistoryHandlers.DELETE_COMPONENT_DATA]: {
-    execute: ({ path }): void => {
-      setState(
-        produce((s): void => {
-          const target = path.slice(2)
-          removeComponentData(target, s.data?.[path[0]][path[1]])
-        })
-      )
-    },
-    undo: ({ path, changes }): void => {
-      setState(
-        produce((s): void => {
-          const target = path.slice(2)
-          insertComponentData(target, s.data?.[path[0]][path[1]], changes as ComponentData)
-        })
-      )
-    }
-  }
-})
+const [state, { navigate }] = useDesignerState()
 
 interface RecursiveComponentItemProps extends ComponentProps<'button'> {
   path: Path
@@ -132,25 +67,21 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
       dnd.draggable?.id !== component.data.id &&
       component.data.children !== undefined
   )
-  const [, { makeChange }] = useHistory()
   const deleteComponent = (): void => {
     const p: Path = JSON.parse(JSON.stringify(component.path))
     const previous = JSON.parse(JSON.stringify(walker(state.data, p)))
     const isSelected = JSON.parse(JSON.stringify(isActive()))
-    makeChange({
+    makeDeleteComponentChange({
       path: p,
       changes: previous,
-      handler: DesignerHistoryHandlers.DELETE_COMPONENT_DATA,
-      additionalHandler: {
-        execute: (): void => {
-          if (isSelected) {
-            navigate(p.slice(0, -2))
-          }
-        },
-        undo: (): void => {
-          if (isSelected) {
-            navigate(p)
-          }
+      afterExecute: (): void => {
+        if (isSelected) {
+          navigate(p.slice(0, -2))
+        }
+      },
+      afterUndo: (): void => {
+        if (isSelected) {
+          navigate(p)
         }
       }
     })
@@ -158,10 +89,9 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
   const createComponentFromThis = (): void => {
     const p: Path = JSON.parse(JSON.stringify(component.path))
     const componentData = JSON.parse(JSON.stringify(walker(state.data, p)))
-    makeChange({
+    makeCreateCustomComponentChange({
       path: p,
-      changes: componentData,
-      handler: DesignerHistoryHandlers.CREATE_CUSTOM_COMPONENT
+      changes: componentData
     })
   }
   const clickHandler = (): void => {
@@ -313,7 +243,6 @@ const RecursiveComponentItem: Component<RecursiveComponentItemProps> = (
 
 const StructureList: Component = () => {
   let containerRef: HTMLUListElement | undefined
-  const [, { makeChange }] = useHistory()
   const [dnd, , dropped] = useDnD()
   const basePath = createMemo(() => {
     return state?.current?.slice(0, 2) ?? ['pages', 0]
@@ -342,8 +271,7 @@ const StructureList: Component = () => {
             const originalIndex = draggable.path[draggable.path.length - 1]
             const i = sameContainer && index > 0 && originalIndex < index ? index - 1 : index
             newPath[newPath.length - 1] = i
-            makeChange({
-              handler: DesignerHistoryHandlers.MOVE_COMPONENT_DATA,
+            makeMoveComponentChange({
               path: draggable.path,
               changes: [draggable.path, newPath]
             })
@@ -357,8 +285,7 @@ const StructureList: Component = () => {
             } else {
               path.push('children', index)
             }
-            makeChange({
-              handler: DesignerHistoryHandlers.ADD_COMPONENT_DATA,
+            makeAddComponentChange({
               path,
               changes: JSON.parse(JSON.stringify(draggable.data))
             })

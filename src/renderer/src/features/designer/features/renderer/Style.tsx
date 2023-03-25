@@ -14,13 +14,16 @@ const getModifier = (className: string): string => {
 
 const Style: Component = () => {
   const [state] = useDesignerState()
-  const stringStyle = createMemo(() =>
-    Object.entries(renderClasses(state.data!.theme))
-      .map(
-        ([className, content]) =>
-          `.${cleanClassName(className)}${getModifier(className)} { ${content} }`
-      )
-      .join('')
+  const stringStyle = createMemo(
+    () =>
+      (state.data?.theme &&
+        Object.entries(renderClasses(state.data.theme))
+          .map(
+            ([className, content]) =>
+              `.${cleanClassName(className)}${getModifier(className)} { ${content} }`
+          )
+          .join('')) ??
+      ''
   )
   return (
     <style>

@@ -29,6 +29,9 @@ interface PageItemProps extends ComponentProps<'button'> {
 const PageItem: Component<PageItemProps> = (props: PageItemProps) => {
   const [component, button] = splitProps(props, ['page', 'active'])
   const [state, { navigate, setPage }] = useDesignerState()
+  const pageId = createMemo(() => {
+    return state.data?.pages.find((p) => p.id === state.page)?.id ?? ''
+  })
   const deletePage = (): void => {
     const p: Path = JSON.parse(
       JSON.stringify(['pages', state.data!.pages.findIndex((t) => t.id === component.page.id)])
@@ -55,8 +58,24 @@ const PageItem: Component<PageItemProps> = (props: PageItemProps) => {
   }
   return (
     <li class="relative">
-      <Button class="btn-list-item" classList={{ active: component.active }} {...button}>
-        {component.page.name}
+      <Button
+        class="btn-list-item items-center"
+        classList={{ active: component.active }}
+        {...button}
+      >
+        <span class="flex-1 min-w-0 pr-16 text-ellipsis whitespace-nowrap overflow-hidden">
+          {component.page.name}
+        </span>
+        <Show when={component.page.id === pageId()}>
+          <Icon
+            icon="eye"
+            class="absolute top-1/2 -translate-y-1/2 w-3 h-3 opacity-50"
+            classList={{
+              'right-12': state.data!.pages.length > 1,
+              'right-4': state.data!.pages.length === 1
+            }}
+          />
+        </Show>
       </Button>
       <Show when={state.data!.pages.length > 1}>
         <Button
@@ -76,11 +95,14 @@ const PageItem: Component<PageItemProps> = (props: PageItemProps) => {
 
 const PagesManager: Component<ManagerProps> = (props: ManagerProps) => {
   const [state, { navigate, setPage }] = useDesignerState()
-  const pageName = createMemo(() => {
-    return state.data?.pages.find((p) => p.id === state.page)?.name ?? ''
+  const currrentIsPage = createMemo(() => {
+    return state.current[0] === 'pages'
   })
-  const pageId = createMemo(() => {
-    return state.data?.pages.find((p) => p.id === state.page)?.id ?? ''
+  const pageName = createMemo(() => {
+    return (currrentIsPage() && state.data?.pages.find((p) => p.id === state.page)?.name) ?? ''
+  })
+  const currentPageId = createMemo(() => {
+    return state.data?.[state.current[0]][state.current[1]]?.id ?? ''
   })
 
   onMount(() => {
@@ -101,9 +123,9 @@ const PagesManager: Component<ManagerProps> = (props: ManagerProps) => {
       minHeight={82}
       class="bg-base-200 rounded-lg"
       headerSlot={
-        <Show when={state.page}>
+        <Show when={currrentIsPage()}>
           <div class="absolute top-1/2 z-10 -translate-y-1/2 right-8 flex items-center gap-2">
-            <Badge>{pageName()}</Badge>
+            <Badge class="max-w-24">{pageName()}</Badge>
           </div>
         </Show>
       }
@@ -113,7 +135,7 @@ const PagesManager: Component<ManagerProps> = (props: ManagerProps) => {
           {(page): JSX.Element => (
             <PageItem
               page={{ id: page.id, name: page.name }}
-              active={page.id === pageId()}
+              active={page.id === currentPageId()}
               onClick={(): void => {
                 navigate(['pages', state.data!.pages.findIndex((t) => t.id === page.id)])
                 setPage(page.id)

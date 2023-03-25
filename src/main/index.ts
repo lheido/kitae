@@ -32,7 +32,10 @@ function createWindow(): void {
     },
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      additionalArguments: [`--title-bar-overlay-height=${TITLE_BAR_OVERLAY_HEIGHT}`],
+      additionalArguments: [
+        `--title-bar-overlay-height=${TITLE_BAR_OVERLAY_HEIGHT}`,
+        `--is-dev=${is.dev}`
+      ],
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
@@ -57,7 +60,7 @@ function createWindow(): void {
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
     if (is.dev) {
-      mainWindow.webContents.openDevTools({ mode: 'left' })
+      mainWindow.webContents.openDevTools({ mode: 'bottom' })
     }
     if (settings.window?.maximized) {
       mainWindow.maximize()

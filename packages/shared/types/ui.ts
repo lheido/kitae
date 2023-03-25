@@ -4,7 +4,8 @@ import { WorkspaceDataSchema } from './workspace-data'
 
 export const WindowArgumentsKeysSchema = z.union([
   z.literal('title-bar-overlay-height'),
-  z.literal('kitae-preview-url')
+  z.literal('kitae-preview-url'),
+  z.literal('is-dev')
 ])
 
 export type WindowArgumentsKeys = z.infer<typeof WindowArgumentsKeysSchema>

@@ -1,5 +1,6 @@
 import { openLocalWorkspaceHandler } from '@renderer/features/api'
 import { useDesignerState } from '@renderer/features/designer'
+import { useHistory } from '@renderer/features/history'
 import { navigate } from '@renderer/features/router'
 import { openWorkspace, workspacesState } from '@renderer/features/workspaces'
 import { Component, createSignal, onMount, Show } from 'solid-js'
@@ -8,7 +9,8 @@ import Button from './Button'
 import Icon from './Icon'
 
 const WorkspacesMenu: Component = () => {
-  const [, { reset }] = useDesignerState()
+  const [ds, { reset }] = useDesignerState()
+  const [, historyActions] = useHistory()
   const [opened, open] = createSignal(false)
   const [position, setPosition] = createSignal({ x: 0, y: 0 })
   let buttonRef: HTMLButtonElement | undefined
@@ -27,6 +29,7 @@ const WorkspacesMenu: Component = () => {
         onClick={(): void => {
           open((prev) => !prev)
         }}
+        disabled={ds.waitForSave}
       >
         <span class="text-ellipsis whitespace-nowrap overflow-hidden max-w-xs capitalize">
           {workspacesState.currentWorkspace?.name.replaceAll('-', ' ')}
@@ -66,6 +69,7 @@ const WorkspacesMenu: Component = () => {
                     openWorkspace(undefined)
                     reset()
                     navigate('workspaces')
+                    historyActions.reset()
                   }}
                 >
                   <span class="flex-1">Back to workspaces</span>

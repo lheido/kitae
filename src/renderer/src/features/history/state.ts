@@ -65,5 +65,10 @@ export const redo = (): void => {
 }
 
 export const reset = (): void => {
-  setState(initialState)
+  setState(
+    produce((s) => {
+      s.history = []
+      s.position = -1
+    })
+  )
 }

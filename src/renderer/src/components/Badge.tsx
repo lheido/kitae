@@ -9,6 +9,7 @@ const Badge: Component<BadgeProps> = (props: BadgeProps) => {
     <p
       class={twMerge(
         'text-xs px-2 py-0.5 rounded bg-primary bg-opacity-20 select-none',
+        'text-ellipsis whitespace-nowrap overflow-hidden',
         classes.class
       )}
       {...container}

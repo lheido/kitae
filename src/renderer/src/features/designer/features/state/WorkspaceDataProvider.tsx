@@ -52,7 +52,12 @@ export const WorkspaceDataProvider: Component<ProviderProps> = (props: ProviderP
     }
   })
   createEffect((prev) => {
-    if (prev !== undefined && workspacesState.current !== undefined && state.data) {
+    if (
+      prev !== undefined &&
+      historyState.position > -1 &&
+      workspacesState.current !== undefined &&
+      state.data
+    ) {
       saveWorkspaceDataHandler(
         workspacesState.currentWorkspace as Workspace,
         state.data as WorkspaceData

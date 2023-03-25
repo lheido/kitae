@@ -25,3 +25,7 @@ export const moveWorkspaceAtFirst = (id: string): void => {
     api.updateWorkspaces(newArr)
   }
 }
+
+export const isDev = (): boolean => {
+  return api.windowArgs?.['is-dev'] === 'true'
+}

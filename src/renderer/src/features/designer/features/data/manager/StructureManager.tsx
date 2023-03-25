@@ -372,7 +372,7 @@ const StructureManager: Component<StructureManagerProps> = (props: StructureMana
       >
         <Icon icon="structure" class="h-4 w-4 opacity-50" />
         <h1 class="flex-1">Structure</h1>
-        <Badge>{currentStructureName()}</Badge>
+        <Badge class="max-w-24">{currentStructureName()}</Badge>
       </header>
       <OverlayScrollbarsComponent
         defer

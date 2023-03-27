@@ -65,10 +65,11 @@ const WorkspacesMenu: Component = () => {
               <li>
                 <Button
                   class="w-full"
-                  onClick={(): void => {
+                  // eslint-disable-next-line solid/reactivity
+                  onClick={async (): Promise<void> => {
                     openWorkspace(undefined)
                     reset()
-                    navigate('workspaces')
+                    await navigate('workspaces')
                     historyActions.reset()
                   }}
                 >

@@ -9,9 +9,10 @@ export const [routerState, setRouterState] = createStore<RouterState>({
   }
 })
 
-export const navigate = (name: string): void => {
+export const navigate = async (name: string): Promise<void> => {
   const definition = routerState.routes.find((r) => r.name === name)
   if (!definition) throw new Error(`Route definition ${name} not found`)
+  if (definition.resolve) await definition.resolve()
   if (routerState.history[routerState.history.length - 1] === definition) return void 0
   setRouterState('history', [...routerState.history, definition])
 }

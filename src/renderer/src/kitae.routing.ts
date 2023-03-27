@@ -1,3 +1,4 @@
+import { api } from './features/api'
 import { RouteDefinition } from './features/router'
 import Designer from './pages/Designer'
 import Workspaces from './pages/Workspaces'
@@ -9,6 +10,9 @@ export const routes: RouteDefinition[] = [
   },
   {
     name: 'designer',
-    component: Designer
+    component: Designer,
+    resolve: async (): Promise<void> => {
+      await api.getUserSettings()
+    }
   }
 ]

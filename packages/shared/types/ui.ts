@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { UserSettingsSchema } from './electron'
 import { WorkspaceSchema } from './workspace'
 import { WorkspaceDataSchema } from './workspace-data'
 
@@ -16,6 +17,14 @@ export type WindowArgs = z.infer<typeof WindowArgsSchema>
 
 export const UiApiSchema = z.object({
   windowArgs: WindowArgsSchema.optional(),
+  getUserSettings: z
+    .function()
+    .args()
+    .returns(z.promise(z.union([UserSettingsSchema, z.instanceof(Error)]))),
+  setUserSettings: z
+    .function()
+    .args(UserSettingsSchema)
+    .returns(z.promise(z.union([z.boolean(), z.instanceof(Error)]))),
   getWorkspaces: z
     .function()
     .args()

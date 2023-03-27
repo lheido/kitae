@@ -11,6 +11,9 @@ const DEFAULT_SETTINGS = {
     height: 670,
     width: 900,
     maximized: false
+  },
+  user: {
+    useCmdUI: false
   }
 } as Partial<KitaeSettings>
 

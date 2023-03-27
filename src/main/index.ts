@@ -111,6 +111,14 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.handle('get-user-settings', () => {
+  return getSettings()
+})
+
+ipcMain.handle('set-user-settings', (_, settings) => {
+  return updateSettings('user', settings)
+})
+
 ipcMain.handle('get-workspaces', () => {
   return fetchWorkspaces()
 })

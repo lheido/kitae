@@ -24,9 +24,10 @@ const WorkspaceItem: Component<WorkspaceItemProps> = (props: WorkspaceItemProps)
   return (
     <div class="group relative overflow-hidden w-full">
       <Button
-        onClick={(): void => {
+        // eslint-disable-next-line solid/reactivity
+        onClick={async (): Promise<void> => {
           openWorkspace(props.workspace.id)
-          navigate('designer')
+          await navigate('designer')
           moveWorkspaceAtFirst(props.workspace.id)
         }}
         class="btn-secondary bg-base-300 bg-opacity-30 flex-col w-full active:scale-[0.99] gap-1"

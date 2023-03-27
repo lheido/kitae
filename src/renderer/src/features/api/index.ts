@@ -9,7 +9,7 @@ export const openLocalWorkspaceHandler = async (): Promise<void> => {
   if (Array.isArray(result)) {
     await fetchWorkspaces()
     openWorkspace(result[0])
-    navigate('designer')
+    await navigate('designer')
   } else if (typeof result === 'string') {
     // TODO: Display an error toast
     console.error(result)

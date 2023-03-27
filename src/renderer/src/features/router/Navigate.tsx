@@ -16,7 +16,7 @@ export type NavigateProxy = typeof NavigateComponent & {
 
 export const NavigateComponent = (props: NavigateComponentProps): any => {
   const [local, others] = splitProps(props, ['tag', 'to'])
-  const clickHandler = (): void => navigate(local.to)
+  const clickHandler = async (): Promise<void> => navigate(local.to)
   return (
     <Dynamic component={untrack(() => local.tag || 'button')} onClick={clickHandler} {...others} />
   )

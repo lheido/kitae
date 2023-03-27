@@ -17,6 +17,12 @@ const windowArgs: WindowArgs = parser(process.argv) as never
 // Custom APIs for renderer
 const api: UiApi = {
   windowArgs,
+  getUserSettings: () => {
+    return ipcRenderer.invoke('get-user-settings')
+  },
+  setUserSettings: (settings) => {
+    return ipcRenderer.invoke('set-user-settings', settings)
+  },
   getWorkspaces: () => {
     return ipcRenderer.invoke('get-workspaces')
   },

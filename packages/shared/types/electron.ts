@@ -8,8 +8,15 @@ export const WindowSettingsSchema = z.object({
 
 export type WindowSettings = z.infer<typeof WindowSettingsSchema>
 
+export const UserSettingsSchema = z.object({
+  useCmdUI: z.boolean()
+})
+
+export type UserSettings = z.infer<typeof UserSettingsSchema>
+
 export const KitaeSettingsSchema = z.object({
-  window: WindowSettingsSchema
+  window: WindowSettingsSchema,
+  user: UserSettingsSchema
 })
 
 export type KitaeSettings = z.infer<typeof KitaeSettingsSchema>

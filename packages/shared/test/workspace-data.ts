@@ -23,7 +23,7 @@ export const pageComponents: Record<string, ComponentData> = {
   home: {
     id: crypto.randomUUID(),
     name: 'Home',
-    type: 'container',
+    type: 'page',
     config: [],
     children: []
   },
@@ -237,7 +237,22 @@ export const mockWorkspaceDataWithPage: WorkspaceData = {
   ]
 }
 
-export const expectedFirstPageHTML = `<div><header class="bg-primary text-primary-content pl-4 pr-4 pt-4 pb-4"><h1>Hello World</h1></header><main><div><div></div></div></main><footer><span>This is the footer</span></footer></div>`
-
 export const expectedCssClasses =
   '.bg-primary {background-color: hsl(158deg, 64%, 32%)} .text-primary-content {color: hsl(158deg, 64%, 100%)} .pl-4 {padding-left: 16px} .pr-4 {padding-right: 16px} .pt-4 {padding-top: 16px} .pb-4 {padding-bottom: 16px}'
+
+export const expectedFirstPageHTML = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${pageComponents.home.name}</title>
+    <style>${expectedCssClasses}</style>
+  </head>
+  <body>
+    <header class="bg-primary text-primary-content pl-4 pr-4 pt-4 pb-4"><h1>Hello World</h1></header>
+    <main><div><div></div></div></main>
+    <footer><span>This is the footer</span></footer>
+  </body>
+</html>
+`

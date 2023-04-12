@@ -78,8 +78,8 @@ describe('compiler/drivers/html/to-html', () => {
   })
 
   it('should compile the mocked page to html', () => {
-    const compiledHtml = html(mockWorkspaceDataWithPage.pages[0], mockWorkspaceDataWithPage)
-    expect(compiledHtml).toBe(expectedFirstPageHTML)
+    const compiledHtml = html(mockWorkspaceDataWithPage.pages[0], mockWorkspaceDataWithPage, true)
+    expect(compiledHtml).toBe(prettier.format(expectedFirstPageHTML, { parser: 'html' }))
   })
 
   it('should compile the mocked page and use prettier to format the result', () => {

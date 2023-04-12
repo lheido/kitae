@@ -3,10 +3,10 @@ import Badge from '@renderer/components/Badge'
 import Button from '@renderer/components/Button'
 import AddInput from '@renderer/components/form/AddInput'
 import Icon from '@renderer/components/Icon'
+import { samePath } from '@renderer/features/utils/same-path.util'
 import { Component, createEffect, createMemo, createSignal, For, JSX } from 'solid-js'
 import { makeAddThemeEntryChange } from '../../history/theme.events'
 import { useDesignerState } from '../../state/designer.state'
-import { samePath } from '../../utils/same-path.util'
 
 interface ManagerProps {
   scrollTop: number

@@ -35,6 +35,23 @@ export const pageComponents: Record<string, ComponentData> = {
       {
         type: 'semantic',
         data: 'header'
+      },
+      {
+        type: 'padding',
+        data: {
+          left: 4,
+          right: 4,
+          top: 4,
+          bottom: 4
+        }
+      },
+      {
+        type: 'backgroundColor',
+        data: 'primary'
+      },
+      {
+        type: 'color',
+        data: 'primary-content'
       }
     ],
     children: []
@@ -104,7 +121,12 @@ export const pageComponents: Record<string, ComponentData> = {
     id: crypto.randomUUID(),
     name: 'Slot Text',
     type: 'text',
-    config: []
+    config: [
+      {
+        type: 'text',
+        data: 'This is the footer'
+      }
+    ]
   }
 }
 
@@ -214,3 +236,5 @@ export const mockWorkspaceDataWithPage: WorkspaceData = {
     }
   ]
 }
+
+export const expectedFirstPageHTML = `<div><header class="bg-primary text-primary-content pl-4 pr-4 pt-4 pb-4"><h1>Hello World</h1></header><main><div><div></div></div></main><footer><span>This is the footer</span></footer></div>`

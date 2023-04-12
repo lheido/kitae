@@ -1,5 +1,5 @@
 import { ComponentConfig, ComponentData, WorkspaceTheme } from '@kitae/shared/types'
-import { defaultStateProperties } from '@renderer/features/designer/default-properties'
+import { defaultStateProperties } from '../default-properties'
 import {
   PropertyRendererResult,
   registerClassRenderer,
@@ -12,7 +12,7 @@ interface ColorConfig extends ComponentConfig {
   data: string
 }
 
-const colorTypeMap = {
+const colorTypeMap: Record<ColorType, string> = {
   backgroundColor: 'bg',
   color: 'text'
 }

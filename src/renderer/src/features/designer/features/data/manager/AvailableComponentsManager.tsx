@@ -4,10 +4,10 @@ import Icon from '@renderer/components/Icon'
 import { defaultComponents } from '@renderer/features/designer/default-components'
 import { componentTypeIconMap } from '@renderer/features/designer/icon-map'
 import { Draggable, draggable, droppable } from '@renderer/features/drag-n-drop'
-import { Component, createMemo, For, JSX, Show } from 'solid-js'
+import { getSlots } from '@renderer/features/utils/slot.util'
+import { Component, For, JSX, Show, createMemo } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 import { useDesignerState } from '../../state/designer.state'
-import { getSlots } from '../../utils/slot.util'
 import { ManagerProps } from './types'
 
 !!droppable && false

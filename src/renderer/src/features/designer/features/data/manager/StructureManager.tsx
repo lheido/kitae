@@ -4,21 +4,24 @@ import Icon from '@renderer/components/Icon'
 import { contextmenu } from '@renderer/features/context-menu'
 import { componentTypeIconMap } from '@renderer/features/designer/icon-map'
 import {
-  draggable,
-  Draggable,
   DragPlaceholder,
+  Draggable,
+  draggable,
   droppable,
   useDnD
 } from '@renderer/features/drag-n-drop'
+import { samePath } from '@renderer/features/utils/same-path.util'
+import { getSlots } from '@renderer/features/utils/slot.util'
+import { walker } from '@renderer/features/utils/walker.util'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import {
   Component,
   ComponentProps,
-  createEffect,
-  createMemo,
   For,
   JSX,
   Show,
+  createEffect,
+  createMemo,
   splitProps
 } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
@@ -29,9 +32,6 @@ import {
   makeMoveComponentChange
 } from '../../history/component.events'
 import { useDesignerState } from '../../state/designer.state'
-import { samePath } from '../../utils/same-path.util'
-import { getSlots } from '../../utils/slot.util'
-import { walker } from '../../utils/walker.util'
 
 !!droppable && false
 !!draggable && false
@@ -268,7 +268,7 @@ const StructureList: Component = () => {
             const isSamePath = samePath(draggable.path, newPath)
             if (draggable.id === droppable.id || isSamePath) break
             const sameContainer = samePath(draggable.path.slice(0, -2), droppable.path)
-            const originalIndex = draggable.path[draggable.path.length - 1]
+            const originalIndex = draggable.path[draggable.path.length - 1] as number
             const i = sameContainer && index > 0 && originalIndex < index ? index - 1 : index
             newPath[newPath.length - 1] = i
             makeMoveComponentChange({

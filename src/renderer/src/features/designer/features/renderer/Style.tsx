@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { renderClasses } from '@renderer/features/properties'
 import { Component, createMemo, Show } from 'solid-js'
-import { renderClasses } from '../properties/properties-renderer'
 import { useDesignerState } from '../state/designer.state'
 
 const cleanClassName = (className: string): string =>

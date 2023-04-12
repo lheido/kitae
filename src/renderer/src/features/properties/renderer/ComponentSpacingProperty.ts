@@ -1,5 +1,5 @@
 import { ComponentConfig, ComponentData, WorkspaceTheme } from '@kitae/shared/types'
-import { defaultStateProperties } from '@renderer/features/designer/default-properties'
+import { defaultStateProperties } from '../default-properties'
 import {
   PropertyRendererResult,
   registerClassRenderer,

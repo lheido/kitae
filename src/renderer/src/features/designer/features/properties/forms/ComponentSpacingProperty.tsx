@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
-import FormField from '@renderer/components/form/FormField'
 import Icon from '@renderer/components/Icon'
+import FormField from '@renderer/components/form/FormField'
 import { draggable } from '@renderer/features/drag-n-drop'
 import { createForm } from '@renderer/features/form'
+import { walker } from '@renderer/features/utils/walker.util'
 import { debounce } from '@solid-primitives/scheduled'
-import { Component, createEffect, createMemo, Match, Switch } from 'solid-js'
+import { Component, Match, Switch, createEffect, createMemo } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { makeUpdateConfigPropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
-import { walker } from '../../utils/walker.util'
 import { PropertyProps } from './types'
 
 !!draggable && false

@@ -8,5 +8,6 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "conventionalCommits.scopes": ["electron", "ui"]
+  "conventionalCommits.scopes": ["electron", "ui"],
+  "testing.automaticallyOpenPeekView": "never"
 }

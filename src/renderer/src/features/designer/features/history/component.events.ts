@@ -4,16 +4,16 @@ import {
   makeChange,
   registerHistoryEvents
 } from '@renderer/features/history'
-import { produce } from 'solid-js/store'
-import { useDesignerState } from '../state/designer.state'
 import {
   getComponentData,
   insertComponentData,
   moveComponentData,
   removeComponentData,
   replaceComponentData
-} from '../utils/component-data.util'
-import { cleanAndUpdateSlots } from '../utils/slot.util'
+} from '@renderer/features/utils/component-data.util'
+import { cleanAndUpdateSlots } from '@renderer/features/utils/slot.util'
+import { produce } from 'solid-js/store'
+import { useDesignerState } from '../state/designer.state'
 
 export enum DesignerComponentBaseHistoryEvents {
   MOVE_COMPONENT_DATA = 'component:moveComponentData',

@@ -9,10 +9,10 @@ import {
 import { propertyTypeIconMap } from '@renderer/features/designer/icon-map'
 import { labelMap } from '@renderer/features/designer/label-map'
 import { Draggable, draggable, droppable } from '@renderer/features/drag-n-drop'
-import { Component, createMemo, For, JSX } from 'solid-js'
+import { getComponentData } from '@renderer/features/utils/component-data.util'
+import { Component, For, JSX, createMemo } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 import { useDesignerState } from '../../state/designer.state'
-import { getComponentData } from '../../utils/component-data.util'
 import { ManagerProps } from './types'
 
 !!droppable && false

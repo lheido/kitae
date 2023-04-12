@@ -1,11 +1,11 @@
 import { ComponentData } from '@kitae/shared/types'
 import { registerComponent } from '@renderer/features/designer/available-component'
+import { renderProperties } from '@renderer/features/properties'
+import { getConfig } from '@renderer/features/utils/get-config.util'
 import DOMPurify from 'dompurify'
 import { Component, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
-import { renderProperties } from '../../properties/properties-renderer'
 import { useIsSelected } from '../../renderer/helpers'
-import { getConfig } from '../../utils/get-config.util'
 
 type TextProps = { data: ComponentData }
 

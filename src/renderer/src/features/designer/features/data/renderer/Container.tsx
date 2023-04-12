@@ -1,11 +1,11 @@
 import { ComponentData } from '@kitae/shared/types'
 import { registerComponent } from '@renderer/features/designer/available-component'
+import { renderProperties } from '@renderer/features/properties'
+import { getConfig } from '@renderer/features/utils/get-config.util'
 import { Component, createMemo, For, JSX } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
-import { renderProperties } from '../../properties/properties-renderer'
 import Children from '../../renderer/Children'
 import { useIsSelected } from '../../renderer/helpers'
-import { getConfig } from '../../utils/get-config.util'
 
 type ContainerProps = { data: ComponentData }
 

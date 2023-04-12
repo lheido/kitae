@@ -2,12 +2,12 @@
 import ColorPicker from '@renderer/components/form/ColorPicker'
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
+import { walker } from '@renderer/features/utils/walker.util'
 import { debounce } from '@solid-primitives/scheduled'
 import Color from 'color'
 import { Component, createEffect } from 'solid-js'
 import { makeUpdateValuePropertyChange } from '../../history/theme.events'
 import { useDesignerState } from '../../state/designer.state'
-import { walker } from '../../utils/walker.util'
 
 interface ValueFormState {
   value: string

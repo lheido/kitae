@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
+import { walker } from '@renderer/features/utils/walker.util'
 import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect } from 'solid-js'
 import { makeUpdateNamePropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
-import { walker } from '../../utils/walker.util'
 
 interface NameFormState {
   name: string

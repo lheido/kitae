@@ -1,6 +1,0 @@
-template: |
-  <button<%~ include('className', it.props) %>>
-    <%= it.props.children %>
-  </button>
-props:
-  content: string

@@ -1,4 +1,5 @@
 import { ComponentData, Path } from '@kitae/shared/types'
+import { getSlots, samePath, walker } from '@kitae/shared/utils'
 import Badge from '@renderer/components/Badge'
 import Icon from '@renderer/components/Icon'
 import { contextmenu } from '@renderer/features/context-menu'
@@ -10,9 +11,6 @@ import {
   droppable,
   useDnD
 } from '@renderer/features/drag-n-drop'
-import { samePath } from '@renderer/features/utils/same-path.util'
-import { getSlots } from '@renderer/features/utils/slot.util'
-import { walker } from '@renderer/features/utils/walker.util'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import {
   Component,

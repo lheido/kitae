@@ -1,5 +1,5 @@
 import { Path, WorkspaceData } from '@kitae/shared/types'
-import { walker } from '@renderer/features/utils/walker.util'
+import { walker } from '@kitae/shared/utils'
 import { SetStoreFunction, createStore, produce } from 'solid-js/store'
 
 export interface DesignerState {

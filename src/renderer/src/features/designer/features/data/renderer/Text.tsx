@@ -1,7 +1,7 @@
 import { ComponentData } from '@kitae/shared/types'
+import { getConfig } from '@kitae/shared/utils'
 import { registerComponent } from '@renderer/features/designer/available-component'
 import { renderProperties } from '@renderer/features/properties'
-import { getConfig } from '@renderer/features/utils/get-config.util'
 import DOMPurify from 'dompurify'
 import { Component, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'

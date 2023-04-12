@@ -1,7 +1,7 @@
 import { ComponentData } from '@kitae/shared/types'
+import { walker } from '@kitae/shared/utils'
 import Icon from '@renderer/components/Icon'
 import { componentTypeIconMap } from '@renderer/features/designer/icon-map'
-import { walker } from '@renderer/features/utils/walker.util'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import { Component } from 'solid-js'
 import AvailablePropertiesManager from '../../data/manager/AvailablePropertiesManager'

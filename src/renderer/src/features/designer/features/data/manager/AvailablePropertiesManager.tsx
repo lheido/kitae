@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig, ComponentData } from '@kitae/shared/types'
+import { getComponentData } from '@kitae/shared/utils'
 import Accordion from '@renderer/components/Accordion'
 import Icon from '@renderer/components/Icon'
 import {
@@ -9,7 +10,6 @@ import {
 import { propertyTypeIconMap } from '@renderer/features/designer/icon-map'
 import { labelMap } from '@renderer/features/designer/label-map'
 import { Draggable, draggable, droppable } from '@renderer/features/drag-n-drop'
-import { getComponentData } from '@renderer/features/utils/component-data.util'
 import { Component, For, JSX, createMemo } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 import { useDesignerState } from '../../state/designer.state'

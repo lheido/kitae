@@ -1,4 +1,5 @@
 import { ComponentConfig, ComponentData, Path } from '@kitae/shared/types'
+import { samePath, walker } from '@kitae/shared/utils'
 import { defaultStateProperties } from '@renderer/features/designer/default-properties'
 import {
   DragPlaceholder,
@@ -7,8 +8,6 @@ import {
   droppable,
   useDnD
 } from '@renderer/features/drag-n-drop'
-import { samePath } from '@renderer/features/utils/same-path.util'
-import { walker } from '@renderer/features/utils/walker.util'
 import { Component, For, JSX, Match, Show, Switch, createEffect, createMemo } from 'solid-js'
 import { makeAddConfigChange, makeMoveConfigChange } from '../../history/property.events'
 import ComponentColorsProperty from '../../properties/forms/ComponentColorsProperty'

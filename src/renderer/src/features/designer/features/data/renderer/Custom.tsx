@@ -1,7 +1,6 @@
 import { ComponentData } from '@kitae/shared/types'
+import { replaceChildren, replaceSlots } from '@kitae/shared/utils'
 import { registerComponent } from '@renderer/features/designer/available-component'
-import { replaceChildren } from '@renderer/features/utils/children.util'
-import { replaceSlots } from '@renderer/features/utils/slot.util'
 import { Component, createMemo, For, JSX } from 'solid-js'
 import Children from '../../renderer/Children'
 import { useDesignerState } from '../../state/designer.state'

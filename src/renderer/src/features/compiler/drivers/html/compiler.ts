@@ -1,7 +1,6 @@
 import { ComponentData, WorkspaceData } from '@kitae/shared/types'
+import { replaceChildren, replaceSlots } from '@kitae/shared/utils'
 import { renderProperties } from '../../../properties'
-import { replaceChildren } from '../../../utils/children.util'
-import { replaceSlots } from '../../../utils/slot.util'
 
 /**
  * Compile a kitae component into a html entity

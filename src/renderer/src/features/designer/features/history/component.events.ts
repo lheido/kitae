@@ -1,17 +1,17 @@
 import { ComponentData, Path } from '@kitae/shared/types'
 import {
-  HistoryEventChangeWithAdditionalHandler,
-  makeChange,
-  registerHistoryEvents
-} from '@renderer/features/history'
-import {
+  cleanAndUpdateSlots,
   getComponentData,
   insertComponentData,
   moveComponentData,
   removeComponentData,
   replaceComponentData
-} from '@renderer/features/utils/component-data.util'
-import { cleanAndUpdateSlots } from '@renderer/features/utils/slot.util'
+} from '@kitae/shared/utils'
+import {
+  HistoryEventChangeWithAdditionalHandler,
+  makeChange,
+  registerHistoryEvents
+} from '@renderer/features/history'
 import { produce } from 'solid-js/store'
 import { useDesignerState } from '../state/designer.state'
 

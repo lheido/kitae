@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
+import { walker } from '@kitae/shared/utils'
 import Icon from '@renderer/components/Icon'
 import FormField from '@renderer/components/form/FormField'
 import { draggable } from '@renderer/features/drag-n-drop'
 import { createForm } from '@renderer/features/form'
-import { walker } from '@renderer/features/utils/walker.util'
 import { debounce } from '@solid-primitives/scheduled'
 import { Component, Match, Switch, createEffect, createMemo } from 'solid-js'
 import { createStore } from 'solid-js/store'

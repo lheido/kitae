@@ -1,8 +1,8 @@
+import { walker } from '@kitae/shared/utils'
 import Accordion from '@renderer/components/Accordion'
 import Badge from '@renderer/components/Badge'
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
-import { walker } from '@renderer/features/utils/walker.util'
 import { ComponentData, Path } from 'packages/shared/types'
 import {
   Component,

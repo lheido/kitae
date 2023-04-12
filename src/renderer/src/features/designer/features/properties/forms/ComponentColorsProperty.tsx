@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
+import { walker } from '@kitae/shared/utils'
 import { labelMap } from '@renderer/features/designer/label-map'
 import { draggable } from '@renderer/features/drag-n-drop'
 import { createForm } from '@renderer/features/form'
-import { walker } from '@renderer/features/utils/walker.util'
 import { debounce } from '@solid-primitives/scheduled'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
 import { Component, For, JSX, createEffect, createMemo } from 'solid-js'

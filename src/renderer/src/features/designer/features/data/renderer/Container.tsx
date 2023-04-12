@@ -1,7 +1,7 @@
 import { ComponentData } from '@kitae/shared/types'
+import { getConfig } from '@kitae/shared/utils'
 import { registerComponent } from '@renderer/features/designer/available-component'
 import { renderProperties } from '@renderer/features/properties'
-import { getConfig } from '@renderer/features/utils/get-config.util'
 import { Component, createMemo, For, JSX } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import Children from '../../renderer/Children'

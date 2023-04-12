@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { walker } from '@kitae/shared/utils'
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
-import { walker } from '@renderer/features/utils/walker.util'
 import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect } from 'solid-js'
 import { makeUpdateValuePropertyChange } from '../../history/theme.events'

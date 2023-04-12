@@ -97,9 +97,12 @@ importers:
 
   packages/compiler:
     specifiers:
+      '@types/prettier': ^2.7.2
       prettier: ^2.8.7
     dependencies:
       prettier: 2.8.7
+    devDependencies:
+      '@types/prettier': 2.7.2
 
   packages/local-backend:
     specifiers:
@@ -1171,6 +1174,10 @@ packages:
       xmlbuilder: 15.1.1
     dev: true
     optional: true
+
+  /@types/prettier/2.7.2:
+    resolution: {integrity: sha512-KufADq8uQqo1pYKVIYzfKbJfBAc0sOeXqGbFaSpv8MRmC/zXgowNZmFcbngndGk922QDmOASEXUZCaY48gs4cg==}
+    dev: true
 
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}

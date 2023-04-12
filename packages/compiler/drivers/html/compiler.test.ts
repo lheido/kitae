@@ -5,8 +5,9 @@ import {
   mockWorkspaceDataWithPage
 } from '@kitae/shared/test'
 import { ComponentData } from '@kitae/shared/types'
+import prettier from 'prettier'
 import { describe, expect, it } from 'vitest'
-import toHtml, { style } from './compiler'
+import { html, style } from './compiler'
 
 describe('compiler/drivers/html/to-html', () => {
   it('should compile a kitae component into a html entity', () => {
@@ -22,8 +23,8 @@ describe('compiler/drivers/html/to-html', () => {
       name: 'test',
       id: '1test'
     }
-    const html = toHtml(data, mockWorkspaceData)
-    expect(html).toBe('<div></div>')
+    const compiledHtml = html(data, mockWorkspaceData)
+    expect(compiledHtml).toBe('<div></div>')
   })
 
   it('should compile a kitae component with children into a html entity', () => {
@@ -52,8 +53,8 @@ describe('compiler/drivers/html/to-html', () => {
       name: '1test',
       id: '1test'
     }
-    const html = toHtml(data, mockWorkspaceData)
-    expect(html).toBe('<div><p></p></div>')
+    const compiledHtml = html(data, mockWorkspaceData)
+    expect(compiledHtml).toBe('<div><p></p></div>')
   })
 
   it('should compile including css classes', () => {
@@ -72,19 +73,29 @@ describe('compiler/drivers/html/to-html', () => {
         }
       ]
     }
-    const html = toHtml(data, mockWorkspaceData)
-    expect(html).toBe('<div class="bg-primary text-primary-content"></div>')
+    const compiledHtml = html(data, mockWorkspaceData)
+    expect(compiledHtml).toBe('<div class="bg-primary text-primary-content"></div>')
   })
 
   it('should compile the mocked page to html', () => {
-    const html = toHtml(mockWorkspaceDataWithPage.pages[0], mockWorkspaceDataWithPage)
-    expect(html).toBe(expectedFirstPageHTML)
+    const compiledHtml = html(mockWorkspaceDataWithPage.pages[0], mockWorkspaceDataWithPage)
+    expect(compiledHtml).toBe(expectedFirstPageHTML)
+  })
+
+  it('should compile the mocked page and use prettier to format the result', () => {
+    const compiledHtml = html(mockWorkspaceDataWithPage.pages[0], mockWorkspaceDataWithPage, true)
+    expect(compiledHtml).toBe(prettier.format(expectedFirstPageHTML, { parser: 'html' }))
   })
 })
 
 describe('compiler/drivers/html/style', () => {
   it('should return the css classes as a string according to the workspace', () => {
-    const renderedStyle = style(mockWorkspaceDataWithPage)
+    const renderedStyle = style(mockWorkspaceDataWithPage, true)
     expect(renderedStyle).toBe(expectedCssClasses)
+  })
+
+  it('should return the css classes as a string according to the workspace and use prettier to format the result', () => {
+    const renderedStyle = style(mockWorkspaceDataWithPage, true, true)
+    expect(renderedStyle).toBe(prettier.format(expectedCssClasses, { parser: 'css' }))
   })
 })

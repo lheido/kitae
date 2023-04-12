@@ -1,18 +1,19 @@
 import { ComponentConfig, ComponentData, WorkspaceData } from '@kitae/shared/types'
 import { replaceChildren, replaceSlots, walkComponentData } from '@kitae/shared/utils'
+import prettier from 'prettier'
 import { renderClasses, renderProperties } from '../../properties'
 
 /**
  * Compile a kitae component into a html entity
  */
-export default function toHtml(data: ComponentData, workspace: WorkspaceData): string {
+export function html(data: ComponentData, workspace: WorkspaceData, usePrettier = false): string {
   let tagName: string | undefined
   let children = ''
   switch (data.type) {
     case 'container': {
       const semantic = data.config?.find((c) => c.type === 'semantic')
       tagName = (semantic?.data as string) ?? 'div'
-      children = data.children?.map((c) => toHtml(c, workspace)).join('') ?? ''
+      children = data.children?.map((c) => html(c, workspace)).join('') ?? ''
       break
     }
 
@@ -28,7 +29,7 @@ export default function toHtml(data: ComponentData, workspace: WorkspaceData): s
       if (component) {
         replaceChildren(data, component)
         const tree = replaceSlots(data, component)
-        children = tree.children?.map((c) => toHtml(c, workspace)).join('') ?? ''
+        children = tree.children?.map((c) => html(c, workspace)).join('') ?? ''
       }
       break
     }
@@ -42,13 +43,14 @@ export default function toHtml(data: ComponentData, workspace: WorkspaceData): s
       }
       return acc
     }, [] as string[])
-    return `<${tagName}${attributes.join('')}>${children}</${tagName}>`
+    const result = `<${tagName}${attributes.join('')}>${children}</${tagName}>`
+    return usePrettier ? prettier.format(result, { parser: 'html' }) : result
   } else {
-    return children
+    return usePrettier ? prettier.format(children, { parser: 'html' }) : children
   }
 }
 
-export function style(workspace: WorkspaceData, useFilters = true): string {
+export function style(workspace: WorkspaceData, useFilters = true, usePrettier = false): string {
   const configs: ComponentConfig[] = []
   if (useFilters) {
     workspace.components.forEach((component) => {
@@ -66,11 +68,12 @@ export function style(workspace: WorkspaceData, useFilters = true): string {
     workspace.theme,
     useFilters && Object.keys(renderProperties(configs).class)
   )
-  return Object.entries(cssClasses)
+  const result = Object.entries(cssClasses)
     .reduce((acc, [key, value]) => {
       acc.push(` .${key} {${value}}`)
       return acc
     }, [] as string[])
     .join('')
     .trim()
+  return usePrettier ? prettier.format(result, { parser: 'css' }) : result
 }

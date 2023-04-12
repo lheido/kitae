@@ -1,3 +1,3 @@
 import './features/data/renderer'
 
-export * from '@renderer/features/properties/default-properties'
+export * from '@kitae/compiler/properties/default-properties'

@@ -29,6 +29,7 @@
     "@electron-toolkit/utils": "^1.0.2",
     "@kitae/local-backend": "workspace:*",
     "@kitae/shared": "workspace:*",
+    "@kitae/compiler": "workspace:*",
     "@motionone/solid": "^10.15.5",
     "@solid-primitives/keyboard": "^1.0.6",
     "@solid-primitives/resize-observer": "^2.0.9",

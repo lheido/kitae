@@ -1,9 +1,5 @@
-import {
-  customComponentSlotId,
-  mockWorkspaceDataWithPage,
-  pageComponents
-} from '@kitae/shared/test'
 import { describe, expect, it } from 'vitest'
+import { customComponentSlotId, mockWorkspaceDataWithPage, pageComponents } from '../test'
 import {
   getComponentData,
   insertComponentData,

@@ -1,6 +1,6 @@
+import { renderProperties } from '@kitae/compiler/properties'
 import { ComponentData } from '@kitae/shared/types'
 import { registerComponent } from '@renderer/features/designer/available-component'
-import { renderProperties } from '@renderer/features/properties'
 import { Component, createMemo, For, JSX } from 'solid-js'
 import Children from '../../renderer/Children'
 import { useIsSelected } from '../../renderer/helpers'

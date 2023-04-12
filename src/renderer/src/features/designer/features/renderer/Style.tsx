@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { renderClasses } from '@renderer/features/properties'
+import { renderClasses } from '@kitae/compiler/properties'
 import { Component, createMemo, Show } from 'solid-js'
 import { useDesignerState } from '../state/designer.state'
 

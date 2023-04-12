@@ -8,7 +8,12 @@ export interface ChildrenProps {
 }
 
 const Children: Component<ChildrenProps> = (props: ChildrenProps) => {
-  return <Dynamic component={getComponent(props.data?.type)} data={props.data} />
+  return (
+    <Dynamic
+      component={getComponent(props.data?.type === 'page' ? 'container' : props.data?.type)}
+      data={props.data}
+    />
+  )
 }
 
 export default Children

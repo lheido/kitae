@@ -18,6 +18,7 @@ export function html(data: ComponentData, workspace: WorkspaceData, usePrettier 
 
 export function style(workspace: WorkspaceData, useFilters = true, usePrettier = false): string {
   const configs: ComponentConfig[] = []
+  // Take into account filters according to page index (include merged components)
   if (useFilters) {
     workspace.components.forEach((component) => {
       walkComponentData(component, (data) => {

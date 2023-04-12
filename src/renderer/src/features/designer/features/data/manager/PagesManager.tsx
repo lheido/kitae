@@ -150,7 +150,7 @@ const PagesManager: Component<ManagerProps> = (props: ManagerProps) => {
               const changes: ComponentData = {
                 id: crypto.randomUUID(),
                 name: `New page`,
-                type: 'container',
+                type: 'page',
                 children: []
               }
               makeAddPageChange({

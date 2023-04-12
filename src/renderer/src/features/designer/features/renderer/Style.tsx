@@ -17,7 +17,7 @@ const Style: Component = () => {
   const stringStyle = createMemo(
     () =>
       (state.data?.theme &&
-        Object.entries(renderClasses(state.data.theme))
+        Object.entries(renderClasses(state.data.theme, false))
           .map(
             ([className, content]) =>
               `.${cleanClassName(className)}${getModifier(className)} { ${content} }`

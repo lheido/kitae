@@ -9,7 +9,9 @@ type ButtonProps = { data: ComponentData }
 
 const Button: Component<ButtonProps> = (props: ButtonProps) => {
   const isSelected = useIsSelected()
-  const style = createMemo(() => renderProperties(JSON.parse(JSON.stringify(props.data))))
+  const style = createMemo(() =>
+    renderProperties(JSON.parse(JSON.stringify(props.data.config ?? [])))
+  )
   return (
     <button
       id={props.data.id}

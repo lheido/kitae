@@ -5,42 +5,31 @@ import '../renderer'
 describe('properties/renderer/spacing', () => {
   describe('renderProperties', () => {
     it('should return object with an empty class property object if no config', () => {
-      expect(
-        renderProperties({
-          id: '1',
-          name: 'test',
-          type: 'container'
-        })
-      ).toEqual({ class: {} })
+      expect(renderProperties([])).toEqual({ class: {} })
     })
 
     it('should return an object with the class property if a color config is found', () => {
       expect(
-        renderProperties({
-          id: '1',
-          name: 'test',
-          type: 'container',
-          config: [
-            {
-              type: 'padding',
-              data: {
-                left: '4',
-                right: '4',
-                top: '4',
-                bottom: '4'
-              }
-            },
-            {
-              type: 'margin',
-              data: {
-                left: '4',
-                right: '4',
-                top: '4',
-                bottom: '4'
-              }
+        renderProperties([
+          {
+            type: 'padding',
+            data: {
+              left: '4',
+              right: '4',
+              top: '4',
+              bottom: '4'
             }
-          ]
-        })
+          },
+          {
+            type: 'margin',
+            data: {
+              left: '4',
+              right: '4',
+              top: '4',
+              bottom: '4'
+            }
+          }
+        ])
       ).toEqual({
         class: {
           'pl-4': true,
@@ -57,12 +46,15 @@ describe('properties/renderer/spacing', () => {
   })
   describe('renderClass', () => {
     it('should return an object with the the compiled class name as key and the css as value', () => {
-      const result = renderClasses({
-        colors: {},
-        fontFamilies: {},
-        rounded: {},
-        spacing: { 4: '1rem' }
-      })
+      const result = renderClasses(
+        {
+          colors: {},
+          fontFamilies: {},
+          rounded: {},
+          spacing: { 4: '1rem' }
+        },
+        false
+      )
       expect('pl-4' in result).toBeTruthy()
       expect(result['pl-4'] === 'padding-left: 1rem').toBeTruthy()
       expect('pr-4' in result).toBeTruthy()

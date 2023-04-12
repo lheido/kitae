@@ -11,7 +11,9 @@ type ContainerProps = { data: ComponentData }
 
 const Container: Component<ContainerProps> = (props: ContainerProps) => {
   const isSelected = useIsSelected()
-  const style = createMemo(() => renderProperties(JSON.parse(JSON.stringify(props.data))))
+  const style = createMemo(() =>
+    renderProperties(JSON.parse(JSON.stringify(props.data.config ?? [])))
+  )
   return (
     <Dynamic
       component={(getConfig(props.data.config!, 'semantic')?.data as string) ?? 'div'}

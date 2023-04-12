@@ -1,6 +1,6 @@
-import { ComponentData, WorkspaceData } from '@kitae/shared/types'
-import { replaceChildren, replaceSlots } from '@kitae/shared/utils'
-import { renderProperties } from '../../properties'
+import { ComponentConfig, ComponentData, WorkspaceData } from '@kitae/shared/types'
+import { replaceChildren, replaceSlots, walkComponentData } from '@kitae/shared/utils'
+import { renderClasses, renderProperties } from '../../properties'
 
 /**
  * Compile a kitae component into a html entity
@@ -34,7 +34,7 @@ export default function toHtml(data: ComponentData, workspace: WorkspaceData): s
     }
   }
   if (tagName !== undefined) {
-    const style = renderProperties(data)
+    const style = renderProperties(data.config)
     const attributes = Object.entries(style).reduce((acc, [key, value]) => {
       const concatenedValues = Object.keys(value).join(' ')
       if (concatenedValues) {
@@ -46,4 +46,31 @@ export default function toHtml(data: ComponentData, workspace: WorkspaceData): s
   } else {
     return children
   }
+}
+
+export function style(workspace: WorkspaceData, useFilters = true): string {
+  const configs: ComponentConfig[] = []
+  if (useFilters) {
+    workspace.components.forEach((component) => {
+      walkComponentData(component, (data) => {
+        configs.push(...(data.config ?? []))
+      })
+    })
+    workspace.pages.forEach((page) => {
+      walkComponentData(page, (data) => {
+        configs.push(...(data.config ?? []))
+      })
+    })
+  }
+  const cssClasses = renderClasses(
+    workspace.theme,
+    useFilters && Object.keys(renderProperties(configs).class)
+  )
+  return Object.entries(cssClasses)
+    .reduce((acc, [key, value]) => {
+      acc.push(` .${key} {${value}}`)
+      return acc
+    }, [] as string[])
+    .join('')
+    .trim()
 }

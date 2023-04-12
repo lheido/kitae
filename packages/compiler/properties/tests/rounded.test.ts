@@ -5,33 +5,22 @@ import '../renderer'
 describe('properties/renderer/rounded', () => {
   describe('renderProperties', () => {
     it('should return object with an empty class property object if no config', () => {
-      expect(
-        renderProperties({
-          id: '1',
-          name: 'test',
-          type: 'container'
-        })
-      ).toEqual({ class: {} })
+      expect(renderProperties([])).toEqual({ class: {} })
     })
 
     it('should return an object with the class property if a color config is found', () => {
       expect(
-        renderProperties({
-          id: '1',
-          name: 'test',
-          type: 'container',
-          config: [
-            {
-              type: 'rounded',
-              data: {
-                tl: 'sm',
-                tr: 'sm',
-                bl: 'sm',
-                br: 'sm'
-              }
+        renderProperties([
+          {
+            type: 'rounded',
+            data: {
+              tl: 'sm',
+              tr: 'sm',
+              bl: 'sm',
+              br: 'sm'
             }
-          ]
-        })
+          }
+        ])
       ).toEqual({
         class: {
           'rounded-tl-sm': true,
@@ -44,12 +33,15 @@ describe('properties/renderer/rounded', () => {
   })
   describe('renderClass', () => {
     it('should return an object with the the compiled class name as key and the css as value', () => {
-      const result = renderClasses({
-        colors: {},
-        fontFamilies: {},
-        rounded: { sm: '0.125rem' },
-        spacing: {}
-      })
+      const result = renderClasses(
+        {
+          colors: {},
+          fontFamilies: {},
+          rounded: { sm: '0.125rem' },
+          spacing: {}
+        },
+        false
+      )
       expect('rounded-tl-sm' in result).toBeTruthy()
       expect(result['rounded-tl-sm'] === 'border-top-left-radius: 0.125rem').toBeTruthy()
       expect('rounded-tr-sm' in result).toBeTruthy()

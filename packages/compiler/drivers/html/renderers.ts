@@ -1,13 +1,7 @@
-import { ComponentData, WorkspaceData } from '@kitae/shared/types'
+import { ComponentData } from '@kitae/shared/types'
 import { replaceChildren, replaceSlots } from '@kitae/shared/utils'
-import { renderProperties } from '../../../properties'
-
-export type rendererFunc = (
-  data: ComponentData,
-  workspace: WorkspaceData,
-  render: (component: ComponentData, workspace: WorkspaceData) => string,
-  style: (workspace: WorkspaceData, useFilters: boolean) => string
-) => string
+import { renderProperties } from '../../properties'
+import { RendererFunc } from '../types'
 
 export function getAttributes(data: ComponentData): string {
   const style = renderProperties(data.config)
@@ -21,7 +15,7 @@ export function getAttributes(data: ComponentData): string {
   return attributes.join(' ')
 }
 
-export const htmlRenderer: Record<string, rendererFunc> = {
+export const htmlRenderers: Record<string, RendererFunc> = {
   container: (data, workspace, render): string => {
     const semantic = data.config?.find((c) => c.type === 'semantic')
     const tagName = (semantic?.data as string) ?? 'div'

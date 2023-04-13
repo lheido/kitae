@@ -1,17 +1,17 @@
 import { ComponentConfig, ComponentData, WorkspaceData } from '@kitae/shared/types'
 import { walkComponentData } from '@kitae/shared/utils'
-import prettier from 'prettier'
+import { format } from 'prettier'
 import { renderClasses, renderProperties } from '../../properties'
-import { htmlRenderer } from './components'
+import { htmlRenderers } from './renderers'
 
 /**
  * Compile a kitae component into a html entity
  */
 export function html(data: ComponentData, workspace: WorkspaceData, usePrettier = false): string {
-  const renderer = htmlRenderer[data.type]
+  const renderer = htmlRenderers[data.type]
   if (renderer) {
     const result = renderer(data, workspace, html, style)
-    return usePrettier ? prettier.format(result, { parser: 'html' }) : result
+    return usePrettier ? format(result, { parser: 'html' }) : result
   }
   return ''
 }
@@ -42,5 +42,5 @@ export function style(workspace: WorkspaceData, useFilters = true, usePrettier =
     }, [] as string[])
     .join('')
     .trim()
-  return usePrettier ? prettier.format(result, { parser: 'css' }) : result
+  return usePrettier ? format(result, { parser: 'css' }) : result
 }

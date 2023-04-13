@@ -47,10 +47,33 @@ export const ExtendedComponentDataSchema: z.ZodType<ComponentData> = ComponentDa
   slots: z.record(z.lazy(() => ComponentDataSchema.array()))
 })
 
+const WorkspaceDriversSchema = z.enum(['astro' /*'solid', 'design-system'*/])
+
 export const WorkspaceDataSchema = z.object({
   components: z.array(ExtendedComponentDataSchema),
   pages: z.array(ExtendedComponentDataSchema),
-  theme: ExtendableWorkspaceThemeSchema
+  theme: ExtendableWorkspaceThemeSchema,
+  driver: WorkspaceDriversSchema
 })
 
+export type WorkspaceDrivers = z.infer<typeof WorkspaceDriversSchema>
+
 export type WorkspaceData = z.infer<typeof WorkspaceDataSchema>
+
+export const WorkspaceDriverResultSchema = z.object({
+  components: z.record(z.string()),
+  pages: z.record(z.string())
+})
+
+export type WorkspaceDriverResult = z.infer<typeof WorkspaceDriverResultSchema>
+
+export const WorkspaceDriverSchema = z.object({
+  compile: z.function().args(WorkspaceDataSchema).returns(z.promise(WorkspaceDriverResultSchema)),
+  compileAndWritesFiles: z
+    .function()
+    .args(z.string(), WorkspaceDataSchema)
+    .returns(z.promise(z.boolean()))
+  // initWorkspace: z.function().args(WorkspaceDataSchema).returns(z.promise(z.boolean()))
+})
+
+export type WorkspaceDriver = z.infer<typeof WorkspaceDriverSchema>

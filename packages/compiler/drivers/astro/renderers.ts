@@ -27,7 +27,13 @@ export const astroRenderers: Record<string, RendererFunc> = {
   text: (data, workspace, render, style) => {
     return htmlRenderers.text(data, workspace, render, style)
   },
-  page: (data, workspace, render, style) => {
-    return astroRenderers.custom(data, workspace, render, style)
+  page: (data, workspace, render) => {
+    return `---
+import HtmlLayout from '../layouts/HtmlLayout.astro'
+---
+<HtmlLayout title="${data.name}">
+  ${data.children?.map((c) => render(c, workspace)).join('') ?? ''}
+</HtmlLayout>
+`
   }
 }

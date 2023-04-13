@@ -1,5 +1,6 @@
 import { Backend } from '@kitae/shared/backend'
 import { defaultWorkspaceData } from '@kitae/shared/default/workspace'
+import drivers from '@kitae/shared/drivers'
 import { LocalBackendSettings, WorkspaceData } from '@kitae/shared/types'
 import { constants, promises as fs } from 'fs'
 import { join } from 'path'
@@ -28,5 +29,9 @@ export class LocalBackend extends Backend {
     } catch (error) {
       return error as Error
     }
+  }
+
+  async compileAndWritesFiles(workspace: WorkspaceData): Promise<boolean | Error> {
+    return drivers.compileAndWritesFiles(this.settings.path, workspace)
   }
 }

@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
-    "@kitae/shared": "workspace:*"
+    "@kitae/shared": "workspace:*",
+    "@kitae/compiler": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^4.9.4",

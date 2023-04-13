@@ -6,11 +6,12 @@ import { WorkspaceData } from '../../types'
 
 export const defaultWorkspaceData: WorkspaceData = {
   components: [],
+  driver: 'astro',
   pages: [
     {
       id: crypto.randomUUID(),
-      name: 'Home',
-      type: 'container',
+      name: 'index',
+      type: 'page',
       config: [],
       children: [
         {

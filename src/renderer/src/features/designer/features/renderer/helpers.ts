@@ -1,6 +1,6 @@
 import { ComponentData } from '@kitae/shared/types'
+import { walker } from '@kitae/shared/utils'
 import { useDesignerState } from '../state/designer.state'
-import { walker } from '../utils/walker.util'
 
 export const useIsSelected = (): ((id: string) => boolean) => {
   const [state] = useDesignerState()

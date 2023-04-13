@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { walker } from '@kitae/shared/utils'
 import ColorPicker from '@renderer/components/form/ColorPicker'
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
@@ -7,7 +8,6 @@ import Color from 'color'
 import { Component, createEffect } from 'solid-js'
 import { makeUpdateValuePropertyChange } from '../../history/theme.events'
 import { useDesignerState } from '../../state/designer.state'
-import { walker } from '../../utils/walker.util'
 
 interface ValueFormState {
   value: string

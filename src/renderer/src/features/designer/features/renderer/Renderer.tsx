@@ -19,22 +19,7 @@ declare module 'solid-js' {
 }
 
 const Renderer: Component = () => {
-  const [state] = useDesignerState()
-  const page = createMemo((): ComponentData | undefined => {
-    return state.data?.pages.find((p) => p.id === state.page) ?? undefined
-  })
-  return (
-    <Show
-      when={state.data && state.data.pages.length > 0 && page()}
-      fallback={
-        <Toast type="info" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          Select a page to see something here
-        </Toast>
-      }
-    >
-      <kitae-renderer />
-    </Show>
-  )
+  return <kitae-renderer />
 }
 
 export default Renderer
@@ -42,13 +27,20 @@ export default Renderer
 customElement('kitae-renderer', () => {
   const [state] = useDesignerState()
   const page = createMemo((): ComponentData | undefined => {
-    return state.data?.pages.find((p) => p.id === state.page) ?? undefined
+    return state.data?.pages.find((p) => p.id === state.page) ?? state.data?.pages[0] ?? undefined
   })
   return (
-    <>
+    <Show
+      when={page !== undefined}
+      fallback={
+        <Toast type="info" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          Select a page to see something here
+        </Toast>
+      }
+    >
       <style>{rendererCSS}</style>
       <Style />
       <Children data={page() as ComponentData} />
-    </>
+    </Show>
   )
 })

@@ -1,19 +1,19 @@
 import { ComponentData, Path } from '@kitae/shared/types'
 import {
+  cleanAndUpdateSlots,
+  getComponentData,
+  insertComponentData,
+  moveComponentData,
+  removeComponentData,
+  replaceComponentData
+} from '@kitae/shared/utils'
+import {
   HistoryEventChangeWithAdditionalHandler,
   makeChange,
   registerHistoryEvents
 } from '@renderer/features/history'
 import { produce } from 'solid-js/store'
 import { useDesignerState } from '../state/designer.state'
-import {
-  getComponentData,
-  insertComponentData,
-  moveComponentData,
-  removeComponentData,
-  replaceComponentData
-} from '../utils/component-data.util'
-import { cleanAndUpdateSlots } from '../utils/slot.util'
 
 export enum DesignerComponentBaseHistoryEvents {
   MOVE_COMPONENT_DATA = 'component:moveComponentData',

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig } from '@kitae/shared/types'
+import { walker } from '@kitae/shared/utils'
 import FormField from '@renderer/components/form/FormField'
 import { createForm } from '@renderer/features/form'
 import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { makeUpdateTextConfigPropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
-import { walker } from '../../utils/walker.util'
 import { PropertyProps } from './types'
 
 interface ComponentTextFormState {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { renderClasses } from '@kitae/compiler/properties'
 import { Component, createMemo, Show } from 'solid-js'
-import { renderClasses } from '../properties/properties-renderer'
 import { useDesignerState } from '../state/designer.state'
 
 const cleanClassName = (className: string): string =>
@@ -17,7 +17,7 @@ const Style: Component = () => {
   const stringStyle = createMemo(
     () =>
       (state.data?.theme &&
-        Object.entries(renderClasses(state.data.theme))
+        Object.entries(renderClasses(state.data.theme, false))
           .map(
             ([className, content]) =>
               `.${cleanClassName(className)}${getModifier(className)} { ${content} }`

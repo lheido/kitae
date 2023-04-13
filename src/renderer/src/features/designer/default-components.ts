@@ -1,6 +1,5 @@
 import { ComponentData } from '@kitae/shared/types'
 import './features/data/renderer'
-import './features/properties/renderer'
 
 export const defaultComponents: Partial<ComponentData>[] = [
   {

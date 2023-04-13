@@ -1,17 +1,19 @@
+import { renderProperties } from '@kitae/compiler/properties'
 import { ComponentData } from '@kitae/shared/types'
+import { getConfig } from '@kitae/shared/utils'
 import { registerComponent } from '@renderer/features/designer/available-component'
 import DOMPurify from 'dompurify'
 import { Component, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
-import { renderProperties } from '../../properties/properties-renderer'
 import { useIsSelected } from '../../renderer/helpers'
-import { getConfig } from '../../utils/get-config.util'
 
 type TextProps = { data: ComponentData }
 
 const Text: Component<TextProps> = (props: TextProps) => {
   const isSelected = useIsSelected()
-  const style = createMemo(() => renderProperties(JSON.parse(JSON.stringify(props.data))))
+  const style = createMemo(() =>
+    renderProperties(JSON.parse(JSON.stringify(props.data.config ?? [])))
+  )
   return (
     <Dynamic
       component={(getConfig(props.data.config!, 'semantic')?.data as string) ?? 'span'}

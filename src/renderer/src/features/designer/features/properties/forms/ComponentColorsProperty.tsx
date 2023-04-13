@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
+import { walker } from '@kitae/shared/utils'
 import { labelMap } from '@renderer/features/designer/label-map'
 import { draggable } from '@renderer/features/drag-n-drop'
 import { createForm } from '@renderer/features/form'
 import { debounce } from '@solid-primitives/scheduled'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
-import { Component, createEffect, createMemo, For, JSX } from 'solid-js'
+import { Component, For, JSX, createEffect, createMemo } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { makeUpdateConfigPropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
-import { walker } from '../../utils/walker.util'
 import { PropertyProps } from './types'
 
 !!draggable && false

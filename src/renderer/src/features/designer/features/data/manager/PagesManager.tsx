@@ -1,3 +1,4 @@
+import { walker } from '@kitae/shared/utils'
 import Accordion from '@renderer/components/Accordion'
 import Badge from '@renderer/components/Badge'
 import Button from '@renderer/components/Button'
@@ -6,17 +7,16 @@ import { ComponentData, Path } from 'packages/shared/types'
 import {
   Component,
   ComponentProps,
-  createMemo,
   For,
   JSX,
-  onMount,
   Show,
+  createMemo,
+  onMount,
   splitProps
 } from 'solid-js'
 import '../../history/page.events'
 import { makeAddPageChange, makeDeletePageChange } from '../../history/page.events'
 import { useDesignerState } from '../../state/designer.state'
-import { walker } from '../../utils/walker.util'
 import { ManagerProps } from './types'
 
 // TODO: Use the same behavior as the color manager to add a new page
@@ -150,7 +150,7 @@ const PagesManager: Component<ManagerProps> = (props: ManagerProps) => {
               const changes: ComponentData = {
                 id: crypto.randomUUID(),
                 name: `New page`,
-                type: 'container',
+                type: 'page',
                 children: []
               }
               makeAddPageChange({

@@ -1,6 +1,6 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { Workspace, WorkspaceData } from '@kitae/shared/types'
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
+import { BrowserWindow, app, dialog, ipcMain, shell } from 'electron'
 import { basename, join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import { getBackend } from './backends'
@@ -166,5 +166,7 @@ ipcMain.handle('get-workspace-data', async (_, workspace: Workspace) => {
 
 ipcMain.handle('set-workspace-data', async (_, workspace: Workspace, data: WorkspaceData) => {
   const backend = getBackend(workspace.backends[0])
-  return await backend.setWorkspaceData(data)
+  const saveResult = await backend.setWorkspaceData(data)
+  const compilerResult = await backend.compileAndWritesFiles(data)
+  return saveResult && compilerResult
 })

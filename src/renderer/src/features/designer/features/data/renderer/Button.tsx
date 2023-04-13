@@ -1,7 +1,7 @@
+import { renderProperties } from '@kitae/compiler/properties'
 import { ComponentData } from '@kitae/shared/types'
 import { registerComponent } from '@renderer/features/designer/available-component'
 import { Component, createMemo, For, JSX } from 'solid-js'
-import { renderProperties } from '../../properties/properties-renderer'
 import Children from '../../renderer/Children'
 import { useIsSelected } from '../../renderer/helpers'
 
@@ -9,7 +9,9 @@ type ButtonProps = { data: ComponentData }
 
 const Button: Component<ButtonProps> = (props: ButtonProps) => {
   const isSelected = useIsSelected()
-  const style = createMemo(() => renderProperties(JSON.parse(JSON.stringify(props.data))))
+  const style = createMemo(() =>
+    renderProperties(JSON.parse(JSON.stringify(props.data.config ?? [])))
+  )
   return (
     <button
       id={props.data.id}

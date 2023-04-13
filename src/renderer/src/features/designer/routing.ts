@@ -2,6 +2,7 @@ import { Path } from '@kitae/shared/types'
 import { Component } from 'solid-js'
 import ThemeColorForm from './features/data/forms/ThemeColorForm'
 import ThemeFontFamilyForm from './features/data/forms/ThemeFontFamilyForm'
+import SettingsLeftPanel from './features/pages/settings/SettingsLeftPanel'
 import ThemeLeftPanel from './features/pages/theme/ThemeLeftPanel'
 import ViewsLeftPanel from './features/pages/views/ViewsLeftPanel'
 import ViewsRightPanel from './features/pages/views/ViewsRightPanel'
@@ -15,6 +16,10 @@ export interface Route {
 export type Routes = Route[]
 
 export const routes: Routes = [
+  {
+    path: ['settings'],
+    left: SettingsLeftPanel
+  },
   {
     path: ['theme'],
     left: ThemeLeftPanel

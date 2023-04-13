@@ -1,13 +1,13 @@
 import { ComponentData } from '@kitae/shared/types'
+import { getSlots } from '@kitae/shared/utils'
 import Accordion from '@renderer/components/Accordion'
 import Icon from '@renderer/components/Icon'
 import { defaultComponents } from '@renderer/features/designer/default-components'
 import { componentTypeIconMap } from '@renderer/features/designer/icon-map'
 import { Draggable, draggable, droppable } from '@renderer/features/drag-n-drop'
-import { Component, createMemo, For, JSX, Show } from 'solid-js'
+import { Component, For, JSX, Show, createMemo } from 'solid-js'
 import { twMerge } from 'tailwind-merge'
 import { useDesignerState } from '../../state/designer.state'
-import { getSlots } from '../../utils/slot.util'
 import { ManagerProps } from './types'
 
 !!droppable && false

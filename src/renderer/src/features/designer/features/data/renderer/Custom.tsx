@@ -1,10 +1,9 @@
 import { ComponentData } from '@kitae/shared/types'
+import { replaceChildren, replaceSlots } from '@kitae/shared/utils'
 import { registerComponent } from '@renderer/features/designer/available-component'
 import { Component, createMemo, For, JSX } from 'solid-js'
 import Children from '../../renderer/Children'
 import { useDesignerState } from '../../state/designer.state'
-import { replaceChildren } from '../../utils/children.util'
-import { replaceSlots } from '../../utils/slot.util'
 
 type CustomProps = { data: ComponentData }
 

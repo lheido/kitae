@@ -1,4 +1,5 @@
 import { ComponentData } from '@kitae/shared/types'
+import { walker } from '@kitae/shared/utils'
 import Icon from '@renderer/components/Icon'
 import { componentTypeIconMap } from '@renderer/features/designer/icon-map'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
@@ -6,7 +7,6 @@ import { Component } from 'solid-js'
 import AvailablePropertiesManager from '../../data/manager/AvailablePropertiesManager'
 import PropertiesManager from '../../data/manager/PropertiesManager'
 import { useDesignerState } from '../../state/designer.state'
-import { walker } from '../../utils/walker.util'
 
 const ViewsRightPanel: Component = () => {
   const [state] = useDesignerState()

@@ -5,9 +5,8 @@ import { useDesignerState } from '@renderer/features/designer'
 import Preview from '@renderer/features/designer/components/Preview'
 import { routes } from '@renderer/features/designer/routing'
 import { redoShortcut, undoShortcut } from '@renderer/features/history'
-import { registerGlobalShortcut, Shortcut } from '@renderer/features/keyboard'
-import { userSettings } from '@renderer/features/user-settings'
-import { Component, createMemo, For, JSX, Show } from 'solid-js'
+import { Shortcut, registerGlobalShortcut } from '@renderer/features/keyboard'
+import { Component, For, JSX, Show, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 interface Panel {
@@ -21,7 +20,7 @@ interface Panel {
 const Designer: Component = () => {
   const [state, { navigate }] = useDesignerState()
   // TODO: use useCmdUI to modify the UI according to the user preferences
-  console.log(userSettings.useCmdUI)
+  // console.log(userSettings.useCmdUI)
 
   const shortcutGoToSettings = new Shortcut(['Alt', 's'], (): void => navigate(['settings']))
   const shortcutGoToTheme = new Shortcut(['Alt', 't'], (): void => navigate(['theme']))
@@ -90,7 +89,7 @@ const Designer: Component = () => {
                   class="btn-designer-nav"
                   classList={{ active: panel.ids.includes(state.current[0] as string) }}
                   onClick={(): void => navigate([panel.ids[0]])}
-                  title={panel.shortcut.toString()}
+                  title={`${panel.label} - ${panel.shortcut.toString()}`}
                 >
                   <Icon icon={panel.icon} />
                   <span class="text-xs">{panel.label}</span>

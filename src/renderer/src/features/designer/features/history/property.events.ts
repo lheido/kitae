@@ -1,13 +1,11 @@
 import { ComponentConfig, ComponentData, Path } from '@kitae/shared/types'
+import { WorkspaceDataState, samePath, walker } from '@kitae/shared/utils'
 import {
   HistoryEventChangeWithAdditionalHandler,
   makeChange,
   registerHistoryEvents
 } from '@renderer/features/history'
 import { useDesignerState } from '../state/designer.state'
-import { samePath } from '../utils/same-path.util'
-import { WorkspaceDataState } from '../utils/types'
-import { walker } from '../utils/walker.util'
 
 const [, { updatePath }] = useDesignerState()
 

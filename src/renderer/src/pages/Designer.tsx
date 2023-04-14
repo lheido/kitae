@@ -1,12 +1,13 @@
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import PanelSeparator from '@renderer/components/PanelSeparator'
+import Toast from '@renderer/components/Toast'
 import { useDesignerState } from '@renderer/features/designer'
 import Preview from '@renderer/features/designer/components/Preview'
 import { routes } from '@renderer/features/designer/routing'
 import { redoShortcut, undoShortcut } from '@renderer/features/history'
 import { Shortcut, registerGlobalShortcut } from '@renderer/features/keyboard'
-import { Component, For, JSX, Show, createMemo } from 'solid-js'
+import { Component, For, JSX, Show, createMemo, createSignal } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 interface Panel {
@@ -70,6 +71,10 @@ const Designer: Component = () => {
       .map((r) => r.right)
     return components[components.length - 1]
   })
+
+  const [timeBeforeDisplayLoading, setTimeBeforeDisplayLoading] = createSignal(false)
+  setTimeout(() => setTimeBeforeDisplayLoading(!state.data), 100)
+  const workspaceLoading = createMemo(() => timeBeforeDisplayLoading() && !state.data)
   return (
     <section class="flex-1 h-full flex designer-page relative overflow-x-hidden">
       <h1 class="sr-only">Designer</h1>
@@ -124,6 +129,11 @@ const Designer: Component = () => {
           <Dynamic component={getRightPanel()} />
         </Show>
       </section>
+      <Show when={workspaceLoading()}>
+        <div class="absolute top-0 left-0 bottom-0 right-0 bg-base-300 bg-opacity-80 flex justify-center items-center">
+          <Toast type="info">Retrieving workspace data...</Toast>
+        </div>
+      </Show>
     </section>
   )
 }

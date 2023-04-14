@@ -1,15 +1,25 @@
-// import { exec } from 'child_process'
 import { astro } from '@kitae/compiler/drivers/astro'
+import { exec } from 'child_process'
 import { access, constants, mkdir, readdir, unlink, writeFile } from 'fs/promises'
 import { join } from 'path'
 import { WorkspaceData, WorkspaceDriver, WorkspaceDriverResult } from '../../types'
 import { toJsxTagName } from '../../utils'
 import { HtmlLayout } from './templates/HtmlLayout'
 
-// async function initWorkspace(workspace: WorkspaceData): Promise<boolean> {
-//   // exec('pnpm create astro@latest --template ')
-//   return Promise.resolve(true)
-// }
+async function initWorkspace(path: string): Promise<boolean> {
+  return new Promise((resolve) =>
+    exec(
+      `pnpm create astro@latest "${path}" --template minimal --typescript strict --no-git --no-install --skip-houston`,
+      (error) => {
+        if (error) {
+          console.error(error)
+          resolve(false)
+        }
+        resolve(true)
+      }
+    )
+  )
+}
 
 async function compile(workspace: WorkspaceData): Promise<WorkspaceDriverResult> {
   const result: WorkspaceDriverResult = {
@@ -22,7 +32,7 @@ async function compile(workspace: WorkspaceData): Promise<WorkspaceDriverResult>
   })
   workspace.pages.forEach((page) => {
     const fileContent = astro(page, workspace, false)
-    result.pages[page.name] = fileContent
+    result.pages[page.name.toLowerCase().replaceAll(' ', '-')] = fileContent
   })
   return Promise.resolve(result)
 }
@@ -64,4 +74,4 @@ async function compileAndWritesFiles(
   }
 }
 
-export default { compile, compileAndWritesFiles } as WorkspaceDriver
+export default { compile, compileAndWritesFiles, initWorkspace } as WorkspaceDriver

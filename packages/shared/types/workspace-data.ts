@@ -72,8 +72,8 @@ export const WorkspaceDriverSchema = z.object({
   compileAndWritesFiles: z
     .function()
     .args(z.string(), WorkspaceDataSchema)
-    .returns(z.promise(z.boolean()))
-  // initWorkspace: z.function().args(WorkspaceDataSchema).returns(z.promise(z.boolean()))
+    .returns(z.promise(z.boolean())),
+  initWorkspace: z.function().args(z.string(), WorkspaceDataSchema).returns(z.promise(z.boolean()))
 })
 
 export type WorkspaceDriver = z.infer<typeof WorkspaceDriverSchema>

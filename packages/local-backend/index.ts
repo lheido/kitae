@@ -15,6 +15,8 @@ export class LocalBackend extends Backend {
       return JSON.parse(await fs.readFile(dataPath, 'utf-8'))
     } catch (error) {
       const workspaceData = defaultWorkspaceData
+      // TODO: init the workspace here for now.
+      await drivers.initWorkspace(this.settings.path, workspaceData)
       await fs.writeFile(dataPath, JSON.stringify(workspaceData, null, 2))
       return workspaceData
     }

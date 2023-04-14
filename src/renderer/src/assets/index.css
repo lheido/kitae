@@ -9,7 +9,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  @apply bg-base-300 text-base-content h-screen flex flex-col;
+  @apply bg-base-300 text-base-content h-screen flex flex-col selection:bg-secondary selection:text-secondary-content;
 }
 
 #root {

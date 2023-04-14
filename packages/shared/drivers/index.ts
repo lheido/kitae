@@ -21,5 +21,9 @@ export default {
     workspace: WorkspaceData
   ): Promise<boolean | Error> => {
     return drivers[workspace.driver].compileAndWritesFiles(path, workspace)
+  },
+
+  initWorkspace: async (path: string, workspace: WorkspaceData): Promise<boolean | Error> => {
+    return drivers[workspace.driver].initWorkspace(path, workspace)
   }
 } as WorkspaceDriver

@@ -1,3 +1,4 @@
 export const labelMap: Record<string, string> = {
-  backgroundColor: 'Bg. Color'
+  backgroundColor: 'Bg. Color',
+  flexItem: 'Flex item'
 }

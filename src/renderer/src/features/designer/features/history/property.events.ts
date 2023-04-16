@@ -13,6 +13,10 @@ enum DesignerComponentPropertyAddHistoryEvents {
   ADD_CONFIG_DATA = 'componentProperty:addConfigData'
 }
 
+enum DesignerComponentPropertyRemoveHistoryEvents {
+  REMOVE_CONFIG_DATA = 'componentProperty:removeConfigData'
+}
+
 enum DesignerComponentPropertyMoveHistoryEvents {
   MOVE_CONFIG_DATA = 'componentProperty:moveConfigData'
 }
@@ -31,6 +35,7 @@ enum DesignerComponentPropertyUpdateNameHistoryEvents {
 
 export const DesignerComponentPropertyHistoryEvents = {
   ...DesignerComponentPropertyAddHistoryEvents,
+  ...DesignerComponentPropertyRemoveHistoryEvents,
   ...DesignerComponentPropertyMoveHistoryEvents
 }
 
@@ -54,6 +59,25 @@ registerHistoryEvents<ComponentConfig, DesignerComponentPropertyAddHistoryEvents
       const index = target.pop() as number
       updatePath(target, (list: ComponentData[]) => {
         list.splice(index, 1)
+      })
+    }
+  }
+})
+
+registerHistoryEvents<ComponentConfig, DesignerComponentPropertyRemoveHistoryEvents>({
+  [DesignerComponentPropertyHistoryEvents.REMOVE_CONFIG_DATA]: {
+    execute: ({ path }): void => {
+      const target = [...path]
+      const index = target.pop() as number
+      updatePath(target, (list: ComponentConfig[]) => {
+        list.splice(index, 1)
+      })
+    },
+    undo: ({ path, changes }): void => {
+      const target = [...path]
+      const index = target.pop() as number
+      updatePath(target, (list: ComponentConfig[]) => {
+        list.splice(index, 0, changes)
       })
     }
   }
@@ -164,6 +188,14 @@ export const makeAddConfigChange = (
   change: Omit<HistoryEventChangeWithAdditionalHandler<ComponentConfig>, 'handler'>
 ): void =>
   makeChange({ ...change, handler: DesignerComponentPropertyAddHistoryEvents.ADD_CONFIG_DATA })
+
+export const makeRemoveConfigChange = (
+  change: Omit<HistoryEventChangeWithAdditionalHandler<ComponentConfig>, 'handler'>
+): void =>
+  makeChange({
+    ...change,
+    handler: DesignerComponentPropertyRemoveHistoryEvents.REMOVE_CONFIG_DATA
+  })
 
 export const makeMoveConfigChange = (
   change: Omit<HistoryEventChangeWithAdditionalHandler<Path[]>, 'handler'>

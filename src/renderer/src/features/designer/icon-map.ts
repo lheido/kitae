@@ -13,6 +13,8 @@ export const propertyTypeIconMap: Record<string, string> = {
   backgroundColor: 'bg-color',
   color: 'text-color',
   rounded: 'border-radius',
+  flex: 'flex',
+  flexItem: 'flex',
   hover: 'element-state',
   active: 'element-state',
   focus: 'element-state',

@@ -1,5 +1,5 @@
 import { Accessor, Component, createEffect, createSignal, onCleanup } from 'solid-js'
-import { createStore, produce, SetStoreFunction } from 'solid-js/store'
+import { SetStoreFunction, createStore, produce } from 'solid-js/store'
 import { Draggable, Droppable } from './types'
 
 export interface DndState {

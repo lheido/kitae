@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
 import { walker } from '@kitae/shared/utils'
+import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import FormField from '@renderer/components/form/FormField'
 import { draggable } from '@renderer/features/drag-n-drop'
@@ -130,6 +131,9 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
               <Icon icon="border-radius" class="h-3 w-3" />
             </div>
           </label>
+          <Button>
+            <Icon icon="bin" class="w-3 h-3" />
+          </Button>
         </header>
         <div class="p-2">
           <Switch>

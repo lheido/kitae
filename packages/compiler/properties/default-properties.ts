@@ -20,6 +20,19 @@ export const defaultProperties: Partial<ComponentConfig>[] = [
   {
     type: 'rounded',
     data: {}
+  },
+  {
+    type: 'flex',
+    data: {
+      justify: 'start',
+      align: 'start',
+      direction: 'row',
+      wrap: 'nowrap'
+    }
+  },
+  {
+    type: 'flexItem',
+    data: {}
   }
 ]
 

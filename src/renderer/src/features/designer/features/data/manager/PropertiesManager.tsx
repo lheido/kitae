@@ -11,6 +11,7 @@ import {
 import { Component, For, JSX, Match, Show, Switch, createEffect, createMemo } from 'solid-js'
 import { makeAddConfigChange, makeMoveConfigChange } from '../../history/property.events'
 import ComponentColorsProperty from '../../properties/forms/ComponentColorsProperty'
+import ComponentFlexProperty from '../../properties/forms/ComponentFlexProperty'
 import ComponentRoundedProperty from '../../properties/forms/ComponentRoundedProperty'
 import ComponentSpacingProperty from '../../properties/forms/ComponentSpacingProperty'
 import ComponentTextProperty from '../../properties/forms/ComponentTextProperty'
@@ -48,6 +49,9 @@ const PropertyRenderer: Component<PropertyRendererProps> = (props: PropertyRende
       </Match>
       <Match when={props.config.type === 'rounded'}>
         <ComponentRoundedProperty path={props.path} />
+      </Match>
+      <Match when={props.config.type === 'flex'}>
+        <ComponentFlexProperty path={props.path} />
       </Match>
       <Match when={defaultStateProperties.map((p) => p.type).includes(props.config.type)}>
         <section class="flex flex-col bg-base-200 rounded-lg min-h-[42px]">

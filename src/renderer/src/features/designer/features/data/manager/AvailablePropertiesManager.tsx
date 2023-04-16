@@ -50,7 +50,7 @@ const AvailablePropertyItem: Component<AvailablePropertyItemProps> = (
       <button
         class={twMerge(
           'flex px-2 gap-2 py-1 w-full rounded items-center whitespace-nowrap',
-          'border border-transparent',
+          'border border-transparent cursor-grab',
           'hover:bg-secondary-focus hover:bg-opacity-30',
           'focus-visible:outline-none focus-visible:bg-secondary-focus focus-visible:bg-opacity-30',
           'disabled:opacity-50 disabled:cursor-not-allowed'

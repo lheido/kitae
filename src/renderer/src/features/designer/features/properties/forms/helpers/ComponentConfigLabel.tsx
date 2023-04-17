@@ -42,7 +42,7 @@ export const ComponentConfigLabelComponent = (props: ConfigLabelComponentProps):
       ref={eltRef}
       component={untrack(() => local.tag || 'h1')}
       {...others}
-      class={twMerge('flex-1 cursor-move select-none', classes.class)}
+      class={twMerge('flex-1 cursor-move select-none capitalize', classes.class)}
     />
   )
 }

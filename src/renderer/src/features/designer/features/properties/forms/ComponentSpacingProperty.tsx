@@ -10,6 +10,7 @@ import { Component, Match, Switch, createEffect, createMemo } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { makeUpdateConfigPropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
+import ComponentProperty from './helpers/ComponentProperty'
 import { PropertyProps } from './types'
 
 !!draggable && false
@@ -97,22 +98,11 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
   }
   return (
     <FormProvider onSubmit={onSubmit}>
-      <section class="bg-base-200 rounded-lg">
-        <header class="px-2 flex items-center">
-          <h1
-            class="flex-1 cursor-move select-none"
-            // @ts-ignore - directive
-            // eslint-disable-next-line solid/jsx-no-undef
-            use:draggable={{
-              format: 'kitae/move-config',
-              effect: 'move',
-              id: crypto.randomUUID(),
-              path: path(),
-              enabled: true
-            }}
-          >
-            {props.prefix === 'padding' ? 'Padding' : 'Margin'}
-          </h1>
+      <ComponentProperty
+        index={props.index}
+        path={props.path}
+        label={props.prefix === 'padding' ? 'Padding' : 'Margin'}
+        headerSlot={
           <label>
             <span class="sr-only">
               {props.prefix === 'padding' ? 'Independent paddings' : 'Independent margins'}
@@ -131,7 +121,8 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
               <Icon icon="spacing" class="h-3 w-3" />
             </div>
           </label>
-        </header>
+        }
+      >
         <div class="p-2">
           <Switch>
             <Match when={!dataState.independent}>
@@ -260,7 +251,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
             </Match>
           </Switch>
         </div>
-      </section>
+      </ComponentProperty>
     </FormProvider>
   )
 }

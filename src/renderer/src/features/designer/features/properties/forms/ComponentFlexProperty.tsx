@@ -160,143 +160,141 @@ const ComponentFlexProperty: Component<ComponentFlexPropertyProps> = (
   return (
     <FormProvider onSubmit={onSubmit}>
       <ComponentProperty label="Flex layout" index={props.index} path={props.path}>
-        {(): JSX.Element => (
-          <div class="px-4 pb-2 flex flex-col gap-1">
-            <section class="flex gap-2 items-center">
-              <h1 class="basis-16 opacity-70">Direction</h1>
-              <fieldset class="flex">
-                <legend class="sr-only">Direction group</legend>
-                <div class="bg-base-300 w-fit grid grid-cols-4 rounded overflow-hidden">
-                  <For each={direction}>
-                    {(data): JSX.Element => (
-                      <label class="relative group">
-                        <span class="sr-only">{data.value}</span>
-                        <input
-                          type="radio"
-                          name={flexDirectionName}
-                          class="peer sr-only"
-                          value={data.value}
-                          // @ts-ignore - solid directive
-                          use:field
+        <div class="px-4 pb-2 flex flex-col gap-1">
+          <section class="flex gap-2 items-center">
+            <h1 class="basis-16 opacity-70">Direction</h1>
+            <fieldset class="flex">
+              <legend class="sr-only">Direction group</legend>
+              <div class="bg-base-300 w-fit grid grid-cols-4 rounded overflow-hidden">
+                <For each={direction}>
+                  {(data): JSX.Element => (
+                    <label class="relative group">
+                      <span class="sr-only">{data.value}</span>
+                      <input
+                        type="radio"
+                        name={flexDirectionName}
+                        class="peer sr-only"
+                        value={data.value}
+                        // @ts-ignore - solid directive
+                        use:field
+                      />
+                      <div
+                        title={data.value}
+                        class="p-2 peer-checked:bg-secondary hover:bg-secondary hover:bg-opacity-50 transition-all"
+                      >
+                        <Icon
+                          icon={data.icon}
+                          class="w-4 h-4"
+                          classList={{
+                            '-rotate-90': data.value === 'row',
+                            '-rotate-180': data.value === 'column-reverse',
+                            'rotate-90': data.value === 'row-reverse'
+                          }}
                         />
-                        <div
-                          title={data.value}
-                          class="p-2 peer-checked:bg-secondary hover:bg-secondary hover:bg-opacity-50 transition-all"
-                        >
-                          <Icon
-                            icon={data.icon}
-                            class="w-4 h-4"
-                            classList={{
-                              '-rotate-90': data.value === 'row',
-                              '-rotate-180': data.value === 'column-reverse',
-                              'rotate-90': data.value === 'row-reverse'
-                            }}
-                          />
-                        </div>
-                      </label>
-                    )}
-                  </For>
-                </div>
-              </fieldset>
-              <fieldset class="flex">
-                <legend class="sr-only">Wrap group</legend>
-                <div class="bg-base-300 grid grid-cols-2 rounded overflow-hidden">
-                  <For each={wrap}>
-                    {(data): JSX.Element => (
-                      <label class="relative group">
-                        <span class="sr-only">{data.value}</span>
-                        <input
-                          type="radio"
-                          name={flexWrapName}
-                          class="peer sr-only"
-                          value={data.value}
-                          // @ts-ignore - solid directive
-                          use:field
+                      </div>
+                    </label>
+                  )}
+                </For>
+              </div>
+            </fieldset>
+            <fieldset class="flex">
+              <legend class="sr-only">Wrap group</legend>
+              <div class="bg-base-300 grid grid-cols-2 rounded overflow-hidden">
+                <For each={wrap}>
+                  {(data): JSX.Element => (
+                    <label class="relative group">
+                      <span class="sr-only">{data.value}</span>
+                      <input
+                        type="radio"
+                        name={flexWrapName}
+                        class="peer sr-only"
+                        value={data.value}
+                        // @ts-ignore - solid directive
+                        use:field
+                      />
+                      <div
+                        title={data.value}
+                        class="p-2 peer-checked:bg-secondary hover:bg-secondary hover:bg-opacity-50 transition-all"
+                      >
+                        <Icon
+                          icon={data.icon}
+                          class="w-4 h-4 m-auto transition-transform"
+                          classList={data.classList ? data.classList(currentDirection()) : {}}
                         />
-                        <div
-                          title={data.value}
-                          class="p-2 peer-checked:bg-secondary hover:bg-secondary hover:bg-opacity-50 transition-all"
-                        >
-                          <Icon
-                            icon={data.icon}
-                            class="w-4 h-4 m-auto transition-transform"
-                            classList={data.classList ? data.classList(currentDirection()) : {}}
-                          />
-                        </div>
-                      </label>
-                    )}
-                  </For>
-                </div>
-              </fieldset>
-            </section>
-            <section class="flex gap-2 items-center">
-              <h1 class="basis-16 opacity-70">Align</h1>
-              <fieldset class="flex flex-1">
-                <legend class="sr-only">Align group</legend>
-                <div class="bg-base-300 flex-1 grid grid-cols-4 rounded overflow-hidden">
-                  <For each={align}>
-                    {(data): JSX.Element => (
-                      <label class="relative group">
-                        <span class="sr-only">{data.value}</span>
-                        <input
-                          type="radio"
-                          name={flexAlignName}
-                          class="peer sr-only"
-                          value={data.value}
-                          // @ts-ignore - solid directive
-                          use:field
+                      </div>
+                    </label>
+                  )}
+                </For>
+              </div>
+            </fieldset>
+          </section>
+          <section class="flex gap-2 items-center">
+            <h1 class="basis-16 opacity-70">Align</h1>
+            <fieldset class="flex flex-1">
+              <legend class="sr-only">Align group</legend>
+              <div class="bg-base-300 flex-1 grid grid-cols-4 rounded overflow-hidden">
+                <For each={align}>
+                  {(data): JSX.Element => (
+                    <label class="relative group">
+                      <span class="sr-only">{data.value}</span>
+                      <input
+                        type="radio"
+                        name={flexAlignName}
+                        class="peer sr-only"
+                        value={data.value}
+                        // @ts-ignore - solid directive
+                        use:field
+                      />
+                      <div
+                        title={data.value}
+                        class="p-2 peer-checked:bg-secondary hover:bg-secondary hover:bg-opacity-50 transition-all"
+                      >
+                        <Icon
+                          icon={data.icon}
+                          class="w-4 h-4 m-auto transition-transform"
+                          classList={data.classList ? data.classList(currentDirection()) : {}}
                         />
-                        <div
-                          title={data.value}
-                          class="p-2 peer-checked:bg-secondary hover:bg-secondary hover:bg-opacity-50 transition-all"
-                        >
-                          <Icon
-                            icon={data.icon}
-                            class="w-4 h-4 m-auto transition-transform"
-                            classList={data.classList ? data.classList(currentDirection()) : {}}
-                          />
-                        </div>
-                      </label>
-                    )}
-                  </For>
-                </div>
-              </fieldset>
-            </section>
-            <section class="flex gap-2 items-center">
-              <h1 class="basis-16 opacity-70">Justify</h1>
-              <fieldset class="flex flex-1">
-                <legend class="sr-only">Justify group</legend>
-                <div class="bg-base-300 flex-1 grid grid-cols-3 rounded overflow-hidden">
-                  <For each={justify}>
-                    {(data): JSX.Element => (
-                      <label class="relative group">
-                        <span class="sr-only">{data.value}</span>
-                        <input
-                          type="radio"
-                          name={flexJustifyName}
-                          class="peer sr-only"
-                          value={data.value}
-                          // @ts-ignore - solid directive
-                          use:field
+                      </div>
+                    </label>
+                  )}
+                </For>
+              </div>
+            </fieldset>
+          </section>
+          <section class="flex gap-2 items-center">
+            <h1 class="basis-16 opacity-70">Justify</h1>
+            <fieldset class="flex flex-1">
+              <legend class="sr-only">Justify group</legend>
+              <div class="bg-base-300 flex-1 grid grid-cols-3 rounded overflow-hidden">
+                <For each={justify}>
+                  {(data): JSX.Element => (
+                    <label class="relative group">
+                      <span class="sr-only">{data.value}</span>
+                      <input
+                        type="radio"
+                        name={flexJustifyName}
+                        class="peer sr-only"
+                        value={data.value}
+                        // @ts-ignore - solid directive
+                        use:field
+                      />
+                      <div
+                        title={data.value}
+                        class="p-2 peer-checked:bg-secondary hover:bg-secondary hover:bg-opacity-50 transition-all"
+                      >
+                        <Icon
+                          icon={data.icon}
+                          class="w-4 h-4 m-auto transition-transform"
+                          classList={data.classList ? data.classList(currentDirection()) : {}}
                         />
-                        <div
-                          title={data.value}
-                          class="p-2 peer-checked:bg-secondary hover:bg-secondary hover:bg-opacity-50 transition-all"
-                        >
-                          <Icon
-                            icon={data.icon}
-                            class="w-4 h-4 m-auto transition-transform"
-                            classList={data.classList ? data.classList(currentDirection()) : {}}
-                          />
-                        </div>
-                      </label>
-                    )}
-                  </For>
-                </div>
-              </fieldset>
-            </section>
-          </div>
-        )}
+                      </div>
+                    </label>
+                  )}
+                </For>
+              </div>
+            </fieldset>
+          </section>
+        </div>
       </ComponentProperty>
     </FormProvider>
   )

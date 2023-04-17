@@ -10,6 +10,8 @@ import { Component, For, JSX, createEffect, createMemo } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { makeUpdateConfigPropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
+import ComponentConfigLabel from './helpers/ComponentConfigLabel'
+import ComponentConfigRemove from './helpers/ComponentConfigRemove'
 import { PropertyProps } from './types'
 
 !!draggable && false
@@ -85,23 +87,13 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
   return (
     <FormProvider onSubmit={onSubmit}>
       <section class="group bg-base-200 rounded-lg relative">
-        <header class="px-2 py-2 flex items-center">
-          <h1
-            class="flex-1 cursor-move select-none capitalize"
-            // @ts-ignore - directive
-            // eslint-disable-next-line solid/jsx-no-undef
-            use:draggable={{
-              format: 'kitae/move-config',
-              effect: 'move',
-              id: crypto.randomUUID(),
-              path: path(),
-              enabled: true
-            }}
-          >
+        <header class="pl-2 py-2 flex items-center">
+          <ComponentConfigLabel path={props.path} index={props.index}>
             {labelMap[config().type as string] ?? config().type}
-          </h1>
+          </ComponentConfigLabel>
+          <ComponentConfigRemove path={props.path} />
         </header>
-        <fieldset class="group-hover:flex hidden flex-col gap-2 px-1 py-2 absolute top-2 right-8 z-[300] bg-base-200 shadow h-[320px]">
+        <fieldset class="group-hover:flex hidden flex-col gap-2 px-1 py-2 absolute top-2 right-10 z-[300] bg-base-200 shadow h-[320px]">
           <legend class="sr-only">Color options</legend>
           <OverlayScrollbarsComponent
             defer

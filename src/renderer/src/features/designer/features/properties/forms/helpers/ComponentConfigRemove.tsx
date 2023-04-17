@@ -2,7 +2,7 @@ import { ComponentConfig, Path } from '@kitae/shared/types'
 import { walker } from '@kitae/shared/utils'
 import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
-import { Component, ComponentProps, createMemo } from 'solid-js'
+import { Component, ComponentProps, Show, createMemo } from 'solid-js'
 import { makeRemoveConfigChange } from '../../../history/property.events'
 import { useDesignerState } from '../../../state/designer.state'
 
@@ -26,10 +26,13 @@ const ComponentConfigRemove: Component<ComponentConfigRemoveProps> = (
       changes: config
     })
   }
+  const removable = createMemo(() => path().includes('config'))
   return (
-    <Button class="px-2" onClick={removeConfig} title="Remove this property">
-      <Icon icon="bin" class="w-3 h-3" />
-    </Button>
+    <Show when={removable()}>
+      <Button class="px-2" onClick={removeConfig} title="Remove this property">
+        <Icon icon="bin" class="w-3 h-3" />
+      </Button>
+    </Show>
   )
 }
 

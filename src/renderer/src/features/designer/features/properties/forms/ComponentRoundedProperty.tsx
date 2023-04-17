@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
 import { walker } from '@kitae/shared/utils'
-import Button from '@renderer/components/Button'
 import Icon from '@renderer/components/Icon'
 import FormField from '@renderer/components/form/FormField'
 import { draggable } from '@renderer/features/drag-n-drop'
@@ -11,6 +10,7 @@ import { Component, Match, Switch, createEffect, createMemo } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { makeUpdateConfigPropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
+import ComponentProperty from './helpers/ComponentProperty'
 import { PropertyProps } from './types'
 
 !!draggable && false
@@ -99,22 +99,11 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
   }
   return (
     <FormProvider onSubmit={onSubmit}>
-      <section class="bg-base-200 rounded-lg">
-        <header class="px-2 flex items-center">
-          <h1
-            class="flex-1 cursor-move select-none"
-            // @ts-ignore - directive
-            // eslint-disable-next-line solid/jsx-no-undef
-            use:draggable={{
-              format: 'kitae/move-config',
-              effect: 'move',
-              id: crypto.randomUUID(),
-              path: path(),
-              enabled: true
-            }}
-          >
-            Rounded
-          </h1>
+      <ComponentProperty
+        label="Rounded"
+        index={props.index}
+        path={props.path}
+        headerSlot={
           <label>
             <span class="sr-only">Independent corner radius</span>
             <input
@@ -131,10 +120,8 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
               <Icon icon="border-radius" class="h-3 w-3" />
             </div>
           </label>
-          <Button>
-            <Icon icon="bin" class="w-3 h-3" />
-          </Button>
-        </header>
+        }
+      >
         <div class="p-2">
           <Switch>
             <Match when={!dataState.independent}>
@@ -251,7 +238,7 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
             </Match>
           </Switch>
         </div>
-      </section>
+      </ComponentProperty>
     </FormProvider>
   )
 }

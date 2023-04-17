@@ -16,6 +16,7 @@ import ComponentRoundedProperty from '../../properties/forms/ComponentRoundedPro
 import ComponentSpacingProperty from '../../properties/forms/ComponentSpacingProperty'
 import ComponentTextProperty from '../../properties/forms/ComponentTextProperty'
 import NameProperty from '../../properties/forms/NameProperty'
+import ComponentProperty from '../../properties/forms/helpers/ComponentProperty'
 import { useDesignerState } from '../../state/designer.state'
 
 !!droppable && false
@@ -54,24 +55,9 @@ const PropertyRenderer: Component<PropertyRendererProps> = (props: PropertyRende
         <ComponentFlexProperty path={props.path} />
       </Match>
       <Match when={defaultStateProperties.map((p) => p.type).includes(props.config.type)}>
-        <section class="flex flex-col bg-base-200 rounded-lg min-h-[42px]">
-          <header class="px-2 flex items-center mb-1">
-            <h1
-              class="flex-1 cursor-move select-none italic text-lg flex gap-2 items-center capitalize"
-              // @ts-ignore - directive
-              use:draggable={{
-                format: 'kitae/move-config',
-                effect: 'move',
-                id: crypto.randomUUID(),
-                path: props.path,
-                enabled: true
-              }}
-            >
-              {props.config.type}
-            </h1>
-          </header>
+        <ComponentProperty path={props.path} label={props.config.type}>
           <div
-            class="flex-1 flex flex-col gap-2 pl-4 pr-0"
+            class="flex-1 flex flex-col gap-2 pl-4 pr-0 min-h-[32px]"
             // @ts-ignore - directive
             use:droppable={{
               enabled: true,
@@ -90,7 +76,7 @@ const PropertyRenderer: Component<PropertyRendererProps> = (props: PropertyRende
               )}
             </For>
           </div>
-        </section>
+        </ComponentProperty>
       </Match>
     </Switch>
   )

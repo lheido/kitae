@@ -7,6 +7,7 @@ import { debounce } from '@solid-primitives/scheduled'
 import { Component, createEffect, createMemo } from 'solid-js'
 import { makeUpdateTextConfigPropertyChange } from '../../history/property.events'
 import { useDesignerState } from '../../state/designer.state'
+import ComponentConfigRemove from './helpers/ComponentConfigRemove'
 import { PropertyProps } from './types'
 
 interface ComponentTextFormState {
@@ -55,7 +56,7 @@ const ComponentTextProperty: Component<ComponentTextPropertyProps> = (
   return (
     <FormProvider onSubmit={onSubmit}>
       <section class="bg-base-200 rounded-lg">
-        <div class="p-2">
+        <div class="py-2 pl-2 flex">
           <FormField label="Text" labelClass={props.labelClass}>
             <textarea
               name="text"
@@ -66,6 +67,7 @@ const ComponentTextProperty: Component<ComponentTextPropertyProps> = (
               use:field
             />
           </FormField>
+          <ComponentConfigRemove path={props.path} />
         </div>
       </section>
     </FormProvider>

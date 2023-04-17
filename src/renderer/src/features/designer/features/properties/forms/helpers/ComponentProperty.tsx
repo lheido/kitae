@@ -16,7 +16,7 @@ interface ComponentPropertyProps extends ComponentProps<'section'> {
 const ComponentProperty: Component<ComponentPropertyProps> = (props: ComponentPropertyProps) => {
   return (
     <section class="bg-base-200 rounded-lg relative">
-      <header class="pl-2 flex items-center">
+      <header class="px-2 flex items-center">
         <ComponentConfigLabel path={props.path}>{props.label}</ComponentConfigLabel>
         {props.headerSlot}
         <ComponentConfigRemove path={props.path} />

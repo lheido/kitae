@@ -133,7 +133,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                     <Icon icon="spacing-y" class="w-5 h-5 rotate-90" />
                   </>
                 }
-                class="items-center pl-1"
+                class="items-center pl-1 pr-0.5"
                 labelClass="basis-0"
               >
                 <input
@@ -155,7 +155,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                     <Icon icon="spacing-y" class="w-5 h-5" />
                   </>
                 }
-                class="items-center pl-1"
+                class="items-center pl-1 pr-0.5"
                 labelClass="basis-0"
               >
                 <input
@@ -179,7 +179,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                     <Icon icon="spacing-top" class="w-5 h-5 -rotate-90" />
                   </>
                 }
-                class="items-center pl-1"
+                class="items-center pl-1 pr-0.5"
                 labelClass="basis-0"
               >
                 <input
@@ -198,7 +198,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                     <Icon icon="spacing-top" class="w-5 h-5 rotate-90" />
                   </>
                 }
-                class="items-center pl-1"
+                class="items-center pl-1 pr-0.5"
                 labelClass="basis-0"
               >
                 <input
@@ -217,7 +217,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                     <Icon icon="spacing-top" class="w-5 h-5" />
                   </>
                 }
-                class="items-center pl-1"
+                class="items-center pl-1 pr-0.5"
                 labelClass="basis-0"
               >
                 <input
@@ -236,7 +236,7 @@ const ComponentSpacingProperty: Component<ComponentSpacingPropertyProps> = (
                     <Icon icon="spacing-top" class="w-5 h-5 rotate-180" />
                   </>
                 }
-                class="items-center pl-1"
+                class="items-center pl-1 pr-0.5"
                 labelClass="basis-0"
               >
                 <input

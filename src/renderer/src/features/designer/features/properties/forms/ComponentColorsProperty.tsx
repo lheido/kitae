@@ -87,7 +87,7 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
   return (
     <FormProvider onSubmit={onSubmit}>
       <section class="group bg-base-200 rounded-lg relative">
-        <header class="pl-2 py-2 flex items-center">
+        <header class="px-2 py-2 flex items-center">
           <ComponentConfigLabel path={props.path} index={props.index}>
             {labelMap[config().type as string] ?? config().type}
           </ComponentConfigLabel>

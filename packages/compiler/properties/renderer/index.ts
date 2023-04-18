@@ -1,4 +1,6 @@
 export * from './ComponentColorsProperty'
+export * from './ComponentFlexItemProperty'
 export * from './ComponentFlexProperty'
+export * from './ComponentGapProperty'
 export * from './ComponentRoundedProperty'
 export * from './ComponentSpacingProperty'

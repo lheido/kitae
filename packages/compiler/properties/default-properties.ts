@@ -33,6 +33,13 @@ export const defaultProperties: Partial<ComponentConfig>[] = [
   {
     type: 'flexItem',
     data: {}
+  },
+  {
+    type: 'gap',
+    data: {
+      x: 0,
+      y: 0
+    }
   }
 ]
 

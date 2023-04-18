@@ -11,7 +11,9 @@ import {
 import { Component, For, JSX, Match, Show, Switch, createEffect, createMemo } from 'solid-js'
 import { makeAddConfigChange, makeMoveConfigChange } from '../../history/property.events'
 import ComponentColorsProperty from '../../properties/forms/ComponentColorsProperty'
+import ComponentFlexItemProperty from '../../properties/forms/ComponentFlexItemProperty'
 import ComponentFlexProperty from '../../properties/forms/ComponentFlexProperty'
+import ComponentGapProperty from '../../properties/forms/ComponentGapProperty'
 import ComponentRoundedProperty from '../../properties/forms/ComponentRoundedProperty'
 import ComponentSpacingProperty from '../../properties/forms/ComponentSpacingProperty'
 import ComponentTextProperty from '../../properties/forms/ComponentTextProperty'
@@ -53,6 +55,12 @@ const PropertyRenderer: Component<PropertyRendererProps> = (props: PropertyRende
       </Match>
       <Match when={props.config.type === 'flex'}>
         <ComponentFlexProperty path={props.path} />
+      </Match>
+      <Match when={props.config.type === 'flexItem'}>
+        <ComponentFlexItemProperty path={props.path} />
+      </Match>
+      <Match when={props.config.type === 'gap'}>
+        <ComponentGapProperty path={props.path} />
       </Match>
       <Match when={defaultStateProperties.map((p) => p.type).includes(props.config.type)}>
         <ComponentProperty path={props.path} label={props.config.type}>

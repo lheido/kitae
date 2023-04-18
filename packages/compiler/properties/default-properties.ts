@@ -19,7 +19,12 @@ export const defaultProperties: Partial<ComponentConfig>[] = [
   },
   {
     type: 'rounded',
-    data: {}
+    data: {
+      tr: 'rounded-none',
+      tl: 'rounded-none',
+      br: 'rounded-none',
+      bl: 'rounded-none'
+    }
   },
   {
     type: 'flex',

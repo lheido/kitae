@@ -145,7 +145,7 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
                     range: roundedRange()
                   }}
                 />
-                <span class="basis-8 text-center">
+                <span class="basis-24 text-left">
                   {displayLabel(roundedRange()[form[names().tl]])}
                 </span>
               </FormField>
@@ -168,7 +168,7 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
                   // @ts-ignore - solid directive
                   use:field={{ range: roundedRange() }}
                 />
-                <span class="basis-8 text-center">
+                <span class="basis-24 text-left">
                   {displayLabel(roundedRange()[form[names().tl]])}
                 </span>
               </FormField>
@@ -189,7 +189,7 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
                   // @ts-ignore - solid directive
                   use:field={{ range: roundedRange() }}
                 />
-                <span class="basis-8 text-center">
+                <span class="basis-24 text-left">
                   {displayLabel(roundedRange()[form[names().tr]])}
                 </span>
               </FormField>
@@ -210,7 +210,7 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
                   // @ts-ignore - solid directive
                   use:field={{ range: roundedRange() }}
                 />
-                <span class="basis-8 text-center">
+                <span class="basis-24 text-left">
                   {displayLabel(roundedRange()[form[names().bl]])}
                 </span>
               </FormField>
@@ -231,7 +231,7 @@ const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
                   // @ts-ignore - solid directive
                   use:field={{ range: roundedRange() }}
                 />
-                <span class="basis-8 text-center">
+                <span class="basis-24 text-left">
                   {displayLabel(roundedRange()[form[names().br]])}
                 </span>
               </FormField>

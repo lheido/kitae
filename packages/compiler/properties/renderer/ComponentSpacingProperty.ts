@@ -14,16 +14,44 @@ interface SpacingConfig extends ComponentConfig {
   data: Record<SpacingKeys, string>
 }
 
+const defaultValue = '0'
+
+const _addClass = (
+  modifier: string,
+  type: SpacingType,
+  key: string,
+  value: string,
+  classes: Record<string, boolean>
+): void => {
+  if (value === defaultValue && modifier === '') return
+  classes[`${modifier}${type[0]}${key}-${value}`] = true
+}
+
 const dataToClass = (
   config: SpacingConfig,
   classes: Record<string, boolean>,
   modifier = ''
 ): void => {
   const { type, data } = config
-  Object.entries(data).forEach(([key, value]) => {
-    if (value === '0' && modifier === '') return
-    classes[`${modifier}${type[0]}${key[0]}-${value}`] = true
-  })
+  const { left, top, right, bottom } = data
+  const x = left === right ? left : undefined
+  const y = top === bottom ? top : undefined
+  if (x !== undefined && x === y) {
+    _addClass(modifier, type, '', x, classes)
+    return
+  }
+  if (x !== undefined) {
+    _addClass(modifier, type, 'x', x, classes)
+  } else {
+    _addClass(modifier, type, 'l', left, classes)
+    _addClass(modifier, type, 'r', right, classes)
+  }
+  if (y !== undefined) {
+    _addClass(modifier, type, 'y', y, classes)
+  } else {
+    _addClass(modifier, type, 't', top, classes)
+    _addClass(modifier, type, 'b', bottom, classes)
+  }
 }
 
 const _renderProps = (
@@ -55,6 +83,19 @@ const renderClass = (theme: WorkspaceTheme, filters: string[] | false): Record<s
   const { spacing } = theme
   const result: Record<string, string> = {}
   Object.keys(spacing).forEach((key) => {
+    _renderClass(`p-${key}`, `padding: ${spacing[key]}`, result, filters)
+    _renderClass(
+      `px-${key}`,
+      `padding-left: ${spacing[key]}; padding-right: ${spacing[key]}`,
+      result,
+      filters
+    )
+    _renderClass(
+      `py-${key}`,
+      `padding-top: ${spacing[key]}; padding-bottom: ${spacing[key]}`,
+      result,
+      filters
+    )
     _renderClass(`pl-${key}`, `padding-left: ${spacing[key]}`, result, filters)
     _renderClass(`pr-${key}`, `padding-right: ${spacing[key]}`, result, filters)
     _renderClass(`pt-${key}`, `padding-top: ${spacing[key]}`, result, filters)
@@ -64,6 +105,19 @@ const renderClass = (theme: WorkspaceTheme, filters: string[] | false): Record<s
     _renderClass(`mt-${key}`, `margin-top: ${spacing[key]}`, result, filters)
     _renderClass(`mb-${key}`, `margin-bottom: ${spacing[key]}`, result, filters)
     defaultStateProperties.forEach((state) => {
+      _renderClass(`${state.type}:p-${key}`, `padding: ${spacing[key]}`, result, filters)
+      _renderClass(
+        `${state.type}:px-${key}`,
+        `padding-left: ${spacing[key]}; padding-right: ${spacing[key]}`,
+        result,
+        filters
+      )
+      _renderClass(
+        `${state.type}:py-${key}`,
+        `padding-top: ${spacing[key]}; padding-bottom: ${spacing[key]}`,
+        result,
+        filters
+      )
       _renderClass(`${state.type}:pl-${key}`, `padding-left: ${spacing[key]}`, result, filters)
       _renderClass(`${state.type}:pr-${key}`, `padding-right: ${spacing[key]}`, result, filters)
       _renderClass(`${state.type}:pt-${key}`, `padding-top: ${spacing[key]}`, result, filters)

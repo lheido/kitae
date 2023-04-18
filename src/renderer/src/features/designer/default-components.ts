@@ -1,7 +1,12 @@
 import { ComponentData } from '@kitae/shared/types'
 import './features/data/renderer'
 
-export const defaultComponents: Partial<ComponentData>[] = [
+interface PartialComponentData extends Omit<ComponentData, 'id' | 'children'> {
+  id?: string
+  children?: PartialComponentData[]
+}
+
+export const defaultComponents: PartialComponentData[] = [
   {
     name: 'Container',
     type: 'container',

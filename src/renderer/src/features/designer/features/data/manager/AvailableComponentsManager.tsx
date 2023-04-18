@@ -1,5 +1,5 @@
 import { ComponentData } from '@kitae/shared/types'
-import { getSlots } from '@kitae/shared/utils'
+import { getSlots, walkComponentData } from '@kitae/shared/utils'
 import Accordion from '@renderer/components/Accordion'
 import Icon from '@renderer/components/Icon'
 import { defaultComponents } from '@renderer/features/designer/default-components'
@@ -19,6 +19,11 @@ const AvailableComponentsManager: Component<ManagerProps> = (props: ManagerProps
     const id = crypto.randomUUID()
     const data = JSON.parse(JSON.stringify(component))
     data.id = id
+    walkComponentData(data, (c) => {
+      if (!c.id) {
+        c.id = crypto.randomUUID()
+      }
+    })
     if (data.type === 'custom') {
       data.ref = component.id
       data.children = []

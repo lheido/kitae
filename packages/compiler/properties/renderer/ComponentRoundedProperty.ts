@@ -109,7 +109,6 @@ const renderClass = (theme: WorkspaceTheme, filters: string[] | false): Record<s
       )
     })
   })
-  console.log(result)
   return result
 }
 

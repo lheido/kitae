@@ -1,8 +1,10 @@
 import { ComponentData } from '@kitae/shared/types'
 import Toast from '@renderer/components/Toast'
 import { useDesignerState } from '@renderer/features/designer'
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-solid'
+import osCSS from 'overlayscrollbars/overlayscrollbars.css?inline'
 import { customElement } from 'solid-element'
-import { Component, createMemo, Show } from 'solid-js'
+import { Component, Show, createMemo } from 'solid-js'
 import rendererCSS from '../../../../assets/renderer.css?inline'
 import Children from './Children'
 import Style from './Style'
@@ -19,7 +21,7 @@ declare module 'solid-js' {
 }
 
 const Renderer: Component = () => {
-  return <kitae-renderer />
+  return <kitae-renderer class="block h-full" />
 }
 
 export default Renderer
@@ -39,8 +41,16 @@ customElement('kitae-renderer', () => {
       }
     >
       <style>{rendererCSS}</style>
+      <style>{osCSS}</style>
       <Style />
-      <Children data={page() as ComponentData} />
+
+      <OverlayScrollbarsComponent
+        defer
+        options={{ scrollbars: { autoHide: 'leave', autoHideDelay: 100 } }}
+        style={{ height: '100%' }}
+      >
+        <Children data={page() as ComponentData} />
+      </OverlayScrollbarsComponent>
     </Show>
   )
 })

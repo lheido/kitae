@@ -35,7 +35,8 @@ describe('properties/renderer/colors', () => {
           colors: { primary: '#000' },
           fontFamilies: {},
           rounded: {},
-          spacing: {}
+          spacing: {},
+          sizing: {}
         },
         false
       )

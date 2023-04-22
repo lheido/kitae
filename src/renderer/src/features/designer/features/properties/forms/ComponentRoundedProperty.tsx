@@ -1,23 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentConfig, ThemeEntries } from '@kitae/shared/types'
-import { walker } from '@kitae/shared/utils'
 import Icon from '@renderer/components/Icon'
 import FormField from '@renderer/components/form/FormField'
-import { draggable } from '@renderer/features/drag-n-drop'
-import { createForm } from '@renderer/features/form'
-import { debounce } from '@solid-primitives/scheduled'
-import { Component, Match, Switch, createEffect, createMemo } from 'solid-js'
-import { createStore } from 'solid-js/store'
-import { makeUpdateConfigPropertyChange } from '../../history/property.events'
-import { useDesignerState } from '../../state/designer.state'
+import RangeInput from '@renderer/components/form/RangeInput'
+import { Component, Match, Switch, createEffect, createSignal } from 'solid-js'
 import ComponentProperty from './helpers/ComponentProperty'
+import { useConfigForm } from './helpers/config.util'
+import { getThemePropertyOptions } from './helpers/theme.util'
 import { PropertyProps } from './types'
-
-!!draggable && false
-
-type ComponentRoundedFormState = Record<string, number>
-
-type Edges = 'tl' | 'tr' | 'bl' | 'br' | 'all'
 
 interface ComponentRoundedPropertyProps extends PropertyProps {
   labelClass?: string
@@ -26,220 +14,119 @@ interface ComponentRoundedPropertyProps extends PropertyProps {
 const ComponentRoundedProperty: Component<ComponentRoundedPropertyProps> = (
   props: ComponentRoundedPropertyProps
 ) => {
-  const [state] = useDesignerState()
-  const {
-    form,
-    setForm,
-    FormProvider,
-    //@ts-ignore - solid directives
-    field
-  } = createForm<ComponentRoundedFormState>()
-  const names = createMemo(
-    (): Record<Edges, string> => ({
-      all: `rounded`,
-      tl: `rounded-tl`,
-      tr: `rounded-tr`,
-      bl: `rounded-bl`,
-      br: `rounded-br`
-    })
+  const [isIndependent, setIsIndependent] = createSignal(false)
+  const roundedOptions = getThemePropertyOptions('rounded')
+  const form = useConfigForm(
+    {
+      tl: { value: '' },
+      tr: { value: '' },
+      bl: { value: '' },
+      br: { value: '' }
+    },
+    props
   )
-  const [dataState, setDataState] = createStore<{ rounded: ThemeEntries; independent: boolean }>({
-    rounded: {},
-    independent: false
-  })
-  const roundedRange = createMemo(() => {
-    return Object.keys(dataState.rounded).sort((a, b) => {
-      return Number(a) - Number(b)
-    })
-  })
-  const findIndex = (value: string): number => {
-    const index = roundedRange().findIndex((s) => s === value)
-    return index !== -1 ? index : 0
-  }
-  const path = createMemo(() =>
-    props.index ? [...state.current, 'config', props.index] : props.path!
-  )
-  const config = createMemo(() => walker(state.data, path()) as ComponentConfig)
   createEffect(() => {
-    // TODO: merge extends + default
-    setDataState('rounded', state.data?.theme.rounded ?? {})
+    if (!isIndependent() && form.controls.tl) {
+      form.controls.tr.patchValue(form.controls.tl.value, true)
+      form.controls.br.patchValue(form.controls.tl.value, true)
+      form.controls.bl.patchValue(form.controls.tl.value, true)
+    }
   })
-  createEffect(() => {
-    const c = config()?.data as Record<Edges, string>
-    setForm({
-      [names().bl]: findIndex(c?.bl),
-      [names().br]: findIndex(c?.br),
-      [names().tl]: findIndex(c?.tl),
-      [names().tr]: findIndex(c?.tr)
-    })
-    setDataState('independent', ![c.bl, c.br, c.tl, c.tr].every((v) => v === c.bl))
-  })
-  // eslint-disable-next-line solid/reactivity
-  const updateHandler = debounce((data: unknown) => {
-    const _path = JSON.parse(JSON.stringify(path()))
-    const previous = JSON.parse(
-      JSON.stringify((walker(state.data, _path) as ComponentConfig)?.data ?? {})
-    )
-    makeUpdateConfigPropertyChange({
-      path: _path,
-      changes: [previous, data]
-    })
-  }, 250)
-  const onSubmit = (form: ComponentRoundedFormState): void => {
-    updateHandler.clear()
-    updateHandler({
-      tr: roundedRange()[form[names().tr]],
-      tl: roundedRange()[form[names().tl]],
-      br: roundedRange()[form[names().br]],
-      bl: roundedRange()[form[names().bl]]
-    })
-  }
-  const displayLabel = (value: string): string => {
-    return value === 'rounded' ? 'rounded' : value?.split('-')[1]
-  }
   return (
-    <FormProvider onSubmit={onSubmit}>
-      <ComponentProperty
-        label="Rounded"
-        index={props.index}
-        path={props.path}
-        headerSlot={
-          <label>
-            <span class="sr-only">Independent corner radius</span>
-            <input
-              type="checkbox"
-              name={`toggle-rounded`}
-              class="sr-only"
-              checked={dataState.independent}
-              onClick={(e): void => setDataState('independent', e.currentTarget.checked)}
-            />
-            <div
-              class="p-2 rounded hover:bg-base-300"
-              classList={{ '!bg-secondary !bg-opacity-50': dataState.independent }}
+    <ComponentProperty
+      label="Rounded"
+      index={props.index}
+      path={props.path}
+      headerSlot={
+        <label>
+          <span class="sr-only">Independent corner radius</span>
+          <input
+            type="checkbox"
+            name={`toggle-rounded`}
+            class="sr-only"
+            checked={isIndependent()}
+            onClick={(e): void => {
+              setIsIndependent(e.currentTarget.checked)
+            }}
+          />
+          <div
+            class="p-2 rounded hover:bg-base-300"
+            classList={{ '!bg-secondary !bg-opacity-50': isIndependent() }}
+          >
+            <Icon icon="border-radius" class="h-3 w-3" />
+          </div>
+        </label>
+      }
+    >
+      <div class="p-2">
+        <Switch>
+          <Match when={!isIndependent()}>
+            <FormField
+              label={
+                <>
+                  <span class="sr-only">x</span>
+                  <Icon icon="border-radius" class="w-5 h-5" />
+                </>
+              }
+              class="items-center pl-1 pr-0.5"
+              labelClass="basis-0"
             >
-              <Icon icon="border-radius" class="h-3 w-3" />
-            </div>
-          </label>
-        }
-      >
-        <div class="p-2">
-          <Switch>
-            <Match when={!dataState.independent}>
-              <FormField
-                label={
-                  <>
-                    <span class="sr-only">x</span>
-                    <Icon icon="border-radius" class="w-5 h-5" />
-                  </>
-                }
-                class="items-center pl-1 pr-0.5"
-                labelClass="basis-0"
-              >
-                <input
-                  type="range"
-                  name={names().all}
-                  id={`component-rounded-form-${names().all}`}
-                  // @ts-ignore - solid directive
-                  use:field={{
-                    names: [names().tr, names().tl, names().br, names().bl],
-                    range: roundedRange()
-                  }}
-                />
-                <span class="basis-24 text-left">
-                  {displayLabel(roundedRange()[form[names().tl]])}
-                </span>
-              </FormField>
-            </Match>
-            <Match when={dataState.independent}>
-              <FormField
-                label={
-                  <>
-                    <span class="sr-only">tl</span>
-                    <Icon icon="border-radius-bottom-left" class="w-5 h-5 rotate-90" />
-                  </>
-                }
-                class="items-center pl-1 pr-0.5"
-                labelClass="basis-0"
-              >
-                <input
-                  type="range"
-                  name={names().tl}
-                  id={`component-rounded-form-${names().tl}`}
-                  // @ts-ignore - solid directive
-                  use:field={{ range: roundedRange() }}
-                />
-                <span class="basis-24 text-left">
-                  {displayLabel(roundedRange()[form[names().tl]])}
-                </span>
-              </FormField>
-              <FormField
-                label={
-                  <>
-                    <span class="sr-only">tr</span>
-                    <Icon icon="border-radius-bottom-left" class="w-5 h-5 rotate-180" />
-                  </>
-                }
-                class="items-center pl-1 pr-0.5"
-                labelClass="basis-0"
-              >
-                <input
-                  type="range"
-                  name={names().tr}
-                  id={`component-rounded-form-${names().tr}`}
-                  // @ts-ignore - solid directive
-                  use:field={{ range: roundedRange() }}
-                />
-                <span class="basis-24 text-left">
-                  {displayLabel(roundedRange()[form[names().tr]])}
-                </span>
-              </FormField>
-              <FormField
-                label={
-                  <>
-                    <span class="sr-only">bl</span>
-                    <Icon icon="border-radius-bottom-left" class="w-5 h-5" />
-                  </>
-                }
-                class="items-center pl-1 pr-0.5"
-                labelClass="basis-0"
-              >
-                <input
-                  type="range"
-                  name={names().bl}
-                  id={`component-rounded-form-${names().bl}`}
-                  // @ts-ignore - solid directive
-                  use:field={{ range: roundedRange() }}
-                />
-                <span class="basis-24 text-left">
-                  {displayLabel(roundedRange()[form[names().bl]])}
-                </span>
-              </FormField>
-              <FormField
-                label={
-                  <>
-                    <span class="sr-only">br</span>
-                    <Icon icon="border-radius-bottom-left" class="w-5 h-5 -rotate-90" />
-                  </>
-                }
-                class="items-center pl-1 pr-0.5"
-                labelClass="basis-0"
-              >
-                <input
-                  type="range"
-                  name={names().br}
-                  id={`component-rounded-form-${names().br}}`}
-                  // @ts-ignore - solid directive
-                  use:field={{ range: roundedRange() }}
-                />
-                <span class="basis-24 text-left">
-                  {displayLabel(roundedRange()[form[names().br]])}
-                </span>
-              </FormField>
-            </Match>
-          </Switch>
-        </div>
-      </ComponentProperty>
-    </FormProvider>
+              <RangeInput control={form.controls.tl} options={roundedOptions()} />
+            </FormField>
+          </Match>
+          <Match when={isIndependent()}>
+            <FormField
+              label={
+                <>
+                  <span class="sr-only">tl</span>
+                  <Icon icon="border-radius-bottom-left" class="w-5 h-5 rotate-90" />
+                </>
+              }
+              class="items-center pl-1 pr-0.5"
+              labelClass="basis-0"
+            >
+              <RangeInput control={form.controls.tl} options={roundedOptions()} />
+            </FormField>
+            <FormField
+              label={
+                <>
+                  <span class="sr-only">tr</span>
+                  <Icon icon="border-radius-bottom-left" class="w-5 h-5 rotate-180" />
+                </>
+              }
+              class="items-center pl-1 pr-0.5"
+              labelClass="basis-0"
+            >
+              <RangeInput control={form.controls.tr} options={roundedOptions()} />
+            </FormField>
+            <FormField
+              label={
+                <>
+                  <span class="sr-only">bl</span>
+                  <Icon icon="border-radius-bottom-left" class="w-5 h-5" />
+                </>
+              }
+              class="items-center pl-1 pr-0.5"
+              labelClass="basis-0"
+            >
+              <RangeInput control={form.controls.bl} options={roundedOptions()} />
+            </FormField>
+            <FormField
+              label={
+                <>
+                  <span class="sr-only">br</span>
+                  <Icon icon="border-radius-bottom-left" class="w-5 h-5 -rotate-90" />
+                </>
+              }
+              class="items-center pl-1 pr-0.5"
+              labelClass="basis-0"
+            >
+              <RangeInput control={form.controls.br} options={roundedOptions()} />
+            </FormField>
+          </Match>
+        </Switch>
+      </div>
+    </ComponentProperty>
   )
 }
 

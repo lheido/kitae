@@ -17,7 +17,7 @@ const FormField: Component<FormFieldProps> = (props: FormFieldProps) => {
   const [labelFor, setLabelFor] = createSignal('')
   onMount(() => {
     if (fieldRef) {
-      const input = fieldRef.querySelector('input')
+      const input = fieldRef.querySelector('input, textarea')
       if (input) {
         setLabelFor(input.id)
       }

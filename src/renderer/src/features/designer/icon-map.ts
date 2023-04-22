@@ -16,6 +16,8 @@ export const propertyTypeIconMap: Record<string, string> = {
   flex: 'flex',
   flexItem: 'flex',
   gap: 'gap',
+  height: 'height',
+  width: 'width',
   hover: 'element-state',
   active: 'element-state',
   focus: 'element-state',

@@ -21,9 +21,8 @@ const _addClass = (
   value: string,
   classes: Record<string, boolean>
 ): void => {
-  const v = value.split('-')[1]
-  if (v === defaultValue && modifier === '') return
-  classes[`${modifier}rounded${key}${v ? `-${v}` : ''}`] = true
+  if (value === defaultValue && modifier === '') return
+  classes[`${modifier}rounded${key}${value && value !== 'base' ? `-${value}` : ''}`] = true
 }
 
 const dataToClass = (
@@ -74,8 +73,7 @@ const renderClass = (theme: WorkspaceTheme, filters: string[] | false): Record<s
   const { rounded } = theme
   const result: Record<string, string> = {}
   Object.keys(rounded).forEach((k) => {
-    let key = k.split('-')[1]
-    key = key ? `-${key}` : ''
+    const key = k && k !== 'base' ? `-${k}` : ''
     _renderClass(`rounded${key}`, `border-radius: ${rounded[k]}`, result, filters)
     _renderClass(`rounded-tl${key}`, `border-top-left-radius: ${rounded[k]}`, result, filters)
     _renderClass(`rounded-tr${key}`, `border-top-right-radius: ${rounded[k]}`, result, filters)

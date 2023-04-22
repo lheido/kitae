@@ -10,7 +10,7 @@ import { _renderClass } from './render-class.helper'
 interface FlexConfig extends ComponentConfig {
   type: 'flexItem'
   data: {
-    quickCombination: 'expand' | 'auto' | 'initial'
+    quick: 'expand' | 'auto' | 'initial'
   }
 }
 
@@ -22,8 +22,7 @@ const quickCombinationMap = {
 
 const dataToClass = (config: FlexConfig, classes: Record<string, boolean>, modifier = ''): void => {
   const { data } = config
-  const { quickCombination } = data
-  switch (quickCombination) {
+  switch (data.quick) {
     case 'expand':
       classes[`${modifier}flex-1`] = true
       break

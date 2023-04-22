@@ -12,6 +12,7 @@ export const WorkspaceThemeSchema = z.object({
   colors: ThemeEntriesSchema,
   fontFamilies: ThemeEntriesSchema,
   spacing: ThemeEntriesSchema,
+  sizing: ThemeEntriesSchema,
   rounded: ThemeEntriesSchema
 })
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentConfig, ComponentData } from '@kitae/shared/types'
 import { getComponentData } from '@kitae/shared/utils'
 import Accordion from '@renderer/components/Accordion'

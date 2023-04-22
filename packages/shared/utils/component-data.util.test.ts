@@ -55,6 +55,8 @@ describe('component-data.util', () => {
       const path = ['children', 0, 'children', 0]
       const componentData = getComponentData(path, mockWorkspaceDataWithPage.pages[0])
       expect(componentData).toEqual(mockWorkspaceDataWithPage.pages[0].children![0].children![0])
+      const pageComponent = getComponentData(['pages', 0], mockWorkspaceDataWithPage)
+      expect(pageComponent).toEqual(mockWorkspaceDataWithPage.pages[0])
     })
 
     it('should return the component data for the given path with slot', () => {

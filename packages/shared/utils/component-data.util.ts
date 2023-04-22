@@ -1,4 +1,4 @@
-import { ComponentData, Path } from '@kitae/shared/types'
+import { ComponentData, Path, WorkspaceData } from '@kitae/shared/types'
 
 /**
  * Walk through the given component data tree and call a callback for each element.
@@ -29,7 +29,24 @@ export const walkComponentData = (
   return shouldStop
 }
 
-export const getComponentData = <T>(path: Path, tree: ComponentData): T | undefined => {
+export const reverseWalkComponentData = (
+  path: Path,
+  tree: ComponentData | WorkspaceData,
+  callback: (component?: ComponentData) => boolean | void
+): boolean | void => {
+  const component = getComponentData<ComponentData>(path, tree)
+  const shouldStop = callback(component)
+  const parentPath = path.slice(0, -2) // remove the index and children/slots
+  if (!shouldStop && parentPath.length > 0) {
+    return reverseWalkComponentData(parentPath, tree, callback)
+  }
+  return shouldStop
+}
+
+export const getComponentData = <T>(
+  path: Path,
+  tree: ComponentData | WorkspaceData
+): T | undefined => {
   const current = path[0]
   if (current in tree && tree[current]) {
     if (path.length === 1) {

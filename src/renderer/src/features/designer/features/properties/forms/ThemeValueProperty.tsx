@@ -1,15 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ComponentData, Path } from '@kitae/shared/types'
 import { walker } from '@kitae/shared/utils'
 import FormField from '@renderer/components/form/FormField'
-import { createForm } from '@renderer/features/form'
+import TextInput from '@renderer/components/form/TextInput'
+import { createFormControl } from '@renderer/features/form'
 import { debounce } from '@solid-primitives/scheduled'
-import { Component, createEffect } from 'solid-js'
+import { Component, createEffect, createMemo } from 'solid-js'
 import { makeUpdateValuePropertyChange } from '../../history/theme.events'
 import { useDesignerState } from '../../state/designer.state'
-
-interface ValueFormState {
-  value: string
-}
 
 interface ValuePropertyProps {
   label?: string
@@ -18,47 +15,42 @@ interface ValuePropertyProps {
 
 const ThemeValueProperty: Component<ValuePropertyProps> = (props: ValuePropertyProps) => {
   const [state] = useDesignerState()
-  const {
-    setForm,
-    FormProvider,
-    //@ts-ignore - solid directives
-    field
-  } = createForm<ValueFormState>()
-  createEffect(() => {
-    const path = JSON.parse(JSON.stringify(state.current))
-    const basePath = [...path]
-    basePath.splice(1, 2)
-    setForm({
-      value: walker(state.data, path) ?? walker(state.data, basePath) ?? ''
-    })
+  const control = createFormControl({ value: '' })
+  const data = createMemo(() => {
+    const value = walker(state.data, state.current) as string
+    control.set({ value, disabled: false, touched: false, initial: '' })
+    return value
   })
-  const updateHandler = debounce((data: unknown) => {
-    const path = JSON.parse(JSON.stringify(state.current))
+  createEffect((prev) => {
+    const value = data()
+    if (prev !== value && !control.touched) {
+      control.patchValue(value ?? '', false)
+    }
+    return value
+  })
+  const updateHandlerRef = debounce((p: Path, previous: string, data: string) => {
     makeUpdateValuePropertyChange({
-      path,
-      changes: [(walker(state.data, path) as any).value, data]
+      path: p,
+      changes: [previous, data]
     })
   }, 250)
-  const onSubmit = (form: ValueFormState): void => {
-    updateHandler.clear()
-    updateHandler(form.value)
-  }
+  createEffect((prev: string | undefined) => {
+    const value = control.value as string
+    if (prev !== undefined && control.touched && control.valid && prev !== value) {
+      updateHandlerRef.clear()
+      const p = JSON.parse(JSON.stringify(state.current))
+      updateHandlerRef(p, (walker(state.data, p) as ComponentData).name, value)
+    }
+    return value
+  })
   return (
-    <FormProvider onSubmit={onSubmit}>
-      <section class="bg-base-200 rounded-lg">
-        <div class="p-2">
-          <FormField label={props.label ?? 'Value'} labelClass={props.labelClass}>
-            <input
-              type="text"
-              name="value"
-              id="value-property-input"
-              // @ts-ignore - solid directive
-              use:field
-            />
-          </FormField>
-        </div>
-      </section>
-    </FormProvider>
+    <section class="bg-base-200 rounded-lg">
+      <div class="p-2">
+        <FormField label={props.label ?? 'Value'} labelClass={props.labelClass}>
+          <TextInput control={control} />
+        </FormField>
+      </div>
+    </section>
   )
 }
 

@@ -32,14 +32,8 @@ describe('properties/renderer/spacing', () => {
         ])
       ).toEqual({
         class: {
-          'pl-4': true,
-          'pr-4': true,
-          'pt-4': true,
-          'pb-4': true,
-          'ml-4': true,
-          'mr-4': true,
-          'mt-4': true,
-          'mb-4': true
+          'p-4': true,
+          'm-4': true
         }
       })
     })
@@ -51,7 +45,8 @@ describe('properties/renderer/spacing', () => {
           colors: {},
           fontFamilies: {},
           rounded: {},
-          spacing: { 4: '1rem' }
+          spacing: { 4: '1rem' },
+          sizing: {}
         },
         false
       )

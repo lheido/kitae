@@ -4,7 +4,7 @@ import { Component, createMemo, Show } from 'solid-js'
 import { useDesignerState } from '../state/designer.state'
 
 const cleanClassName = (className: string): string =>
-  className.replaceAll(':', '\\:').replaceAll('.', '\\.')
+  className.replaceAll(':', '\\:').replaceAll('.', '\\.').replace('/', '\\/')
 
 const getModifier = (className: string): string => {
   const splitedClassName = className.split(':')

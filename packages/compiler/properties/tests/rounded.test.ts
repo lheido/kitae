@@ -23,7 +23,24 @@ describe('properties/renderer/rounded', () => {
         ])
       ).toEqual({
         class: {
-          'rounded-tl-sm': true,
+          'rounded-sm': true
+        }
+      })
+      expect(
+        renderProperties([
+          {
+            type: 'rounded',
+            data: {
+              tl: 'base',
+              tr: 'sm',
+              bl: 'sm',
+              br: 'sm'
+            }
+          }
+        ])
+      ).toEqual({
+        class: {
+          'rounded-tl': true,
           'rounded-tr-sm': true,
           'rounded-bl-sm': true,
           'rounded-br-sm': true
@@ -38,7 +55,8 @@ describe('properties/renderer/rounded', () => {
           colors: {},
           fontFamilies: {},
           rounded: { sm: '0.125rem' },
-          spacing: {}
+          spacing: {},
+          sizing: {}
         },
         false
       )

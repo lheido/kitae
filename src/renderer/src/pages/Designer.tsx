@@ -110,7 +110,7 @@ const Designer: Component = () => {
         </Show>
       </section>
       <PanelSeparator
-        class="absolute"
+        class="absolute z-50"
         target="left-panel"
         valuenow={320}
         valuemin={320}

@@ -10,12 +10,20 @@ export const defaultProperties: Partial<ComponentConfig>[] = [
     data: {}
   },
   {
+    type: 'height',
+    data: {}
+  },
+  {
+    type: 'width',
+    data: {}
+  },
+  {
     type: 'backgroundColor',
-    data: 'None'
+    data: ''
   },
   {
     type: 'color',
-    data: 'None'
+    data: ''
   },
   {
     type: 'rounded',

@@ -58,6 +58,19 @@ export const getComponentData = <T>(
   return undefined
 }
 
+export const getComponentPath = (id: string, tree: ComponentData): Path | undefined => {
+  let path: Path | undefined
+  walkComponentData(tree, (data, currentPath) => {
+    if (data.id === id) {
+      path = currentPath
+      return true
+    } else {
+      return false
+    }
+  })
+  return path
+}
+
 export const removeComponentData = (path: Path, tree: ComponentData): boolean => {
   const index = path[path.length - 1] as number
   const parent =

@@ -27,10 +27,12 @@ const ComponentColorsProperty: Component<ComponentColorsPropertyProps> = (
   const colorOptions = createMemo(() => [defaultValue, ...colors()])
   const control = createFormControl({ value: '' })
   const config = getConfig(props)
-  createEffect(() => {
-    if (!control.touched) {
-      control.patchValue((config()?.data as string) ?? '', false)
+  createEffect((prev) => {
+    const value = config()?.data
+    if (prev !== value && !control.touched) {
+      control.patchValue(value ?? '', false)
     }
+    return value
   })
   const updateHandlerRef = debounce((p: Path, previous: unknown, data: unknown) => {
     makeUpdateConfigPropertyChange({

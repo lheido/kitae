@@ -161,7 +161,7 @@ registerHistoryEvents<{ text: string }[], DesignerComponentPropertyUpdateTextHis
     },
     undo: ({ path, changes }): void => {
       updatePath(path, (current: ComponentConfig, _, s: WorkspaceDataState): void => {
-        current.data = changes[0].text
+        current.data = changes[0]
         const parent = walker(s.data, path.slice(0, -2)) as ComponentData
         parent.name = current.data as string
       })
@@ -211,7 +211,7 @@ export const makeUpdateConfigPropertyChange = (
   })
 
 export const makeUpdateTextConfigPropertyChange = (
-  change: Omit<HistoryEventChangeWithAdditionalHandler<{ text: string }[]>, 'handler'>
+  change: Omit<HistoryEventChangeWithAdditionalHandler<[string, { text: string }]>, 'handler'>
 ): void =>
   makeChange({
     ...change,

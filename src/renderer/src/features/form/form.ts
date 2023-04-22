@@ -19,6 +19,7 @@ export type SetFormControl<V> = (value: V, fromUserInput?: boolean) => void
 
 export type FormControl<V> = {
   get value(): V
+  get initial(): V
   get disabled(): boolean
   get touched(): boolean
   get errors(): ValidationError
@@ -56,6 +57,9 @@ export const createFormControl = <V, T extends ControlValue<V>>(
   return {
     get value(): V {
       return control.value
+    },
+    get initial(): V {
+      return control.initial
     },
     get disabled(): boolean {
       return control.disabled

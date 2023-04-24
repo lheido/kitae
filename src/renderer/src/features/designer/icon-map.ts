@@ -18,6 +18,7 @@ export const propertyTypeIconMap: Record<string, string> = {
   gap: 'gap',
   height: 'height',
   width: 'width',
+  semantic: 'code',
   hover: 'element-state',
   active: 'element-state',
   focus: 'element-state',

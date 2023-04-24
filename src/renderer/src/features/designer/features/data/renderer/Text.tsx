@@ -42,10 +42,10 @@ const Text: Component<TextProps> = (props: TextProps) => {
     }
   })
   createEffect(() => {
-    // TODO: take into account the no-semantic-config case
     const semanticConfig = props.data.config?.find((c) => c.type === 'semantic')
-    console.log(semanticConfig?.data)
     if (semanticConfig?.data && ref && !control.touched) {
+      ref.innerHTML = content()
+    } else if (ref && !control.touched) {
       ref.innerHTML = content()
     }
   })

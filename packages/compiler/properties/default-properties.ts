@@ -53,6 +53,10 @@ export const defaultProperties: Partial<ComponentConfig>[] = [
       x: 0,
       y: 0
     }
+  },
+  {
+    type: 'semantic',
+    data: 'div'
   }
 ]
 

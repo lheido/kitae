@@ -6,7 +6,7 @@ import ComponentProperty from './helpers/ComponentProperty'
 import { useConfigForm } from './helpers/config.util'
 import { PropertyProps } from './types'
 
-interface ComponentFlexPropertyProps extends PropertyProps {
+interface ComponentFlexItemPropertyProps extends PropertyProps {
   labelClass?: string
 }
 
@@ -29,8 +29,8 @@ const quickFlexCombination: FlexItemData[] = [
   { label: 'initial', value: 'initial', icon: 'flex-initial' }
 ]
 
-const ComponentFlexItemProperty: Component<ComponentFlexPropertyProps> = (
-  props: ComponentFlexPropertyProps
+const ComponentFlexItemProperty: Component<ComponentFlexItemPropertyProps> = (
+  props: ComponentFlexItemPropertyProps
 ) => {
   const form = useConfigForm(
     {

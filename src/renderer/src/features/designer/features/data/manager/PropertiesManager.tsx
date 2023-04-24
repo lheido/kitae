@@ -15,6 +15,7 @@ import ComponentFlexItemProperty from '../../properties/forms/ComponentFlexItemP
 import ComponentFlexProperty from '../../properties/forms/ComponentFlexProperty'
 import ComponentGapProperty from '../../properties/forms/ComponentGapProperty'
 import ComponentRoundedProperty from '../../properties/forms/ComponentRoundedProperty'
+import ComponentSemanticProperty from '../../properties/forms/ComponentSemanticProperty'
 import ComponentSizingProperty from '../../properties/forms/ComponentSizingProperty'
 import ComponentSpacingProperty from '../../properties/forms/ComponentSpacingProperty'
 import ComponentTextProperty from '../../properties/forms/ComponentTextProperty'
@@ -68,6 +69,9 @@ const PropertyRenderer: Component<PropertyRendererProps> = (props: PropertyRende
       </Match>
       <Match when={props.config.type === 'width'}>
         <ComponentSizingProperty path={props.path} prefix="width" />
+      </Match>
+      <Match when={props.config.type === 'semantic'}>
+        <ComponentSemanticProperty path={props.path} />
       </Match>
       <Match when={defaultStateProperties.map((p) => p.type).includes(props.config.type)}>
         <ComponentProperty path={props.path} label={props.config.type}>

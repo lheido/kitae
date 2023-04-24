@@ -41,6 +41,14 @@ const Text: Component<TextProps> = (props: TextProps) => {
       ref.innerHTML = content()
     }
   })
+  createEffect(() => {
+    // TODO: take into account the no-semantic-config case
+    const semanticConfig = props.data.config?.find((c) => c.type === 'semantic')
+    console.log(semanticConfig?.data)
+    if (semanticConfig?.data && ref && !control.touched) {
+      ref.innerHTML = content()
+    }
+  })
   const submitHandler = (): void => {
     if (control.touched && control.valid) {
       const rootTree = walker<ComponentData>(state.data, state.current.slice(0, 2))

@@ -20,19 +20,9 @@ export const defaultComponents: PartialComponentData[] = [
       {
         type: 'text',
         data: 'Lorem ipsum'
-      }
+      },
+      { type: 'semantic', data: 'p' }
     ]
-  },
-  {
-    name: 'Paragraph',
-    type: 'container',
-    config: [
-      {
-        type: 'semantic',
-        data: 'p'
-      }
-    ],
-    children: []
   },
   {
     name: 'Button',

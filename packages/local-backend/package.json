@@ -9,6 +9,6 @@
   },
   "devDependencies": {
     "typescript": "^4.9.4",
-    "electron": "^21.3.3"
+    "electron": "^25.2.0"
   }
 }
